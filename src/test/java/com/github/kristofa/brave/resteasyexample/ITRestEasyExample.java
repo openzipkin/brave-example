@@ -79,7 +79,8 @@ public class ITRestEasyExample {
         endPointSubmitter.submit("127.0.0.1", 8080, "RestEasyTest");
 
         // Start new trace/span using ClientTracer.
-        final ClientTracer clientTracer = Brave.getClientTracer(Brave.getLoggingSpanCollector());
+        final ClientTracer clientTracer =
+            Brave.getClientTracer(Brave.getLoggingSpanCollector(), Brave.getTraceAllTraceFilter());
         final SpanId newSpan = clientTracer.startNewSpan("brave-resteasy-example/a");
 
         // Create http request and set trace/span headers.

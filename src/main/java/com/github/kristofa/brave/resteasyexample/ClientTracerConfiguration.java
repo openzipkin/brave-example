@@ -24,6 +24,6 @@ public class ClientTracerConfiguration {
     @Bean
     @Scope(value = "singleton")
     public ClientTracer clientTracer() {
-        return Brave.getClientTracer(spanCollectorConfig.spanCollector());
+        return Brave.getClientTracer(spanCollectorConfig.spanCollector(), Brave.getTraceAllTraceFilter());
     }
 }
