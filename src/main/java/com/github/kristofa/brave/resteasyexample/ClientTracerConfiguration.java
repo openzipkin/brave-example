@@ -24,6 +24,7 @@ public class ClientTracerConfiguration {
     @Bean
     @Scope(value = "singleton")
     public ClientTracer clientTracer() {
+        // For development purposes we decide to trace all requests: Brave.getTraceAllTraceFilter().
         return Brave.getClientTracer(spanCollectorConfig.spanCollector(), Brave.getTraceAllTraceFilter());
     }
 }
