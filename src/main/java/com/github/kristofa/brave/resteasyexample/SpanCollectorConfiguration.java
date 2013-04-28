@@ -18,6 +18,7 @@ public class SpanCollectorConfiguration {
     @Bean
     @Scope(value = "singleton")
     public SpanCollector spanCollector() {
+        // For development purposes we use the logging span collector.
         return Brave.getLoggingSpanCollector();
     }
 
