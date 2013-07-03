@@ -23,20 +23,20 @@ this URI will make a new call to the other URI: http://localhost:8080/RestEasyTe
 
 Because brave is set up the test results in 2 spans being logged. The test uses the logging SpanCollector which simply logs the spans through slf4j.
 
-    16:00:10,309 INFO  [qtp149997662-16] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:22) - [id: [trace id: 6124139389535523700, span id: 3631703637866094983, parent span id: 3801884886749338669], name: /brave-resteasy-example/b, annotations: [[annotation name: ss, end point: [ipv4: 2130706433, ip: 127.0.0.1, port: 8080, service name: RestEasyTest], timestamp: 1365948010309443000, duration: null], [annotation name: sr, end point: [ipv4: 2130706433, ip: 127.0.0.1, port: 8080, service name: RestEasyTest], timestamp: 1365948010226403000, duration: null]]]
-    16:00:10,318 INFO  [qtp149997662-15] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:22) - [id: [trace id: 6124139389535523700, span id: 3631703637866094983, parent span id: 3801884886749338669], name: brave-resteasy-example/b, annotations: [[annotation name: cs, end point: [ipv4: 2130706433, ip: 127.0.0.1, port: 8080, service name: RestEasyTest], timestamp: 1365948010214535000, duration: null], [annotation name: cr, end point: [ipv4: 2130706433, ip: 127.0.0.1, port: 8080, service name: RestEasyTest], timestamp: 1365948010318780000, duration: null], [annotation name: httpcode=200, end point: [ipv4: 2130706433, ip: 127.0.0.1, port: 8080, service name: RestEasyTest], timestamp: 1365948010318765000, duration: null]]]
-    16:00:10,319 INFO  [qtp149997662-15] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:22) - [id: [trace id: 6124139389535523700, span id: 3801884886749338669, parent span id: null], name: /brave-resteasy-example/a, annotations: [[annotation name: ss, end point: [ipv4: 2130706433, ip: 127.0.0.1, port: 8080, service name: RestEasyTest], timestamp: 1365948010319812000, duration: null], [annotation name: sr, end point: [ipv4: 2130706433, ip: 127.0.0.1, port: 8080, service name: RestEasyTest], timestamp: 1365948009869961000, duration: null]]]
-    16:00:10,320 INFO  [main] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:22) - [id: [trace id: 6124139389535523700, span id: 3801884886749338669, parent span id: null], name: brave-resteasy-example/a, annotations: [[annotation name: cs, end point: [ipv4: 2130706433, ip: 127.0.0.1, port: 8080, service name: RestEasyTest], timestamp: 1365948009622392000, duration: null], [annotation name: cr, end point: [ipv4: 2130706433, ip: 127.0.0.1, port: 8080, service name: RestEasyTest], timestamp: 1365948010320458000, duration: null], [annotation name: httpcode=200, end point: [ipv4: 2130706433, ip: 127.0.0.1, port: 8080, service name: RestEasyTest], timestamp: 1365948010320452000, duration: null]]]
+    14:57:42,730 INFO  [qtp948887574-13] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:24) - Span(trace_id:-5137944522864564053, name:/brave-resteasy-example/b, id:-6201587421931759351, parent_id:-5137944522864564053, annotations:[Annotation(timestamp:1372856262381000, value:sr, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest)), Annotation(timestamp:1372856262730000, value:ss, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest))], binary_annotations:null)
+    14:57:42,744 INFO  [qtp948887574-18] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:24) - Span(trace_id:-5137944522864564053, name:brave-resteasy-example/b, id:-6201587421931759351, parent_id:-5137944522864564053, annotations:[Annotation(timestamp:1372856262366000, value:cs, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest)), Annotation(timestamp:1372856262743000, value:cr, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest))], binary_annotations:[BinaryAnnotation(key:http.responsecode, value:32 30 30, annotation_type:STRING, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest))])
+    14:57:42,745 INFO  [qtp948887574-18] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:24) - Span(trace_id:-5137944522864564053, name:/brave-resteasy-example/a, id:-5137944522864564053, annotations:[Annotation(timestamp:1372856261792000, value:sr, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest)), Annotation(timestamp:1372856262745000, value:ss, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest))], binary_annotations:null)
+    14:57:42,746 INFO  [main] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:24) - Span(trace_id:-5137944522864564053, name:brave-resteasy-example/a, id:-5137944522864564053, annotations:[Annotation(timestamp:1372856261537000, value:cs, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest)), Annotation(timestamp:1372856262746000, value:cr, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest))], binary_annotations:[BinaryAnnotation(key:http.responsecode, value:32 30 30, annotation_type:STRING, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest))])
 
 The spans are logged in reverse order:
 
 1.  The last log line logs the client part of the first span the is initiated in the test code. 
-    You notice that is has no parent spanid and it logs cs (client send), cr (client received) as well as the http code return code as annotations.
-2.  The 3rd log line logs the server part of the first span. So it has the same trace id, span id and null span id. 
+    You notice that is has no parent spanid and it logs cs (client send), cr (client received) annotations as well as the http code return code as binary annotation.
+2.  The 3rd log line logs the server part of the first span. So it has the same trace id, span id and null parent span id. 
     It logs sr (server received) and ss (server send) annotations.
 3.  The 2nd log line logs the client request from URI brave-resteasy-example/a to brave-resteasy-example/b. 
     It has the same trace id but different span id and refers to the our first span as parent span id. 
-    As it is a client request it again logs cs, cr and http code annotations.
+    As it is a client request it again logs cs, cr and http return code annotations.
 4.  The 1st log line logs the server side part of brave-resteasy-example/b. 
     So it has sr and ss annotations and same trace information as previous span log.
 
@@ -77,8 +77,14 @@ It is configured to use src/main/webapp/WEB-INF/web.xml so that is how Spring / 
 
 ## Running it yourself ##
 
-Brave 1.0 is in Maven Central and there is a dependency to it in the example so you can simply:
-        
+You should install the Brave 2.0-SNAPSHOT components first, so you should do:
+    
+    # Check out and locally install brave dependencies.
+    git clone https://github.com/kristofa/brave.git
+    cd brave
+    mvn install
+    
+    # Check out and build brave-resteasy-example which will rely on the previously installed brave dependencies.    
     git clone https://github.com/kristofa/brave-resteasy-example.git
     # In brave-resteasy-example directory execute:
     mvn verify # This executes unit and integration tests and will execute ITRestEasyExample.

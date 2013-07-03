@@ -1,5 +1,7 @@
 package com.github.kristofa.brave.resteasyexample;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,6 @@ public class ClientTracerConfiguration {
     @Scope(value = "singleton")
     public ClientTracer clientTracer() {
         // For development purposes we decide to trace all requests: Brave.getTraceAllTraceFilter().
-        return Brave.getClientTracer(spanCollectorConfig.spanCollector(), Brave.getTraceAllTraceFilter());
+        return Brave.getClientTracer(spanCollectorConfig.spanCollector(), Arrays.asList(Brave.getTraceAllTraceFilter()));
     }
 }

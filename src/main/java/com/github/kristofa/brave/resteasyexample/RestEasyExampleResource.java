@@ -15,8 +15,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.github.kristofa.brave.BraveHttpHeaders;
 import com.github.kristofa.brave.ClientTracer;
-import com.github.kristofa.brave.HeaderConstants;
 import com.github.kristofa.brave.SpanId;
 
 /**
@@ -55,17 +55,21 @@ public class RestEasyExampleResource {
 
         final SpanId newSpan = clientTracer.startNewSpan("brave-resteasy-example/b");
 
-        httpGet.addHeader(HeaderConstants.TRACE_ID, String.valueOf(newSpan.getTraceId()));
-        httpGet.addHeader(HeaderConstants.SPAN_ID, String.valueOf(newSpan.getSpanId()));
-        httpGet.addHeader(HeaderConstants.PARENT_SPAN_ID, String.valueOf(newSpan.getParentSpanId()));
-        httpGet.addHeader(HeaderConstants.SHOULD_GET_TRACED, "true");
+        if (newSpan != null) {
+            httpGet.addHeader(BraveHttpHeaders.TraceId.getName(), String.valueOf(newSpan.getTraceId()));
+            httpGet.addHeader(BraveHttpHeaders.SpanId.getName(), String.valueOf(newSpan.getSpanId()));
+            httpGet.addHeader(BraveHttpHeaders.ParentSpanId.getName(), String.valueOf(newSpan.getParentSpanId()));
+            httpGet.addHeader(BraveHttpHeaders.Sampled.getName(), "true");
+        } else {
+            httpGet.addHeader(BraveHttpHeaders.Sampled.getName(), "false");
+        }
 
         final DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
         clientTracer.setClientSent();
         try {
             final HttpResponse response = defaultHttpClient.execute(httpGet);
             final int returnCode = response.getStatusLine().getStatusCode();
-            clientTracer.submitAnnotation("httpcode=" + returnCode);
+            clientTracer.submitBinaryAnnotation("http.responsecode", returnCode);
             return Response.status(returnCode).build();
 
         } finally {
