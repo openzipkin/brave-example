@@ -53,7 +53,7 @@ public class RestEasyExampleResource {
 
         final HttpGet httpGet = new HttpGet("http://localhost:8080/RestEasyTest/brave-resteasy-example/b");
 
-        final SpanId newSpan = clientTracer.startNewSpan("brave-resteasy-example/b");
+        final SpanId newSpan = clientTracer.startNewSpan("/brave-resteasy-example/b");
 
         if (newSpan != null) {
             httpGet.addHeader(BraveHttpHeaders.TraceId.getName(), String.valueOf(newSpan.getTraceId()));
