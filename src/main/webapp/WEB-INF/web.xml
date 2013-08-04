@@ -15,9 +15,9 @@
 	  </init-param>	  
 	  <init-param>
 		  <param-name>contextConfigLocation</param-name>
-		  <!--  The first package name is the package that contains BravePreprocessorInterceptor and BravePostPreprocessorInterceptor.
-		        The 2nd package is the one containing our resource and the Spring dependency injection Configuration classes. -->
-		  <param-value>com.github.kristofa.brave.resteasy com.github.kristofa.brave.resteasyexample</param-value>
+		  <!--  By including package com.github.kristofa.brave this package and all sub packages will be scanned for Spring beans. This means that the Configuration classes
+		        of brave-impl-spring will be detected, the RestEasy pre- and postprocessors will be detected as well as the Resteasy resources for our test. -->
+		  <param-value>com.github.kristofa.brave</param-value>
 	  </init-param>
 	  <load-on-startup>1</load-on-startup>
 	</servlet>
