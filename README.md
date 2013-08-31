@@ -87,7 +87,51 @@ You should install the Brave 2.0-SNAPSHOT components first, so you should do:
     # In brave-resteasy-example directory execute:
     mvn verify # This executes unit and integration tests and will execute ITRestEasyExample.
 
+## Adapt test to submit spans to zipkin collector ##
 
+By default we use a SpanCollector implementation that simply logs the received spans through log4j.
+We don't want to use the ZipkinSpanCollector by default because we can't assume that everybody who
+checks out the code and runs the test has the Zipkin Collector service running at a fixed port.
+
+However with few adaptations you can change this test to make it submit spans to Zipkin Collector.
+
+### Add brave-zipkin-spancollector dependency to pom.xml ###
+
+    <dependency>
+        <groupId>com.github.kristofa</groupId>
+        <artifactId>brave-zipkin-spancollector</artifactId>
+        <version>2.0-SNAPSHOT</version>
+    </dependency>
+
+First you have to add the brave-zipkin-spancollector dependency to your pom.xml
+
+### Update com.github.kristofa.brave.resteasyexample.SpanCollectorConfiguration ###
+
+Update SpanCollectorConfiguration class to instantiate ZipkinSpanCollector instead
+of the LoggingSpanCollector configured by default.
+
+
+    @Configuration
+    public class SpanCollectorConfiguration {
+
+        @Bean
+        @Scope(value = "singleton")
+        public SpanCollector spanCollector() {
+
+            return new ZipkinSpanCollector("10.0.1.8", 9410);            
+        }
+    }
+
+Before you run the test you should make sure the Zipkin collector is running at port
+9410, and in my case my ip address was 10.0.1.8. If you execute the test now you should 
+see the spans in zipkin-web if services are running and properly configured.
+
+Note: I don't use localhost as host because that does not seem to work on my machine.
+The 10.0.1.8 is my ip address and also the adress the zipkin collector logs when started:
+
+    INF [20130831-11:51:43.629] builder: Starting collector service on addr Kristofs-MacBook-Pro.local/10.0.1.8:9410
+    700 [20130831-11:51:43.742] net: context created: /config/sampleRate
+    DEB [20130831-11:51:43.802] cassie: Received: %s
     
 
     
