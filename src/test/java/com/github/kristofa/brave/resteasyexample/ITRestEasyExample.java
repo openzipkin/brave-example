@@ -3,7 +3,6 @@ package com.github.kristofa.brave.resteasyexample;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -16,10 +15,12 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.BraveHttpHeaders;
 import com.github.kristofa.brave.ClientTracer;
+import com.github.kristofa.brave.ClientTracerConfig;
 import com.github.kristofa.brave.EndPointSubmitter;
 import com.github.kristofa.brave.SpanId;
 import com.github.kristofa.brave.resteasy.BravePostProcessInterceptor;
@@ -79,27 +80,37 @@ public class ITRestEasyExample {
         final EndPointSubmitter endPointSubmitter = Brave.getEndPointSubmitter();
         endPointSubmitter.submit("127.0.0.1", 8080, "RestEasyTest");
 
-        // Start new trace/span using ClientTracer.
-        final ClientTracer clientTracer =
-            Brave.getClientTracer(Brave.getLoggingSpanCollector(), Arrays.asList(Brave.getTraceAllTraceFilter()));
-        final SpanId newSpan = clientTracer.startNewSpan("brave-resteasy-example/a");
-
-        // Create http request and set trace/span headers.
-        final HttpGet httpGet = new HttpGet("http://localhost:8080/RestEasyTest/brave-resteasy-example/a");
-        httpGet.addHeader(BraveHttpHeaders.TraceId.getName(), String.valueOf(newSpan.getTraceId()));
-        httpGet.addHeader(BraveHttpHeaders.SpanId.getName(), String.valueOf(newSpan.getSpanId()));
-        httpGet.addHeader(BraveHttpHeaders.Sampled.getName(), "true");
-
-        final DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
+        // Our Jetty server will have its own ApplicationContext but we want to have same SpanCollector / TraceFilters, so we
+        // set up
+        // separate ApplicationContext using same Config classes for test.
+        final AnnotationConfigApplicationContext ctx =
+            new AnnotationConfigApplicationContext(SpanCollectorConfiguration.class, TraceFiltersConfiguration.class,
+                ClientTracerConfig.class);
         try {
-            clientTracer.setClientSent();
-            final HttpResponse response = defaultHttpClient.execute(httpGet);
-            final int returnCode = response.getStatusLine().getStatusCode();
-            clientTracer.submitBinaryAnnotation("http.responsecode", returnCode);
-            clientTracer.setClientReceived();
-            assertEquals(200, returnCode);
+            // Start new trace/span using ClientTracer.
+            final ClientTracer clientTracer = ctx.getBean(ClientTracer.class);
+
+            final SpanId newSpan = clientTracer.startNewSpan("brave-resteasy-example/a");
+
+            // Create http request and set trace/span headers.
+            final HttpGet httpGet = new HttpGet("http://localhost:8080/RestEasyTest/brave-resteasy-example/a");
+            httpGet.addHeader(BraveHttpHeaders.TraceId.getName(), String.valueOf(newSpan.getTraceId()));
+            httpGet.addHeader(BraveHttpHeaders.SpanId.getName(), String.valueOf(newSpan.getSpanId()));
+            httpGet.addHeader(BraveHttpHeaders.Sampled.getName(), "true");
+
+            final DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
+            try {
+                clientTracer.setClientSent();
+                final HttpResponse response = defaultHttpClient.execute(httpGet);
+                final int returnCode = response.getStatusLine().getStatusCode();
+                clientTracer.submitBinaryAnnotation("http.responsecode", returnCode);
+                clientTracer.setClientReceived();
+                assertEquals(200, returnCode);
+            } finally {
+                defaultHttpClient.getConnectionManager().closeExpiredConnections();
+            }
         } finally {
-            defaultHttpClient.getConnectionManager().closeExpiredConnections();
+            ctx.close();
         }
     }
 

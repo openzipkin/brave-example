@@ -22,5 +22,4 @@ public class SpanCollectorConfiguration {
         // For development purposes we use the logging span collector.
         return Brave.getLoggingSpanCollector();
     }
-
 }

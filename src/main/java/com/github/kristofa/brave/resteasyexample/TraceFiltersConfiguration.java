@@ -6,7 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
-import com.github.kristofa.brave.Brave;
+import com.github.kristofa.brave.FixedSampleRateTraceFilter;
+import com.github.kristofa.brave.TraceFilter;
 import com.github.kristofa.brave.TraceFilters;
 
 @Configuration
@@ -15,7 +16,8 @@ public class TraceFiltersConfiguration {
     @Bean
     @Scope(value = "singleton")
     public TraceFilters traceFilters() {
-        return new TraceFilters(Arrays.asList(Brave.getTraceAllTraceFilter()));
+        // Sample rate = 1 means every request will get traced.
+        return new TraceFilters(Arrays.<TraceFilter>asList(new FixedSampleRateTraceFilter(1)));
     }
 
 }
