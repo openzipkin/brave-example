@@ -105,9 +105,9 @@ However with few adaptations you can change this test to make it submit spans to
 
 First you have to add the brave-zipkin-spancollector dependency to your pom.xml
 
-### Update com.github.kristofa.brave.resteasyexample.SpanCollectorConfiguration ###
+### Update SpanCollectorConfiguration ###
 
-Update SpanCollectorConfiguration class to instantiate ZipkinSpanCollector instead
+Update com.github.kristofa.brave.resteasyexample.SpanCollectorConfiguration class to instantiate ZipkinSpanCollector instead
 of the LoggingSpanCollector configured by default.
 
 
