@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
-import com.github.kristofa.brave.Brave;
+import com.github.kristofa.brave.LoggingSpanCollectorImpl;
 import com.github.kristofa.brave.SpanCollector;
 
 /**
@@ -20,6 +20,6 @@ public class SpanCollectorConfiguration {
     public SpanCollector spanCollector() {
 
         // For development purposes we use the logging span collector.
-        return Brave.getLoggingSpanCollector();
+        return new LoggingSpanCollectorImpl();
     }
 }
