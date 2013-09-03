@@ -75,14 +75,11 @@ It is configured to use src/main/webapp/WEB-INF/web.xml so that is how Spring / 
 
 ## Running it yourself ##
 
-You should install the Brave 2.0-SNAPSHOT components first, so you should do:
+The project depends on Brave 2.0 which is available through Maven Central so you
+could simply do: 
+        
     
-    # Check out and locally install brave dependencies.
-    git clone https://github.com/kristofa/brave.git
-    cd brave
-    mvn install
-    
-    # Check out and build brave-resteasy-example which will rely on the previously installed brave dependencies.    
+    # Check out and build brave-resteasy-example which relies on brave 2.0 dependencies.    
     git clone https://github.com/kristofa/brave-resteasy-example.git
     # In brave-resteasy-example directory execute:
     mvn verify # This executes unit and integration tests and will execute ITRestEasyExample.
