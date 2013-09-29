@@ -75,11 +75,11 @@ It is configured to use src/main/webapp/WEB-INF/web.xml so that is how Spring / 
 
 ## Running it yourself ##
 
-The project depends on Brave 2.0 which is available through Maven Central so you
+The project depends on Brave 2.0.1 which is available through Maven Central so you
 could simply do: 
         
     
-    # Check out and build brave-resteasy-example which relies on brave 2.0 dependencies.    
+    # Check out and build brave-resteasy-example which relies on brave 2.0.1 dependencies.    
     git clone https://github.com/kristofa/brave-resteasy-example.git
     # In brave-resteasy-example directory execute:
     mvn verify # This executes unit and integration tests and will execute ITRestEasyExample.
@@ -97,7 +97,7 @@ However with few adaptations you can change this test to make it submit spans to
     <dependency>
         <groupId>com.github.kristofa</groupId>
         <artifactId>brave-zipkin-spancollector</artifactId>
-        <version>2.0</version>
+        <version>2.0.1</version>
     </dependency>
 
 First you have to add the brave-zipkin-spancollector dependency to your pom.xml
