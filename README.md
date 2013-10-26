@@ -75,7 +75,7 @@ It is configured to use src/main/webapp/WEB-INF/web.xml so that is how Spring / 
 
 ## Running it yourself ##
 
-The project depends on Brave 2.0.1 which is available through Maven Central so you
+The project depends on Brave 2.0.2 which is available through Maven Central so you
 could simply do: 
         
     
@@ -97,7 +97,7 @@ However with few adaptations you can change this test to make it submit spans to
     <dependency>
         <groupId>com.github.kristofa</groupId>
         <artifactId>brave-zipkin-spancollector</artifactId>
-        <version>2.0.1</version>
+        <version>${brave.version}</version>
     </dependency>
 
 First you have to add the brave-zipkin-spancollector dependency to your pom.xml
@@ -115,20 +115,11 @@ of the LoggingSpanCollector configured by default.
         @Scope(value = "singleton")
         public SpanCollector spanCollector() {
 
-            return new ZipkinSpanCollector("10.0.1.8", 9410);            
+            return new ZipkinSpanCollector("localhost", 9410);            
         }
     }
 
 Before you run the test you should make sure the Zipkin collector is running at port
-9410, and in my case my ip address was 10.0.1.8. If you execute the test now you should 
+9410, and in the example case on localhost. If you execute the test now you should 
 see the spans in zipkin-web if services are running and properly configured.
-
-Note: I don't use localhost as host because that does not seem to work on my machine.
-The 10.0.1.8 is my ip address and also the adress the zipkin collector logs when started:
-
-    INF [20130831-11:51:43.629] builder: Starting collector service on addr Kristofs-MacBook-Pro.local/10.0.1.8:9410
-    700 [20130831-11:51:43.742] net: context created: /config/sampleRate
-    DEB [20130831-11:51:43.802] cassie: Received: %s
-    
-
     
