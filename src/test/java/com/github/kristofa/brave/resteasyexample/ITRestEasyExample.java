@@ -4,30 +4,28 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.bio.SocketConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.ProxyFactory;
+import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.github.kristofa.brave.Brave;
-import com.github.kristofa.brave.BraveHttpHeaders;
-import com.github.kristofa.brave.ClientTracer;
-import com.github.kristofa.brave.ClientTracerConfig;
 import com.github.kristofa.brave.EndPointSubmitter;
-import com.github.kristofa.brave.SpanId;
+import com.github.kristofa.brave.resteasy.BraveClientExecutionInterceptor;
 import com.github.kristofa.brave.resteasy.BravePostProcessInterceptor;
 import com.github.kristofa.brave.resteasy.BravePreProcessInterceptor;
 
 /**
- * Integration test that shows the usage of {@link BravePreProcessInterceptor} and {@link BravePostProcessInterceptor}.
+ * Integration test that shows the usage of {@link BraveClientExecutionInterceptor} at client side and
+ * {@link BravePreProcessInterceptor} / {@link BravePostProcessInterceptor} at server side.
  * <p\>
  * We set up a service at context path RestEasyTest with 2 resources:
  * <ul>
@@ -35,9 +33,10 @@ import com.github.kristofa.brave.resteasy.BravePreProcessInterceptor;
  * <li>RestEasyTest/brave-resteasy-example/b</li>
  * </ul>
  * The first resource will call the 2nd resource (a -> b). <br\>
- * In our test we set up
+ * </p>
+ * Brave is set up at client and server side.
  * 
- * @author adriaens
+ * @author kristof
  */
 public class ITRestEasyExample {
 
@@ -74,43 +73,27 @@ public class ITRestEasyExample {
     }
 
     @Test
-    public void test() throws ClientProtocolException, IOException {
+    public void test() throws ClientProtocolException, IOException, InterruptedException {
         // We need to set up our endpoint first because we start a client request from
         // in our test so the brave preprocessor did not set up end point yet.
         final EndPointSubmitter endPointSubmitter = Brave.getEndPointSubmitter();
         endPointSubmitter.submit("127.0.0.1", 8080, "RestEasyTest");
 
-        // Our Jetty server will have its own ApplicationContext but we want to have same SpanCollector / TraceFilters, so we
-        // set up
-        // separate ApplicationContext using same Config classes for test.
-        final AnnotationConfigApplicationContext ctx =
-            new AnnotationConfigApplicationContext(SpanCollectorConfiguration.class, TraceFiltersConfiguration.class,
-                ClientTracerConfig.class);
+        // this initialization only needs to be done once per VM
+        RegisterBuiltin.register(ResteasyProviderFactory.getInstance());
+
+        // Create our client. The client will be configured using BraveClientExecutionInterceptor because
+        // we Spring will scan com.github.kristofa.brave package. This is the package containing our client interceptor
+        // in module brave-resteasy-spring-module which is on our class path.
+        final RestEasyExampleResource client =
+            ProxyFactory.create(RestEasyExampleResource.class, "http://localhost:8080/RestEasyTest");
+
+        @SuppressWarnings("unchecked")
+        final ClientResponse<Void> response = (ClientResponse<Void>)client.a();
         try {
-            // Start new trace/span using ClientTracer.
-            final ClientTracer clientTracer = ctx.getBean(ClientTracer.class);
-
-            final SpanId newSpan = clientTracer.startNewSpan("brave-resteasy-example/a");
-
-            // Create http request and set trace/span headers.
-            final HttpGet httpGet = new HttpGet("http://localhost:8080/RestEasyTest/brave-resteasy-example/a");
-            httpGet.addHeader(BraveHttpHeaders.TraceId.getName(), String.valueOf(newSpan.getTraceId()));
-            httpGet.addHeader(BraveHttpHeaders.SpanId.getName(), String.valueOf(newSpan.getSpanId()));
-            httpGet.addHeader(BraveHttpHeaders.Sampled.getName(), "true");
-
-            final DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
-            try {
-                clientTracer.setClientSent();
-                final HttpResponse response = defaultHttpClient.execute(httpGet);
-                final int returnCode = response.getStatusLine().getStatusCode();
-                clientTracer.submitBinaryAnnotation("http.responsecode", returnCode);
-                clientTracer.setClientReceived();
-                assertEquals(200, returnCode);
-            } finally {
-                defaultHttpClient.getConnectionManager().closeExpiredConnections();
-            }
+            assertEquals(200, response.getStatus());
         } finally {
-            ctx.close();
+            response.releaseConnection();
         }
     }
 
