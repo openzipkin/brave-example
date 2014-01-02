@@ -15,7 +15,7 @@
     <spring.version>3.2.2.RELEASE</spring.version>
     <resteasy.version>2.3.5.Final</resteasy.version>
     <jetty.version>8.1.9.v20130131</jetty.version>
-    <brave.version>2.1.0</brave.version>
+    <brave.version>2.1.1</brave.version>
   </properties>
   
   <dependencies>
