@@ -123,3 +123,73 @@ Before you run the test you should make sure the Zipkin collector is running at 
 9410, and in the example case on localhost. If you execute the test now you should 
 see the spans in zipkin-web if services are running and properly configured.
     
+## Integration with BraveTracer
+BraveTracer can be seamlessly integrated with RestEasy. Basically brave-resteasy-spring takes care of starting and stop server tracing, as well as propogating and reconstructing server tracing information, and the actual application is response to use client trace to actual trace its own progress. Here is the sample code,
+
+@Override
+	@Path("/a")
+	@GET
+	public Response a() throws InterruptedException, ClientProtocolException,
+			IOException {
+		braveTracer.startClientTracer("Sleep for random time");
+		final Random random = new Random();
+		Thread.sleep(random.nextInt(1000));
+		braveTracer.stopClientTracer();
+		
+		braveTracer.startClientTracer("Calling remote REST service");
+		
+		final RestEasyExampleResource client = ProxyFactory.create(
+				RestEasyExampleResource.class,
+				"http://localhost:8080/RestEasyTest");
+		@SuppressWarnings("unchecked")
+		final ClientResponse<Void> response = (ClientResponse<Void>) client.b();
+		try {
+			braveTracer.stopClientTracer();
+			return Response.status(response.getStatus()).build();
+		} finally {
+			response.releaseConnection();
+		}
+	}
+
+	@Override
+	@Path("/b")
+	@GET
+	public Response b() throws InterruptedException {
+
+		//final Random random = new Random();
+		//Thread.sleep(random.nextInt(1000));
+		clientCall();
+		return Response.ok().build();
+	}
+
+	private void clientCall() {
+		try {
+			braveTracer.startClientTracer("FirstLevelClient");
+			braveTracer.submitAnnotation("Marker 1", "begin sleep marker");
+			braveTracer.submitBinaryAnnotation(
+					"Some Interesting Contaxt Value", "session id is 123");
+			Thread.sleep(250);
+			braveTracer.submitAnnotation("Marker 2", "end sleep marker");
+			Thread.sleep(250);
+			secondLevelClientCall();
+			braveTracer.stopClientTracer();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void secondLevelClientCall() throws Exception {
+		braveTracer.startClientTracer("SecondLevelClient");
+		Thread.sleep(250);
+		thirdLevelClient();
+		braveTracer.stopClientTracer();
+	}
+
+	private void thirdLevelClient() throws Exception {
+		braveTracer.startClientTracer("ThirdLevelClient()");
+		Thread.sleep(250);
+		braveTracer.stopClientTracer();
+	}
+
+
+And a sample [snapshot](./brave-trace-rest.png?raw=true) from zipkin
