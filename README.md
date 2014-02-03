@@ -126,7 +126,7 @@ see the spans in zipkin-web if services are running and properly configured.
 ## Integration with BraveTracer
 BraveTracer can be seamlessly integrated with RestEasy. Basically brave-resteasy-spring takes care of starting and stop server tracing, as well as propogating and reconstructing server tracing information, and the actual application is response to use client trace to actual trace its own progress. Here is the sample code,
 
-@Override
+	@Override
 	@Path("/a")
 	@GET
 	public Response a() throws InterruptedException, ClientProtocolException,
