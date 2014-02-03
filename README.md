@@ -192,4 +192,7 @@ BraveTracer can be seamlessly integrated with RestEasy. Basically brave-resteasy
 	}
 
 
-And a sample [snapshot](./brave-trace-rest.png?raw=true) from zipkin
+And a sample snapshot from zipkin,
+![Snapshot from Zipkin](./brave-tracer-rest.png?raw=true)
+
+On the left side, the red highlighted block shows calls within the first REST call, while the orange block shows calls within the second REST call. The right side of orange block highlights the client tracing within the second REST call. In combining brave REST support with brave tracer, one can trace any level within the service itself, as well as tracing any level across service calls, provided that the services themselves as well as frameworking calls those services support brave.
