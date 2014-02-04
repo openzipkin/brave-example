@@ -23,5 +23,9 @@ public interface RestEasyExampleResource {
     @Path("/b")
     @GET
     public Response b() throws InterruptedException;
+    
+    @Path("/jersey")
+    @GET
+    public Response jersey() throws Exception;
 
 }

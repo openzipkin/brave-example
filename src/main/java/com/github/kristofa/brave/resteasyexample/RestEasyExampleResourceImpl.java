@@ -5,6 +5,7 @@ import java.util.Random;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.client.ClientProtocolException;
@@ -14,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.github.kristofa.brave.BraveTracer;
+import com.github.kristofa.brave.jersey.JerseyClientTraceFilter;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * Example resource.
@@ -61,7 +65,21 @@ public class RestEasyExampleResourceImpl implements RestEasyExampleResource {
 	}
 
 	@Override
+	@Path("/jersey")
+	@GET
+	public Response jersey() throws Exception {
+		Client client = Client.create();
+		client.addFilter(new JerseyClientTraceFilter(braveTracer.clientTracer())); 
+		WebResource webResource = client
+		   .resource("http://localhost:8080/RestEasyTest/brave-resteasy-example/b");
+ 
+		String response = webResource.accept(MediaType.APPLICATION_JSON).get(String.class);
+
+		return Response.ok().build();
+	}
+	@Override
 	@Path("/b")
+	//@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	public Response b() throws InterruptedException {
 

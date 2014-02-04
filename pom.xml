@@ -40,10 +40,20 @@
         <artifactId>brave-resteasy-spring</artifactId>
         <version>${brave.version}</version>
     </dependency>
+        <dependency>
+        <groupId>com.github.kristofa</groupId>
+        <artifactId>brave-jersey</artifactId>
+        <version>${brave.version}</version>
+    </dependency>
     <dependency>
         <groupId>com.github.kristofa</groupId>
         <artifactId>brave-zipkin-spancollector</artifactId>
         <version>${brave.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-client</artifactId>
+        <version>1.8</version>
     </dependency>
     <dependency>
     	<groupId>org.jboss.resteasy</groupId>
