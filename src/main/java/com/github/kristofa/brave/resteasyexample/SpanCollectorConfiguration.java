@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Scope;
 
 import com.github.kristofa.brave.LoggingSpanCollectorImpl;
 import com.github.kristofa.brave.SpanCollector;
+import com.github.kristofa.brave.zipkin.ZipkinSpanCollector;
 
 /**
  * {@link SpanCollector} spring dependency injection configuration.
