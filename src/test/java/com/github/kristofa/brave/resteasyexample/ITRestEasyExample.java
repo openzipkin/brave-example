@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import com.github.kristofa.brave.EndpointSubmitter;
 import org.apache.http.client.ClientProtocolException;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -18,7 +17,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.resteasy.BraveClientExecutionInterceptor;
 import com.github.kristofa.brave.resteasy.BravePostProcessInterceptor;
 import com.github.kristofa.brave.resteasy.BravePreProcessInterceptor;
@@ -74,10 +72,6 @@ public class ITRestEasyExample {
 
     @Test
     public void test() throws ClientProtocolException, IOException, InterruptedException {
-        // We need to set up our endpoint first because we start a client request from
-        // in our test so the brave preprocessor did not set up end point yet.
-        final EndpointSubmitter endPointSubmitter = Brave.getEndpointSubmitter();
-        endPointSubmitter.submit("127.0.0.1", 8080, "RestEasyTest");
 
         // this initialization only needs to be done once per VM
         RegisterBuiltin.register(ResteasyProviderFactory.getInstance());

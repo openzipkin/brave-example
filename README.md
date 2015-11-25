@@ -104,22 +104,7 @@ First you have to add the brave-zipkin-spancollector dependency to your pom.xml
 
 ### Update SpanCollectorConfiguration ###
 
-Update com.github.kristofa.brave.resteasyexample.SpanCollectorConfiguration class to instantiate ZipkinSpanCollector instead
-of the LoggingSpanCollector configured by default.
+Update `com.github.kristofa.brave.resteasyexample.BraveConfig` class to instantiate `ScribeSpanCollector`
+ instead of the `LoggingSpanCollector` configured by default.
 
-
-    @Configuration
-    public class SpanCollectorConfiguration {
-
-        @Bean
-        @Scope(value = "singleton")
-        public SpanCollector spanCollector() {
-
-            return new ZipkinSpanCollector("localhost", 9410);            
-        }
-    }
-
-Before you run the test you should make sure the Zipkin collector is running at port
-9410, and in the example case on localhost. If you execute the test now you should 
-see the spans in zipkin-web if services are running and properly configured.
     
