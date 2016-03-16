@@ -15,7 +15,7 @@
     <spring.version>3.2.2.RELEASE</spring.version>
     <resteasy.version>2.3.5.Final</resteasy.version>
     <jetty.version>8.1.9.v20130131</jetty.version>
-    <brave.version>3.1.0</brave.version>
+    <brave.version>3.5.0</brave.version>
   </properties>
   
   <dependencies>
@@ -44,7 +44,7 @@
     -->
     <dependency>
         <groupId>com.github.kristofa</groupId>
-        <artifactId>brave-spancollector-scribe</artifactId>
+        <artifactId>brave-spancollector-http</artifactId>
         <version>${brave.version}</version>
     </dependency>
     <dependency>
@@ -86,7 +86,7 @@
 	    <groupId>org.springframework</groupId>
 	    <artifactId>spring-webmvc</artifactId>
 	    <version>${spring.version}</version>
-    </dependency>  
+    </dependency>
     <dependency>
        <groupId>org.eclipse.jetty</groupId>
        <artifactId>jetty-server</artifactId>
@@ -115,7 +115,7 @@
         <version>1.7.5</version>
     </dependency>
   </dependencies>
-  <build>	
+  <build>
   	 <plugins>
             <plugin>
                 <inherited>true</inherited>
@@ -200,7 +200,7 @@
 					       <includes>
 						      <include>**/index.html</include>
 					       </includes>
-				        </resource>					
+				        </resource>
 				        <resource>
 					       <directory>${basedir}/src/main/webapp/WEB-INF</directory>
 					       <filtering>true</filtering>
@@ -209,10 +209,10 @@
 						      <include>**/web.xml</include>
 					       </includes>
 				        </resource>
-			         </webResources>		
-			         <packagingExcludes>WEB-INF/lib/servlet-api-*.jar</packagingExcludes>		  				
+			         </webResources>
+			         <packagingExcludes>WEB-INF/lib/servlet-api-*.jar</packagingExcludes>
 		          </configuration>
-	       </plugin>	
-	</plugins>                
+	       </plugin>
+	</plugins>
   </build>
 </project>
