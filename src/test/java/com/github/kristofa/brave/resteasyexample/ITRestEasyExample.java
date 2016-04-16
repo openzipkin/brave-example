@@ -66,6 +66,8 @@ public class ITRestEasyExample {
 
     @After
     public void tearDown() throws Exception {
+        // Wait for Brave's collector queue to flush
+        Thread.sleep(1000);
         server.stop();
         server.join();
     }
