@@ -17,8 +17,8 @@ public class BraveConfig {
     @Scope(value = "singleton")
     public Brave brave() {
        Brave.Builder builder = new Brave.Builder("brave-resteasy-example");
-       builder.spanCollector(KafkaSpanCollector.create("127.0.0.1:9092", new EmptySpanCollectorMetricsHandler()));
-       //builder.spanCollector(HttpSpanCollector.create("http://127.0.0.1:9411/", new EmptySpanCollectorMetricsHandler()));
+       //builder.spanCollector(KafkaSpanCollector.create("127.0.0.1:9092", new EmptySpanCollectorMetricsHandler()));
+       builder.spanCollector(HttpSpanCollector.create("http://127.0.0.1:9411/", new EmptySpanCollectorMetricsHandler()));
        return builder.build();
     }
 
