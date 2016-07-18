@@ -28,3 +28,4 @@ public class BraveConfig {
         return new DefaultSpanNameProvider();
     }
 }
+
