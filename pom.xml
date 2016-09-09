@@ -5,7 +5,7 @@
   <groupId>io.zipkin.brave</groupId>
   <artifactId>brave-resteasy-example</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
 
   <name>brave-resteasy-example</name>
   <url>https://github.com/openzipkin/brave-resteasy-example</url>
@@ -145,31 +145,6 @@
 				         </goals>
 			         </execution>
 		        </executions>
-	       </plugin>
-	       <plugin>
-	    	    <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-war-plugin</artifactId>
-		        <version>3.0.0</version>
-		        <configuration>
-			         <webResources>
-				        <resource>
-					       <directory>${basedir}/src/main/webapp</directory>
-					       <filtering>true</filtering>
-					       <includes>
-						      <include>**/index.html</include>
-					       </includes>
-				        </resource>
-				        <resource>
-					       <directory>${basedir}/src/main/webapp/WEB-INF</directory>
-					       <filtering>true</filtering>
-					       <targetPath>WEB-INF</targetPath>
-					       <includes>
-						      <include>**/web.xml</include>
-					       </includes>
-				        </resource>
-			         </webResources>
-			         <packagingExcludes>WEB-INF/lib/servlet-api-*.jar</packagingExcludes>
-		          </configuration>
 	       </plugin>
 	</plugins>
   </build>
