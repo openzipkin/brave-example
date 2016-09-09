@@ -76,35 +76,13 @@ It is configured to use src/main/webapp/WEB-INF/web.xml so that is how Spring / 
 
 ## Running it yourself ##
 
-The project depends on Brave 3.5.0 which is available through Maven Central so you
-should do: 
-    
-    # Check out and build brave-resteasy-example which relies on brave 3.5.0 dependencies.
-    git clone https://github.com/kristofa/brave-resteasy-example.git
-    # In brave-resteasy-example directory execute:
-    mvn verify # This executes unit and integration tests and will execute ITRestEasyExample.
+First, run [Zipkin](http://zipkin.io/), which stores and queries traces reported by the above services.
 
-## Adapt test to submit spans to zipkin collector ##
+```bash
+wget -O zipkin.jar 'https://search.maven.org/remote_content?g=io.zipkin.java&a=zipkin-server&v=LATEST&c=exec'
+java -jar zipkin.jar
+```
 
-By default we use a SpanCollector implementation that simply logs the received spans through log4j.
-We don't want to use the ZipkinSpanCollector by default because we can't assume that everybody who
-checks out the code and runs the test has the Zipkin Collector service running at a fixed port.
+Next, from this directory, run `mvn verify`, which will run the test scenario (ITRestEasyExample)
 
-However with few adaptations you can change this test to make it submit spans to Zipkin Collector.
-
-### Add brave-zipkin-spancollector dependency to pom.xml ###
-
-    <dependency>
-        <groupId>com.github.kristofa</groupId>
-        <artifactId>brave-zipkin-spancollector</artifactId>
-        <version>${brave.version}</version>
-    </dependency>
-
-First you have to add the brave-zipkin-spancollector dependency to your pom.xml
-
-### Update SpanCollectorConfiguration ###
-
-Update `com.github.kristofa.brave.resteasyexample.BraveConfig` class to instantiate `ScribeSpanCollector`
- instead of the `LoggingSpanCollector` configured by default.
-
-    
+Finally, browse zipkin for the traces the test created: http://localhost:9411/
