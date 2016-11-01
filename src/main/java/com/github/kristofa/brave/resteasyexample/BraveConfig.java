@@ -17,6 +17,7 @@ public class BraveConfig {
   /** Configuration for how to send spans to Zipkin */
   @Bean public Sender sender() {
     return OkHttpSender.create("http://127.0.0.1:9411/api/v1/spans");
+    //return LibthriftSender.create("127.0.0.1");
     // return KafkaSender.create("127.0.0.1:9092");
   }
 

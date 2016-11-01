@@ -47,7 +47,7 @@ public class ITRestEasyExample {
         final SocketConnector connector = new SocketConnector();
 
         connector.setMaxIdleTime(1000 * 60 * 60);
-        connector.setPort(8080);
+        connector.setPort(8081);
         server.setConnectors(new Connector[] {connector});
 
         final WebAppContext context = new WebAppContext();
@@ -82,7 +82,7 @@ public class ITRestEasyExample {
         // we Spring will scan com.github.kristofa.brave package. This is the package containing our client interceptor
         // in module brave-resteasy-spring-module which is on our class path.
         final RestEasyExampleResource client =
-            ProxyFactory.create(RestEasyExampleResource.class, "http://localhost:8080/RestEasyTest");
+            ProxyFactory.create(RestEasyExampleResource.class, "http://localhost:8081/RestEasyTest");
 
         @SuppressWarnings("unchecked")
         final ClientResponse<Void> response = (ClientResponse<Void>)client.a();

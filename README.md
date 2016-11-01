@@ -9,25 +9,25 @@ On one hand there is the service resource which can be found in following class:
 `com.github.kristofa.brave.resteasyexample.RestEasyExampleResourceImpl`
 
 Next to that there is an integration test: `com.github.kristofa.brave.resteasyexample.ITRestEasyExample` that sets up
-an embedded Jetty server at port `8080` which deploys our service resource at context path http://localhost:8080/RestEasyTest.
+an embedded Jetty server at port `8081` which deploys our service resource at context path http://localhost:8081/RestEasyTest.
 
 The resource (RestEasyExampleResource) makes available 2 URI's
 
-*   GET http://localhost:8080/RestEasyTest/brave-resteasy-example/a
-*   GET http://localhost:8080/RestEasyTest/brave-resteasy-example/b
+*   GET http://localhost:8081/RestEasyTest/brave-resteasy-example/a
+*   GET http://localhost:8081/RestEasyTest/brave-resteasy-example/b
 
 
-The test code (ITRestEasyExample) sets up our EndPoint, does a http GET request to http://localhost:8080/RestEasyTest/brave-resteasy-example/a
+The test code (ITRestEasyExample) sets up our EndPoint, does a http GET request to http://localhost:8081/RestEasyTest/brave-resteasy-example/a
 The code that is triggered through
-this URI will make a new call to the other URI: http://localhost:8080/RestEasyTest/brave-resteasy-example/b.  
+this URI will make a new call to the other URI: http://localhost:8081/RestEasyTest/brave-resteasy-example/b
 
 For both requests our client and server side interceptors that use the Brave api are executed.  This results in 2 spans being logged.
 The test uses `LoggingSpanCollectorImpl` which simply logs the spans through slf4j:
 
-    14:57:42,730 INFO  [qtp948887574-13] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:24) - Span(trace_id:-5137944522864564053, name:/brave-resteasy-example/b, id:-6201587421931759351, parent_id:-5137944522864564053, annotations:[Annotation(timestamp:1372856262381000, value:sr, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest)), Annotation(timestamp:1372856262730000, value:ss, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest))], binary_annotations:null)
-    14:57:42,744 INFO  [qtp948887574-18] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:24) - Span(trace_id:-5137944522864564053, name:brave-resteasy-example/b, id:-6201587421931759351, parent_id:-5137944522864564053, annotations:[Annotation(timestamp:1372856262366000, value:cs, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest)), Annotation(timestamp:1372856262743000, value:cr, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest))], binary_annotations:[BinaryAnnotation(key:http.responsecode, value:32 30 30, annotation_type:STRING, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest))])
-    14:57:42,745 INFO  [qtp948887574-18] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:24) - Span(trace_id:-5137944522864564053, name:/brave-resteasy-example/a, id:-5137944522864564053, annotations:[Annotation(timestamp:1372856261792000, value:sr, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest)), Annotation(timestamp:1372856262745000, value:ss, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest))], binary_annotations:null)
-    14:57:42,746 INFO  [main] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:24) - Span(trace_id:-5137944522864564053, name:brave-resteasy-example/a, id:-5137944522864564053, annotations:[Annotation(timestamp:1372856261537000, value:cs, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest)), Annotation(timestamp:1372856262746000, value:cr, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest))], binary_annotations:[BinaryAnnotation(key:http.responsecode, value:32 30 30, annotation_type:STRING, host:Endpoint(ipv4:2130706433, port:8080, service_name:RestEasyTest))])
+    14:57:42,730 INFO  [qtp948887574-13] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:24) - Span(trace_id:-5137944522864564053, name:/brave-resteasy-example/b, id:-6201587421931759351, parent_id:-5137944522864564053, annotations:[Annotation(timestamp:1372856262381000, value:sr, host:Endpoint(ipv4:2130706433, port:8081, service_name:RestEasyTest)), Annotation(timestamp:1372856262730000, value:ss, host:Endpoint(ipv4:2130706433, port:8081, service_name:RestEasyTest))], binary_annotations:null)
+    14:57:42,744 INFO  [qtp948887574-18] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:24) - Span(trace_id:-5137944522864564053, name:brave-resteasy-example/b, id:-6201587421931759351, parent_id:-5137944522864564053, annotations:[Annotation(timestamp:1372856262366000, value:cs, host:Endpoint(ipv4:2130706433, port:8081, service_name:RestEasyTest)), Annotation(timestamp:1372856262743000, value:cr, host:Endpoint(ipv4:2130706433, port:8081, service_name:RestEasyTest))], binary_annotations:[BinaryAnnotation(key:http.responsecode, value:32 30 30, annotation_type:STRING, host:Endpoint(ipv4:2130706433, port:8081, service_name:RestEasyTest))])
+    14:57:42,745 INFO  [qtp948887574-18] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:24) - Span(trace_id:-5137944522864564053, name:/brave-resteasy-example/a, id:-5137944522864564053, annotations:[Annotation(timestamp:1372856261792000, value:sr, host:Endpoint(ipv4:2130706433, port:8081, service_name:RestEasyTest)), Annotation(timestamp:1372856262745000, value:ss, host:Endpoint(ipv4:2130706433, port:8081, service_name:RestEasyTest))], binary_annotations:null)
+    14:57:42,746 INFO  [main] brave.LoggingSpanCollectorImpl (LoggingSpanCollectorImpl.java:24) - Span(trace_id:-5137944522864564053, name:brave-resteasy-example/a, id:-5137944522864564053, annotations:[Annotation(timestamp:1372856261537000, value:cs, host:Endpoint(ipv4:2130706433, port:8081, service_name:RestEasyTest)), Annotation(timestamp:1372856262746000, value:cr, host:Endpoint(ipv4:2130706433, port:8081, service_name:RestEasyTest))], binary_annotations:[BinaryAnnotation(key:http.responsecode, value:32 30 30, annotation_type:STRING, host:Endpoint(ipv4:2130706433, port:8081, service_name:RestEasyTest))])
 
 The spans are logged in reverse order:
 

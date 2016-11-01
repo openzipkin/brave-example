@@ -38,7 +38,7 @@ public class RestEasyExampleResourceImpl implements RestEasyExampleResource {
         Thread.sleep(random.nextInt(1000));
 
         final RestEasyExampleResource client =
-            ProxyFactory.create(RestEasyExampleResource.class, "http://localhost:8080/RestEasyTest");
+            ProxyFactory.create(RestEasyExampleResource.class, "http://localhost:8081/RestEasyTest");
         @SuppressWarnings("unchecked")
         final ClientResponse<Void> response = (ClientResponse<Void>)client.b();
         try {
