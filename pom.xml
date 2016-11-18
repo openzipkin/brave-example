@@ -15,8 +15,8 @@
     <spring.version>4.3.3.RELEASE</spring.version>
     <resteasy.version>2.3.5.Final</resteasy.version>
     <jetty.version>8.1.20.v20160902</jetty.version>
-    <brave.version>3.15.0</brave.version>
-    <zipkin-reporter.version>0.6.4</zipkin-reporter.version>
+    <brave.version>3.15.3</brave.version>
+    <zipkin-reporter.version>0.6.9</zipkin-reporter.version>
   </properties>
   
   <dependencies>
