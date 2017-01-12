@@ -42,7 +42,7 @@ public class WebTracingConfiguration extends WebMvcConfigurerAdapter {
   @Bean Reporter<Span> reporter() {
     return new LoggingReporter();
     // uncomment to actually send to zipkin!
-    //return AsyncReporter.builder(sender()).build();
+    //return zipkin.reporter.AsyncReporter.builder(sender()).build();
   }
 
   @Bean Brave brave() {
