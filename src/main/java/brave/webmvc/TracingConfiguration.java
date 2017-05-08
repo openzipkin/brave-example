@@ -1,11 +1,10 @@
 package brave.webmvc;
 
-import com.github.kristofa.brave.Brave;
-import com.github.kristofa.brave.LoggingReporter;
-import com.github.kristofa.brave.http.DefaultSpanNameProvider;
-import com.github.kristofa.brave.http.SpanNameProvider;
-import com.github.kristofa.brave.spring.BraveClientHttpRequestInterceptor;
-import com.github.kristofa.brave.spring.ServletHandlerInterceptor;
+import brave.Tracing;
+import brave.context.log4j2.ThreadContextCurrentTraceContext;
+import brave.http.HttpTracing;
+import brave.spring.web.TracingClientHttpRequestInterceptor;
+import brave.spring.webmvc.TracingHandlerInterceptor;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -18,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import zipkin.Span;
+import zipkin.reporter.AsyncReporter;
 import zipkin.reporter.Reporter;
 import zipkin.reporter.Sender;
 import zipkin.reporter.okhttp3.OkHttpSender;
@@ -28,51 +28,50 @@ import zipkin.reporter.okhttp3.OkHttpSender;
  */
 @Configuration
 // import as the interceptors are annotation with javax.inject and not automatically wired
-@Import({BraveClientHttpRequestInterceptor.class, ServletHandlerInterceptor.class})
-public class WebTracingConfiguration extends WebMvcConfigurerAdapter {
+@Import({TracingClientHttpRequestInterceptor.class, TracingHandlerInterceptor.class})
+public class TracingConfiguration extends WebMvcConfigurerAdapter {
 
   /** Configuration for how to send spans to Zipkin */
   @Bean Sender sender() {
     return OkHttpSender.create("http://127.0.0.1:9411/api/v1/spans");
-    //return LibthriftSender.create("127.0.0.1");
-    // return KafkaSender.create("127.0.0.1:9092");
   }
 
   /** Configuration for how to buffer spans into messages for Zipkin */
   @Bean Reporter<Span> reporter() {
-    return new LoggingReporter();
-    // uncomment to actually send to zipkin!
-    //return AsyncReporter.builder(sender()).build();
+    return AsyncReporter.builder(sender()).build();
   }
 
-  @Bean Brave brave() {
-    return new Brave.Builder("brave-webmvc-example").reporter(reporter()).build();
+  /** Controls aspects of tracing such as the name that shows up in the UI */
+  @Bean Tracing tracing() {
+    return Tracing.newBuilder()
+        .localServiceName("brave-webmvc-example")
+        .currentTraceContext(ThreadContextCurrentTraceContext.create()) // puts trace IDs into logs
+        .reporter(reporter()).build();
   }
 
-  // decide how to name spans. By default they are named the same as the http method.
-  @Bean SpanNameProvider spanNameProvider() {
-    return new DefaultSpanNameProvider();
+  // decides how to name and tag spans. By default they are named the same as the http method.
+  @Bean HttpTracing httpTracing() {
+    return HttpTracing.create(tracing());
   }
 
   @Autowired
-  private ServletHandlerInterceptor serverInterceptor;
+  private TracingHandlerInterceptor serverInterceptor;
 
   @Autowired
-  private BraveClientHttpRequestInterceptor clientInterceptor;
+  private TracingClientHttpRequestInterceptor clientInterceptor;
 
   @Autowired
   private RestTemplate restTemplate;
 
-  // adds tracing to the application-defined rest template
-  @PostConstruct
-  public void init() {
+  /** adds tracing to the {@linkplain ExampleController application-defined} rest template */
+  @PostConstruct public void init() {
     List<ClientHttpRequestInterceptor> interceptors =
-        new ArrayList<ClientHttpRequestInterceptor>(restTemplate.getInterceptors());
+        new ArrayList<>(restTemplate.getInterceptors());
     interceptors.add(clientInterceptor);
     restTemplate.setInterceptors(interceptors);
   }
 
-  // adds tracing to the application-defined web controllers
+  /** adds tracing to the {@linkplain ExampleController application-defined} web controller */
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(serverInterceptor);
