@@ -3,16 +3,21 @@ package brave.webmvc;
 import brave.Tracing;
 import brave.context.log4j2.ThreadContextCurrentTraceContext;
 import brave.http.HttpTracing;
+import brave.httpclient.TracingHttpClientBuilder;
+import brave.servlet.TracingFilter;
 import brave.spring.web.TracingClientHttpRequestInterceptor;
 import brave.spring.webmvc.TracingHandlerInterceptor;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.servlet.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -54,11 +59,24 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
     return HttpTracing.create(tracing());
   }
 
+  @Bean ClientHttpRequestFactory tracingFactory(HttpTracing httpTracing) {
+    return new HttpComponentsClientHttpRequestFactory(
+        TracingHttpClientBuilder.create(httpTracing).build()
+    );
+  }
+
+  @Bean Filter tracingFilter(HttpTracing httpTracing) {
+    return TracingFilter.create(httpTracing);
+  }
+
   @Autowired
   private TracingHandlerInterceptor serverInterceptor;
 
   @Autowired
   private TracingClientHttpRequestInterceptor clientInterceptor;
+
+  @Autowired
+  private ClientHttpRequestFactory tracingFactory;
 
   @Autowired
   private RestTemplate restTemplate;
@@ -69,6 +87,7 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
         new ArrayList<>(restTemplate.getInterceptors());
     interceptors.add(clientInterceptor);
     restTemplate.setInterceptors(interceptors);
+    restTemplate.setRequestFactory(tracingFactory);
   }
 
   /** adds tracing to the {@linkplain ExampleController application-defined} web controller */
