@@ -20,7 +20,7 @@ The test code (ITWebMvcExample) sets up our endpoint, does a http GET request to
 The code that is triggered through this URI will make a new call to the other URI: http://localhost:8081/b
 
 For both requests our client and server side interceptors that use the Brave api are executed.  This results in 2 spans being reported.
-The test uses log4j2 integration which associates span IDs in log output:
+The test uses log integration which associates span IDs in log output:
 
 ```
 16:34:39,858 [79270535a7e54a1f/79270535a7e54a1f] INFO  [qtp112302969-17] webmvc.ExampleController - in /a
@@ -41,32 +41,16 @@ wget -O zipkin.jar 'https://search.maven.org/remote_content?g=io.zipkin.java&a=z
 java -jar zipkin.jar
 ```
 
-Next, from this directory, run `mvn verify`, which will run the test scenario (ITWebMvcExample)
+Next, from one of the implementation directories, run `mvn verify`, which will run the test scenario (ITWebMvcExample)
+
+* [Servlet 2.5](./servlet25)
+* [Servlet 3](./servlet3)
 
 Finally, browse zipkin for the traces the test created: http://localhost:9411/
 
-## How is it all hooked together?
-
-### ExampleInitializer
-
-Instead of a web.xml file, this uses a Servlet 3.0
-`ServletContainerInitializer` to setup the app and tracing of it.
-
-`ExampleInitializer` is indirectly invoked by `SpringServletContainerInitializer`,
-which is in the classpath. This sets up the following:
-
-*   brave.webmvc.ExampleController : This sets up the web controller and rest template and has no tracing configuration
-*   brave.webmvc.WebTracingConfiguration : This adds tracing by configuring the tracer, server and client tracing interceptors.
-
-### Undertow
-
-Undertow is embedded and started in the setup method of our test (ITWebMvcExample) and stopped in the tearDown method.
-
-Undertow is configured to look for `ExampleInitializer` specifically eventhough Servlet 3+ containers find it automatically.
-
 ## Deploying to Tomcat
 
-From this directory, run `mvn package`, which creates a war file.
+From one of the implementation directories, run `mvn package`, which creates a war file.
 
 Next, make it the root war in tomcat. Ex. `cp target/*war $CATALINA_HOME/webapps/ROOT.war`
 
