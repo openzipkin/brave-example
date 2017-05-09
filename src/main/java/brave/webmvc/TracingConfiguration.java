@@ -27,7 +27,7 @@ import zipkin.reporter.okhttp3.OkHttpSender;
  * be configured last.
  */
 @Configuration
-// import as the interceptors are annotation with javax.inject and not automatically wired
+// Importing these classes is effectively the same as declaring bean methods
 @Import({TracingClientHttpRequestInterceptor.class, TracingHandlerInterceptor.class})
 public class TracingConfiguration extends WebMvcConfigurerAdapter {
 
