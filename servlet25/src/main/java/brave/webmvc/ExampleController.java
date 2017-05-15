@@ -2,8 +2,7 @@ package brave.webmvc;
 
 import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 // notice there is no tracing code in this class
 @Controller
 public class ExampleController {
-  Logger logger = LoggerFactory.getLogger(ExampleController.class.getName());
+  Logger logger = Logger.getLogger(ExampleController.class.getName());
 
   @Autowired RestTemplate template;
 

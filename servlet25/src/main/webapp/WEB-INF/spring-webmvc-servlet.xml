@@ -25,7 +25,7 @@
       </bean>
     </property>
     <property name="currentTraceContext">
-      <bean class="brave.context.slf4j.MDCCurrentTraceContext" factory-method="create"/>
+      <bean class="brave.context.log4j12.MDCCurrentTraceContext" factory-method="create"/>
     </property>
   </bean>
 

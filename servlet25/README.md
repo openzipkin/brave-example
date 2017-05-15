@@ -6,7 +6,7 @@
 in web.xml. This setups the app and tracing of it.
 
 *   brave.webmvc.ExampleController : This sets up the web controller and rest template and has no tracing configuration
-*   brave.webmvc.TracingFactoryBean : This helps configure tracing, notably SLF4J integration
+*   brave.webmvc.TracingFactoryBean : This helps configure tracing, notably Log4J 1.2 integration
 
 ### Jetty
 
