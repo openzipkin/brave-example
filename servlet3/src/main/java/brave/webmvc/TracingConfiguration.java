@@ -16,9 +16,7 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import zipkin.Span;
 import zipkin.reporter.AsyncReporter;
-import zipkin.reporter.Reporter;
 import zipkin.reporter.Sender;
 import zipkin.reporter.okhttp3.OkHttpSender;
 
@@ -33,12 +31,12 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
 
   /** Configuration for how to send spans to Zipkin */
   @Bean Sender sender() {
-    return OkHttpSender.create("http://127.0.0.1:9411/api/v1/spans");
+    return OkHttpSender.json("http://127.0.0.1:9411/api/v2/spans");
   }
 
   /** Configuration for how to buffer spans into messages for Zipkin */
-  @Bean Reporter<Span> reporter() {
-    return AsyncReporter.builder(sender()).build();
+  @Bean AsyncReporter<zipkin2.Span> spanReporter() {
+    return AsyncReporter.v2(sender());
   }
 
   /** Controls aspects of tracing such as the name that shows up in the UI */
@@ -46,7 +44,7 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
     return Tracing.newBuilder()
         .localServiceName("brave-webmvc-example")
         .currentTraceContext(ThreadContextCurrentTraceContext.create()) // puts trace IDs into logs
-        .reporter(reporter()).build();
+        .spanReporter(spanReporter()).build();
   }
 
   // decides how to name and tag spans. By default they are named the same as the http method.
