@@ -14,8 +14,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.version>3.2.18.RELEASE</spring.version>
-    <brave.version>4.7.0</brave.version>
-    <zipkin-reporter.version>1.1.0</zipkin-reporter.version>
+    <brave.version>4.8.0</brave.version>
+    <zipkin-reporter2.version>2.0.0</zipkin-reporter2.version>
   </properties>
 
   <dependencies>
@@ -31,9 +31,9 @@
     </dependency>
 
     <dependency>
-      <groupId>io.zipkin.reporter</groupId>
+      <groupId>io.zipkin.reporter2</groupId>
       <artifactId>zipkin-sender-okhttp3</artifactId>
-      <version>${zipkin-reporter.version}</version>
+      <version>${zipkin-reporter2.version}</version>
     </dependency>
 
     <dependency>
