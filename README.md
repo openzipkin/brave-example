@@ -13,7 +13,7 @@ This example was ported from https://github.com/openzipkin/sleuth-webmvc-example
 
 # Implementation Overview
 
-Web requests are served by [Spring MVC](https://spring.io/guides/gs/rest-service/)controllers,
+Web requests are served by [Spring MVC](https://spring.io/guides/gs/rest-service/) controllers,
 and tracing is automatically performed for you by [Brave](https://github.com/openzipkin/brave).
 
 This example intentionally avoids advanced topics like async and messaging,
