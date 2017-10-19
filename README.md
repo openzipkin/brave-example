@@ -1,57 +1,59 @@
-# brave-webmvc-example
+# Basic example showing distributed tracing across servlet applications
+This is an example app where two Servlet (Java) services collaborate on
+an http request. Notably, timing of these requests are recorded into
+[Zipkin](http://zipkin.io/), a distributed tracing system. This allows
+you to see the how long the whole operation took, as well how much time
+was spent in each service.
 
-Example Spring Web MVC service implementation that shows the use of the client and server side interceptors from the
-`brave-spring-web-servlet-interceptor`  and `brave-spring-resttemplate-interceptors` modules and the usage of [brave](https://github.com/kristofa/brave) in general.
+Here's an example of what it looks like:
 
-## What is it about?
+<img width="979" alt="zipkin screen shot" src="https://user-images.githubusercontent.com/64215/31760971-18a9a4dc-b4bf-11e7-9ee2-ab7418f80dc0.png">
 
-On one hand there is the service resource which can be found in following class: 
-`brave.webmvc.ExampleController`
+This example was ported from https://github.com/openzipkin/sleuth-webmvc-example
 
-Next to that there is an integration test: `brave.webmvc.ITWebMvcExample` that sets up
-an embedded Jetty server at port `8081` which deploys our service resource at context path http://localhost:8081.
+# Implementation Overview
 
-The resource (WebExampleController) makes available 2 URI's
+Web requests are served by [Spring MVC](https://spring.io/guides/gs/rest-service/)controllers,
+and tracing is automatically performed for you by [Brave](https://github.com/openzipkin/brave).
 
-*   GET http://localhost:8081/a
-*   GET http://localhost:8081/b
+This example intentionally avoids advanced topics like async and messaging,
+eventhough Brave supports that, too. Once you get familiar with things,
+you can play with more interesting [Brave instrumentation](https://github.com/openzipkin/brave/tree/master/instrumentation).
 
-The test code (ITWebMvcExample) sets up our endpoint, does a http GET request to http://localhost:8081/a
-The code that is triggered through this URI will make a new call to the other URI: http://localhost:8081/b
+# Running the example
+This example has two services: frontend and backend. They both report trace data to zipkin. To setup the demo, you need to start Frontend, Backend and Zipkin.
 
-For both requests our client and server side interceptors that use the Brave api are executed.  This results in 2 spans being reported.
-The test uses log integration which associates span IDs in log output:
+Once the services are started, open http://localhost:8081/
+* This will call the backend (http://localhost:9000/api) and show the result, which defaults to a formatted date.
 
+Next, you can view traces that went through the backend via http://localhost:9411/?serviceName=backend
+* This is a locally run zipkin service which keeps traces in memory
+
+## Starting the Services
+In a separate tab or window, start each of [brave.webmvc.Frontend](/servlet3/src/main/java/brave/webmvc/Frontend.java)
+and [brave.webmvc.Backend](/servlet3/src/main/java/brave/webmvc/Backend.java):
+```bash
+# choose servlet25 or servlet3
+$ cd servlet3
+$ mvn jetty:run -Pfrontend
+$ mvn jetty:run -Pbackend
 ```
-16:34:39,858 [79270535a7e54a1f/79270535a7e54a1f] INFO  [qtp112302969-17] webmvc.ExampleController - in /a
-16:34:40,347 [79270535a7e54a1f/a710aa8929a7f038] INFO  [qtp112302969-18] webmvc.ExampleController - in /b
-```
 
-Here's what the log says:
-
-1.  The first span is the root of the trace (notice the trace ID and span ID are the same).
-2.  The second span is a child of that (notice the same trace ID, but a different span ID).
-
-## Running the example
-
-Run [Zipkin](http://zipkin.io/), which stores and queries traces reported by the above services.
+Next, run [Zipkin](http://zipkin.io/), which stores and queries traces
+reported by the above services.
 
 ```bash
 wget -O zipkin.jar 'https://search.maven.org/remote_content?g=io.zipkin.java&a=zipkin-server&v=LATEST&c=exec'
 java -jar zipkin.jar
 ```
 
-Next, from one of the implementation directories, run `mvn verify`, which will run the test scenario (ITWebMvcExample)
-
+## Configuration tips
+To show how wiring works, we have two copies of the same project
 * [Servlet 2.5](./servlet25)
 * [Servlet 3](./servlet3)
 
-Finally, browse zipkin for the traces the test created: http://localhost:9411/
-
-## Deploying to Tomcat
-
-From one of the implementation directories, run `mvn package`, which creates a war file.
-
-Next, make it the root war in tomcat. Ex. `cp target/*war $CATALINA_HOME/webapps/ROOT.war`
-
-Ensure zipkin is running and hit the tomcat URL to the path /a. Ex. http://localhost:8080/a
+There are some interesting details that apply to both
+* If you pass the header `user-name` Brave will automatically propagate it to the backend!
+  * `curl -s localhost:8081 -H'user-name: JC'`
+* The below pattern adds trace and span identifiers into log output
+  * `%d{ABSOLUTE} [%X{traceId}/%X{spanId}] %-5p [%t] %C{2} (%F:%L) - %m%n`

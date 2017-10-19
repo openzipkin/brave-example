@@ -13,8 +13,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <brave.version>4.8.1</brave.version>
-    <zipkin-reporter2.version>2.0.2</zipkin-reporter2.version>
+    <brave.version>4.9.1</brave.version>
+    <zipkin-reporter2.version>2.1.3</zipkin-reporter2.version>
     <spring.version>4.3.8.RELEASE</spring.version>
     <log4j.version>2.8.2</log4j.version>
   </properties>
@@ -84,19 +84,6 @@
       <version>3.1.0</version>
       <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.undertow</groupId>
-      <artifactId>undertow-servlet</artifactId>
-      <version>1.4.14.Final</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -115,32 +102,69 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.20</version>
-        <executions>
-          <execution>
-            <id>integration-test</id>
-            <goals>
-              <goal>integration-test</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>verify</id>
-            <goals>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.0</version>
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
           <packagingExcludes>WEB-INF/lib/servlet-api-*.jar</packagingExcludes>
         </configuration>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-maven-plugin</artifactId>
+          <version>9.4.7.v20170914</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
+
+  <profiles>
+    <profile>
+      <id>frontend</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <configuration>
+              <httpConnector>
+                <port>8081</port>
+              </httpConnector>
+              <systemProperties>
+                <systemProperty>
+                  <name>zipkin.service</name>
+                  <value>frontend</value>
+                </systemProperty>
+              </systemProperties>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>backend</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <configuration>
+              <httpConnector>
+                <port>9000</port>
+              </httpConnector>
+              <systemProperties>
+                <systemProperty>
+                  <name>zipkin.service</name>
+                  <value>backend</value>
+                </systemProperty>
+              </systemProperties>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

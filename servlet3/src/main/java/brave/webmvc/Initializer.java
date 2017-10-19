@@ -4,7 +4,7 @@ import org.springframework.web.SpringServletContainerInitializer;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 /** Indirectly invoked by {@link SpringServletContainerInitializer} in a Servlet 3+ container */
-public class ExampleInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class Initializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
   @Override protected String[] getServletMappings() {
     return new String[] {"/"};
@@ -15,6 +15,6 @@ public class ExampleInitializer extends AbstractAnnotationConfigDispatcherServle
   }
 
   @Override protected Class<?>[] getServletConfigClasses() {
-    return new Class[] {ExampleController.class, TracingConfiguration.class};
+    return new Class[] {Frontend.class, Backend.class, TracingConfiguration.class};
   }
 }
