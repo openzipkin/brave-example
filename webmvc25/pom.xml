@@ -4,18 +4,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.zipkin.brave</groupId>
-  <artifactId>brave-webmvc-servlet25-example</artifactId>
+  <artifactId>brave-webmvc25-example</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
-  <name>brave-webmvc-servlet25-example</name>
+  <name>brave-webmvc25-example</name>
   <description>Example using Brave to trace RPCs from Spring Web MVC</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring.version>3.2.18.RELEASE</spring.version>
-    <brave.version>4.11.0</brave.version>
-    <zipkin-reporter2.version>2.1.4</zipkin-reporter2.version>
+    <spring.version>2.5.6</spring.version>
+    <brave.version>4.12.0</brave.version>
+    <zipkin-reporter2.version>2.2.0</zipkin-reporter2.version>
   </properties>
 
   <dependencies>
@@ -32,7 +32,12 @@
 
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
-      <artifactId>zipkin-sender-okhttp3</artifactId>
+      <artifactId>zipkin-reporter-spring-beans</artifactId>
+      <version>${zipkin-reporter2.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-sender-urlconnection</artifactId>
       <version>${zipkin-reporter2.version}</version>
     </dependency>
 
@@ -49,13 +54,14 @@
 
     <dependency>
       <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-instrumentation-spring-web</artifactId>
+      <artifactId>brave-instrumentation-httpclient</artifactId>
       <version>${brave.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
-      <version>${spring.version}</version>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <!-- comment here if you can't use 4.4+ https://github.com/openzipkin/brave/issues/431 -->
+      <version>4.4.1</version>
     </dependency>
 
     <dependency>
@@ -92,6 +98,26 @@
       </plugin>
 
       <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M1</version>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>[1.7,1.8)</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.2.0</version>
@@ -101,6 +127,7 @@
         </configuration>
       </plugin>
     </plugins>
+
     <pluginManagement>
       <plugins>
         <plugin>

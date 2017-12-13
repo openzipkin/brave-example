@@ -4,19 +4,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.zipkin.brave</groupId>
-  <artifactId>brave-webmvc-servlet3-example</artifactId>
+  <artifactId>brave-webmvc3-example</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
-  <name>brave-webmvc-servlet3-example</name>
+  <name>brave-webmvc3-example</name>
   <description>Example using Brave to trace RPCs from Spring Web MVC</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <brave.version>4.11.0</brave.version>
-    <zipkin-reporter2.version>2.1.4</zipkin-reporter2.version>
-    <spring.version>4.3.13.RELEASE</spring.version>
-    <log4j.version>2.10.0</log4j.version>
+    <spring.version>3.2.18.RELEASE</spring.version>
+    <brave.version>4.12.0</brave.version>
+    <zipkin-reporter2.version>2.2.0</zipkin-reporter2.version>
   </properties>
 
   <dependencies>
@@ -26,6 +25,12 @@
       <version>${brave.version}</version>
     </dependency>
     <dependency>
+      <groupId>io.zipkin.brave</groupId>
+      <artifactId>brave-spring-beans</artifactId>
+      <version>${brave.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>io.zipkin.reporter2</groupId>
       <artifactId>zipkin-sender-okhttp3</artifactId>
       <version>${zipkin-reporter2.version}</version>
@@ -33,28 +38,13 @@
 
     <dependency>
       <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-context-log4j2</artifactId>
+      <artifactId>brave-context-log4j12</artifactId>
       <version>${brave.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <version>${log4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jul</artifactId>
-      <version>${log4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jcl</artifactId>
-      <version>${log4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
-      <version>${log4j.version}</version>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
     </dependency>
 
     <dependency>
@@ -80,8 +70,8 @@
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -94,12 +84,13 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.7.0</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>1.6</source>
+          <target>1.6</target>
           <optimize>true</optimize>
           <debug>true</debug>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -113,9 +104,9 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.eclipse.jetty</groupId>
+          <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty-maven-plugin</artifactId>
-          <version>9.4.8.v20171121</version>
+          <version>7.6.16.v20140903</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -127,12 +118,14 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.eclipse.jetty</groupId>
+            <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty-maven-plugin</artifactId>
             <configuration>
-              <httpConnector>
-                <port>8081</port>
-              </httpConnector>
+              <connectors>
+                <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                  <port>8081</port>
+                </connector>
+              </connectors>
               <systemProperties>
                 <systemProperty>
                   <name>zipkin.service</name>
@@ -149,12 +142,14 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.eclipse.jetty</groupId>
+            <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty-maven-plugin</artifactId>
             <configuration>
-              <httpConnector>
-                <port>9000</port>
-              </httpConnector>
+              <connectors>
+                <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                  <port>9000</port>
+                </connector>
+              </connectors>
               <systemProperties>
                 <systemProperty>
                   <name>zipkin.service</name>

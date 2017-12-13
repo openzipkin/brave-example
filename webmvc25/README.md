@@ -1,4 +1,4 @@
-## Servlet 2.5 Example
+## WebMVC 2.5 Example
 
 ### spring-webmvc-servlet.xml
 
@@ -6,6 +6,6 @@
 in web.xml. This setups the app and tracing of it.
 
 *   brave.webmvc.Frontend and Backend : Rest controllers with no tracing configuration
-*   brave.webmvc.TracingFactoryBean : This helps configure tracing, notably Log4J 1.2 integration
+*   brave.spring.beans.TracingFactoryBean : This helps configure tracing, notably Log4J 1.2 integration
 
 
