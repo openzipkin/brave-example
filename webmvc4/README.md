@@ -1,4 +1,4 @@
-## Servlet 3.0 Example
+## WebMVC 4 Example
 
 ### ExampleInitializer
 

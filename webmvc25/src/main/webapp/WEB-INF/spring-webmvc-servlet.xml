@@ -1,0 +1,68 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-2.5.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <bean id="tracing" class="brave.spring.beans.TracingFactoryBean">
+    <property name="localServiceName" value="${zipkin.service}"/>
+    <property name="spanReporter">
+      <bean class="zipkin2.reporter.beans.AsyncReporterFactoryBean">
+        <property name="encoder" value="JSON_V2"/>
+        <property name="sender">
+          <bean class="zipkin2.reporter.beans.URLConnectionSenderFactoryBean">
+            <property name="endpoint" value="http://localhost:9411/api/v2/spans"/>
+          </bean>
+        </property>
+        <!-- wait up to half a second for any in-flight spans on close -->
+        <property name="closeTimeout" value="500"/>
+      </bean>
+    </property>
+    <property name="propagationFactory">
+      <bean id="propagationFactory" class="brave.propagation.ExtraFieldPropagation"
+          factory-method="newFactory">
+        <constructor-arg index="0">
+          <util:constant static-field="brave.propagation.B3Propagation.FACTORY"/>
+        </constructor-arg>
+        <constructor-arg index="1">
+          <list>
+            <value>user-name</value>
+          </list>
+        </constructor-arg>
+      </bean>
+    </property>
+    <property name="currentTraceContext">
+      <bean class="brave.context.log4j12.MDCCurrentTraceContext" factory-method="create"/>
+    </property>
+  </bean>
+
+  <bean id="httpTracing" class="brave.spring.beans.HttpTracingFactoryBean">
+    <property name="tracing" ref="tracing"/>
+  </bean>
+
+  <bean id="httpClientBuilder" class="brave.httpclient.TracingHttpClientBuilder"
+      factory-method="create">
+    <constructor-arg type="brave.http.HttpTracing" ref="httpTracing"/>
+  </bean>
+
+  <bean id="httpClient" factory-bean="httpClientBuilder" factory-method="build"/>
+
+  <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    <property name="interceptors">
+      <list>
+        <bean class="brave.spring.webmvc.TracingHandlerInterceptor" factory-method="create">
+          <constructor-arg type="brave.http.HttpTracing" ref="httpTracing"/>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <context:component-scan base-package="brave.webmvc" />
+  <context:property-placeholder/>
+</beans>

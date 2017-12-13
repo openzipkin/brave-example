@@ -30,11 +30,11 @@ Next, you can view traces that went through the backend via http://localhost:941
 * This is a locally run zipkin service which keeps traces in memory
 
 ## Starting the Services
-In a separate tab or window, start each of [brave.webmvc.Frontend](/servlet3/src/main/java/brave/webmvc/Frontend.java)
-and [brave.webmvc.Backend](/servlet3/src/main/java/brave/webmvc/Backend.java):
+In a separate tab or window, start each of [brave.webmvc.Frontend](/webmvc4/src/main/java/brave/webmvc/Frontend.java)
+and [brave.webmvc.Backend](/webmvc4/src/main/java/brave/webmvc/Backend.java):
 ```bash
-# choose servlet25 or servlet3
-$ cd servlet3
+# choose webmvc25 webmvc3 or webmvc4
+$ cd webmvc4
 $ mvn jetty:run -Pfrontend
 $ mvn jetty:run -Pbackend
 ```
@@ -43,14 +43,15 @@ Next, run [Zipkin](http://zipkin.io/), which stores and queries traces
 reported by the above services.
 
 ```bash
-wget -O zipkin.jar 'https://search.maven.org/remote_content?g=io.zipkin.java&a=zipkin-server&v=LATEST&c=exec'
+curl -sSL https://zipkin.io/quickstart.sh | bash -s
 java -jar zipkin.jar
 ```
 
 ## Configuration tips
-To show how wiring works, we have two copies of the same project
-* [Servlet 2.5](./servlet25)
-* [Servlet 3](./servlet3)
+To show how wiring works, we have three copies of the same project
+* [WebMVC 2.5](./webmvc25) - Spring XML on Servlet 2.5 container 
+* [WebMVC 3](./webmvc3) - Spring XML on Servlet 3 container 
+* [WebMVC 4](./webmvc4) - Spring Java Config on Servlet 3 container 
 
 There are some interesting details that apply to both
 * If you pass the header `user-name` Brave will automatically propagate it to the backend!
