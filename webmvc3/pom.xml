@@ -14,8 +14,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.version>3.2.18.RELEASE</spring.version>
-    <brave.version>4.13.3</brave.version>
-    <zipkin-reporter2.version>2.3.0</zipkin-reporter2.version>
+    <brave.version>4.14.1</brave.version>
+    <zipkin-reporter2.version>2.3.1</zipkin-reporter2.version>
   </properties>
 
   <dependencies>
