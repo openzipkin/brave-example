@@ -14,32 +14,39 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.version>3.2.18.RELEASE</spring.version>
-    <brave.version>4.15.0</brave.version>
-    <zipkin-reporter2.version>2.3.2</zipkin-reporter2.version>
+    <brave.version>4.17.1</brave.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.zipkin.brave</groupId>
+        <artifactId>brave-bom</artifactId>
+        <version>${brave.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave</artifactId>
-      <version>${brave.version}</version>
     </dependency>
     <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-spring-beans</artifactId>
-      <version>${brave.version}</version>
     </dependency>
 
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
       <artifactId>zipkin-sender-okhttp3</artifactId>
-      <version>${zipkin-reporter2.version}</version>
     </dependency>
 
     <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-context-log4j12</artifactId>
-      <version>${brave.version}</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
@@ -50,7 +57,6 @@
     <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-instrumentation-spring-web</artifactId>
-      <version>${brave.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -61,7 +67,6 @@
     <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-instrumentation-spring-webmvc</artifactId>
-      <version>${brave.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
