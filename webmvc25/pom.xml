@@ -14,7 +14,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.version>2.5.6</spring.version>
-    <brave.version>4.17.1</brave.version>
+    <brave.version>4.17.2</brave.version>
   </properties>
 
   <dependencyManagement>
