@@ -6,7 +6,8 @@ import brave.http.HttpTracing;
 import brave.propagation.B3Propagation;
 import brave.propagation.ExtraFieldPropagation;
 import brave.spring.web.TracingClientHttpRequestInterceptor;
-import brave.spring.webmvc.TracingHandlerInterceptor;
+import brave.spring.webmvc.DelegatingTracingFilter;
+import brave.spring.webmvc.SpanCustomizingAsyncHandlerInterceptor;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -25,12 +26,18 @@ import zipkin2.reporter.Sender;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 
 /**
- * This adds tracing configuration to any web mvc controllers or rest template clients. This should
- * be configured last.
+ * This adds tracing configuration to any web mvc controllers or rest template clients.
+ *
+ * <p>This is a {@link Initializer#getRootConfigClasses() root config class}, so the
+ * {@linkplain DelegatingTracingFilter} added in {@link Initializer#getServletFilters()} can wire
+ * up properly.
  */
 @Configuration
 // Importing these classes is effectively the same as declaring bean methods
-@Import({TracingClientHttpRequestInterceptor.class, TracingHandlerInterceptor.class})
+@Import({
+    TracingClientHttpRequestInterceptor.class,
+    SpanCustomizingAsyncHandlerInterceptor.class
+})
 public class TracingConfiguration extends WebMvcConfigurerAdapter {
 
   /** Configuration for how to send spans to Zipkin */
@@ -57,14 +64,8 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
     return HttpTracing.create(tracing);
   }
 
-  @Autowired
-  private TracingHandlerInterceptor serverInterceptor;
-
-  @Autowired
-  private TracingClientHttpRequestInterceptor clientInterceptor;
-
-  @Autowired
-  private RestTemplate restTemplate;
+  @Autowired RestTemplate restTemplate;
+  @Autowired TracingClientHttpRequestInterceptor clientInterceptor;
 
   /** adds tracing to the application-defined rest template */
   @PostConstruct public void init() {
@@ -74,9 +75,10 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
     restTemplate.setInterceptors(interceptors);
   }
 
+  @Autowired SpanCustomizingAsyncHandlerInterceptor serverInterceptor;
+
   /** adds tracing to the application-defined web controller */
-  @Override
-  public void addInterceptors(InterceptorRegistry registry) {
+  @Override public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(serverInterceptor);
   }
 }
