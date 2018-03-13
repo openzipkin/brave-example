@@ -1,5 +1,7 @@
 package brave.webmvc;
 
+import brave.spring.webmvc.DelegatingTracingFilter;
+import javax.servlet.Filter;
 import org.springframework.web.SpringServletContainerInitializer;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -11,10 +13,15 @@ public class Initializer extends AbstractAnnotationConfigDispatcherServletInitia
   }
 
   @Override protected Class<?>[] getRootConfigClasses() {
-    return null;
+    return new Class[] {TracingConfiguration.class, AppConfiguration.class};
+  }
+
+  /** Ensures tracing is setup for all HTTP requests. */
+  @Override protected Filter[] getServletFilters() {
+    return new Filter[] {new DelegatingTracingFilter()};
   }
 
   @Override protected Class<?>[] getServletConfigClasses() {
-    return new Class[] {Frontend.class, Backend.class, TracingConfiguration.class};
+    return new Class[] {Frontend.class, Backend.class};
   }
 }
