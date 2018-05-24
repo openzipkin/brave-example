@@ -4,8 +4,6 @@ import brave.Tracing;
 import com.linecorp.armeria.client.HttpClient;
 import com.linecorp.armeria.client.HttpClientBuilder;
 import com.linecorp.armeria.client.tracing.HttpTracingClient;
-import com.linecorp.armeria.common.HttpRequest;
-import com.linecorp.armeria.common.HttpResponse;
 import com.linecorp.armeria.server.Server;
 import com.linecorp.armeria.server.ServerBuilder;
 import com.linecorp.armeria.server.logging.LoggingService;
@@ -18,8 +16,7 @@ public class Frontend {
 
     HttpClient backendClient =
         new HttpClientBuilder("http://localhost:9000/")
-            .decorator(
-                HttpRequest.class, HttpResponse.class, HttpTracingClient.newDecorator(tracing, "backend"))
+            .decorator(HttpTracingClient.newDecorator(tracing, "backend"))
             .build();
 
     Server server =
