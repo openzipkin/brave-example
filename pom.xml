@@ -13,7 +13,7 @@
   <description>Example using Armeria with Zipkin to trace RPCs</description>
 
   <properties>
-    <armeria.version>0.64.0</armeria.version>
+    <armeria.version>0.68.0</armeria.version>
   </properties>
 
   <dependencies>
@@ -42,7 +42,7 @@
       <dependency>
         <groupId>io.zipkin.brave</groupId>
         <artifactId>brave-bom</artifactId>
-        <version>4.19.3</version>
+        <version>5.1.4</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -54,7 +54,7 @@
       <plugin>
         <inherited>true</inherited>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
+        <version>3.8.0</version>
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
