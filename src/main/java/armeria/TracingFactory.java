@@ -1,5 +1,7 @@
 package armeria;
 
+import com.linecorp.armeria.common.tracing.RequestContextCurrentTraceContext;
+
 import brave.Tracing;
 import brave.context.slf4j.MDCCurrentTraceContext;
 import zipkin2.Span;
@@ -13,7 +15,7 @@ class TracingFactory {
   static Tracing create(String serviceName) {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
-        .currentTraceContext(MDCCurrentTraceContext.create())
+        .currentTraceContext(RequestContextCurrentTraceContext.INSTANCE)
         .spanReporter(spanReporter())
         .build();
   }
