@@ -30,6 +30,8 @@ Next, you can view traces that went through the backend via http://localhost:941
 * This is a locally run zipkin service which keeps traces in memory
 
 ## Starting the Services
+
+### Servlet Container Option
 In a separate tab or window, start each of [brave.webmvc.Frontend](/webmvc4/src/main/java/brave/webmvc/Frontend.java)
 and [brave.webmvc.Backend](/webmvc4/src/main/java/brave/webmvc/Backend.java):
 ```bash
@@ -37,6 +39,15 @@ and [brave.webmvc.Backend](/webmvc4/src/main/java/brave/webmvc/Backend.java):
 $ cd webmvc4
 $ mvn jetty:run -Pfrontend
 $ mvn jetty:run -Pbackend
+```
+
+### Spring Boot Option
+In a separate tab or window, start each of [brave.webmvc.Frontend](/webmvc4-boot/src/main/java/brave/webmvc/Frontend.java)
+and [brave.webmvc.Backend](/webmvc4-boot/src/main/java/brave/webmvc/Backend.java):
+```bash
+$ cd webmvc4-boot
+$ mvn compile exec:java -Dexec.mainClass=brave.webmvc.Backend
+$ mvn compile exec:java -Dexec.mainClass=brave.webmvc.Frontend
 ```
 
 Next, run [Zipkin](http://zipkin.io/), which stores and queries traces
