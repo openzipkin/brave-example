@@ -13,9 +13,12 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+
     <spring.version>4.3.13.RELEASE</spring.version>
     <log4j.version>2.11.0</log4j.version>
-    <brave.version>5.1.4</brave.version>
+    <brave.version>5.2.0</brave.version>
   </properties>
 
   <dependencyManagement>
@@ -95,21 +98,34 @@
   <build>
     <plugins>
       <plugin>
-        <inherited>true</inherited>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-          <optimize>true</optimize>
-          <debug>true</debug>
-        </configuration>
+        <version>3.8.0</version>
       </plugin>
+
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M2</version>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <!-- prevent a compile bug accessing CrossOrigin -->
+                  <version>[1.7.0_80,)</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.2.1</version>
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
           <packagingExcludes>WEB-INF/lib/servlet-api-*.jar</packagingExcludes>

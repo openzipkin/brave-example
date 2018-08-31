@@ -1,10 +1,11 @@
 package brave.webmvc;
 
 import brave.Tracing;
-import brave.context.slf4j.MDCCurrentTraceContext;
+import brave.context.slf4j.MDCScopeDecorator;
 import brave.http.HttpTracing;
 import brave.propagation.B3Propagation;
 import brave.propagation.ExtraFieldPropagation;
+import brave.propagation.ThreadLocalCurrentTraceContext;
 import brave.servlet.TracingFilter;
 import brave.spring.web.TracingClientHttpRequestInterceptor;
 import brave.spring.webmvc.SpanCustomizingAsyncHandlerInterceptor;
@@ -51,7 +52,10 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
         .propagationFactory(ExtraFieldPropagation.newFactory(B3Propagation.FACTORY, "user-name"))
-        .currentTraceContext(MDCCurrentTraceContext.create()) // puts trace IDs into logs
+        .currentTraceContext(ThreadLocalCurrentTraceContext.newBuilder()
+            .addScopeDecorator(MDCScopeDecorator.create()) // puts trace IDs into logs
+            .build()
+        )
         .spanReporter(spanReporter()).build();
   }
 

@@ -1,10 +1,11 @@
 package brave.webmvc;
 
 import brave.Tracing;
-import brave.context.log4j2.ThreadContextCurrentTraceContext;
+import brave.context.log4j2.ThreadContextScopeDecorator;
 import brave.http.HttpTracing;
 import brave.propagation.B3Propagation;
 import brave.propagation.ExtraFieldPropagation;
+import brave.propagation.ThreadLocalCurrentTraceContext;
 import brave.spring.web.TracingClientHttpRequestInterceptor;
 import brave.spring.webmvc.DelegatingTracingFilter;
 import brave.spring.webmvc.SpanCustomizingAsyncHandlerInterceptor;
@@ -29,8 +30,8 @@ import zipkin2.reporter.okhttp3.OkHttpSender;
  * This adds tracing configuration to any web mvc controllers or rest template clients.
  *
  * <p>This is a {@link Initializer#getRootConfigClasses() root config class}, so the
- * {@linkplain DelegatingTracingFilter} added in {@link Initializer#getServletFilters()} can wire
- * up properly.
+ * {@linkplain DelegatingTracingFilter} added in {@link Initializer#getServletFilters()} can wire up
+ * properly.
  */
 @Configuration
 // Importing these classes is effectively the same as declaring bean methods
@@ -55,7 +56,10 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
         .propagationFactory(ExtraFieldPropagation.newFactory(B3Propagation.FACTORY, "user-name"))
-        .currentTraceContext(ThreadContextCurrentTraceContext.create()) // puts trace IDs into logs
+        .currentTraceContext(ThreadLocalCurrentTraceContext.newBuilder()
+            .addScopeDecorator(ThreadContextScopeDecorator.create()) // puts trace IDs into logs
+            .build()
+        )
         .spanReporter(spanReporter()).build();
   }
 
