@@ -13,8 +13,11 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
+
     <spring.version>3.2.18.RELEASE</spring.version>
-    <brave.version>5.1.4</brave.version>
+    <brave.version>5.2.0</brave.version>
   </properties>
 
   <dependencyManagement>
@@ -84,22 +87,14 @@
   <build>
     <plugins>
       <plugin>
-        <inherited>true</inherited>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-          <optimize>true</optimize>
-          <debug>true</debug>
-        </configuration>
+        <version>3.8.0</version>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.2.1</version>
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
           <packagingExcludes>WEB-INF/lib/servlet-api-*.jar</packagingExcludes>
