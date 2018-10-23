@@ -10,21 +10,39 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
-  <bean id="httpClientBuilder" class="brave.httpclient.TracingHttpClientBuilder"
-      factory-method="create">
-    <constructor-arg ref="httpTracing"/>
+  <!-- allows us to read the service name from spring config -->
+  <context:property-placeholder/>
+
+  <bean id="destination" class="org.apache.activemq.command.ActiveMQQueue">
+    <!-- Tricky! the frontend places a message in the queue "backend".
+         This variable prevents the frontend from consuming the backend queue. -->
+    <constructor-arg value="${zipkin.service}"/>
   </bean>
 
-  <bean id="httpClient" factory-bean="httpClientBuilder" factory-method="build"/>
+  <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+    <property name="connectionFactory" ref="connectionFactory"/>
+  </bean>
 
-  <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+  <bean id="listenerContainer"
+      class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+    <property name="connectionFactory" ref="connectionFactory"/>
+    <property name="concurrency" value="1"/>
+    <property name="destination" ref="destination"/>
+    <property name="messageListener">
+      <bean class="brave.webmvc.Backend"/>
+    </property>
+  </bean>
+
+  <!-- By wrapping the connection factory, we automatically trace message producers and listeners -->
+  <bean id="connectionFactory" factory-bean="jmsTracing" factory-method="connectionFactory">
     <constructor-arg>
-      <bean class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
-        <constructor-arg ref="httpClient"/>
+      <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61616"/>
       </bean>
     </constructor-arg>
   </bean>
 
+  <!-- adds the class and method name of the MVC controller -->
   <mvc:interceptors>
     <bean class="brave.spring.webmvc.SpanCustomizingHandlerInterceptor"/>
   </mvc:interceptors>

@@ -1,25 +1,16 @@
 package brave.webmvc;
 
-import java.util.Date;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 
-@Controller
-public class Backend {
-
-  @RequestMapping("/api")
-  public ResponseEntity<String> printDate(
-      @RequestHeader(value = "user-name", required = false) String username
-  ) {
-    String result;
-    if (username != null) {
-      result = new Date().toString() + " " + username;
-    } else {
-      result = new Date().toString();
+public class Backend implements MessageListener {
+  @Override public void onMessage(Message message) {
+    try {
+      System.err.println(((ObjectMessage) message).getObject());
+    } catch (JMSException e) {
+      throw new RuntimeException(e); // Present for the listener container!
     }
-    return new ResponseEntity<String>(result, HttpStatus.OK);
   }
 }

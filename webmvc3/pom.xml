@@ -45,15 +45,19 @@
       <version>${spring.version}</version>
     </dependency>
     <dependency>
+      <groupId>javax.jms</groupId>
+      <artifactId>javax.jms-api</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
+      <artifactId>spring-jms</artifactId>
       <version>${spring.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <!-- comment here if you can't use 4.4+ https://github.com/openzipkin/brave/issues/431 -->
-      <version>4.5.9</version>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-client</artifactId>
+      <version>5.15.9</version>
     </dependency>
 
     <!-- Adds the MVC class and method names to server spans -->
@@ -61,10 +65,10 @@
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-instrumentation-spring-webmvc</artifactId>
     </dependency>
-    <!-- Instruments the underlying HttpClient requests that call the backend -->
+    <!-- Instruments the underlying JMS producers and listeners -->
     <dependency>
       <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-instrumentation-httpclient</artifactId>
+      <artifactId>brave-instrumentation-jms</artifactId>
     </dependency>
 
     <!-- Integrates so you can use log patterns like %X{traceId}/%X{spanId} -->

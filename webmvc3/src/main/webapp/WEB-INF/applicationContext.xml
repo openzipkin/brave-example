@@ -58,4 +58,8 @@
   <bean id="httpTracing" class="brave.spring.beans.HttpTracingFactoryBean">
     <property name="tracing" ref="tracing"/>
   </bean>
+
+  <bean id="jmsTracing" class="brave.jms.JmsTracing" factory-method="create">
+    <constructor-arg ref="tracing"/>
+  </bean>
 </beans>
