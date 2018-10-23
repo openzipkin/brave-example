@@ -45,17 +45,18 @@
       <version>${spring.version}</version>
     </dependency>
     <dependency>
-      <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-instrumentation-spring-webmvc</artifactId>
-    </dependency>
-
-    <!-- Adds HttpClient support for calling the backend -->
-    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
       <!-- comment here if you can't use 4.4+ https://github.com/openzipkin/brave/issues/431 -->
       <version>4.4.1</version>
     </dependency>
+
+    <!-- Adds the MVC class and method names to server spans -->
+    <dependency>
+      <groupId>io.zipkin.brave</groupId>
+      <artifactId>brave-instrumentation-spring-webmvc</artifactId>
+    </dependency>
+    <!-- Instruments the underlying HttpClient requests that call the backend -->
     <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-instrumentation-httpclient</artifactId>

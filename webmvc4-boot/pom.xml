@@ -45,12 +45,19 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+    </dependency>
+
+    <!-- Adds the MVC class and method names to server spans -->
+    <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-instrumentation-spring-webmvc</artifactId>
     </dependency>
+    <!-- Instruments the underlying HttpClient requests that call the backend -->
     <dependency>
       <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-instrumentation-spring-web</artifactId>
+      <artifactId>brave-instrumentation-httpclient</artifactId>
     </dependency>
 
     <!-- Integrates so you can use log patterns like %X{traceId}/%X{spanId} -->

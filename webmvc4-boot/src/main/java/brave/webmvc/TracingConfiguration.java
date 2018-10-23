@@ -3,23 +3,21 @@ package brave.webmvc;
 import brave.Tracing;
 import brave.context.slf4j.MDCScopeDecorator;
 import brave.http.HttpTracing;
+import brave.httpclient.TracingHttpClientBuilder;
 import brave.propagation.B3Propagation;
 import brave.propagation.ExtraFieldPropagation;
 import brave.propagation.ThreadLocalCurrentTraceContext;
 import brave.servlet.TracingFilter;
-import brave.spring.web.TracingClientHttpRequestInterceptor;
 import brave.spring.webmvc.SpanCustomizingAsyncHandlerInterceptor;
-import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.Filter;
-import org.springframework.beans.factory.BeanFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -63,35 +61,18 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
     return HttpTracing.create(tracing);
   }
 
-  /** Creates client spans for http requests */
-  // We are using a BPP as the Frontend supplies a RestTemplate bean prior to this configuration
-  @Bean BeanPostProcessor connectionFactoryDecorator(final BeanFactory beanFactory) {
-    return new BeanPostProcessor() {
-      @Override public Object postProcessBeforeInitialization(Object bean, String beanName) {
-        return bean;
-      }
-
-      @Override public Object postProcessAfterInitialization(Object bean, String beanName) {
-        if (!(bean instanceof RestTemplate)) return bean;
-
-        RestTemplate restTemplate = (RestTemplate) bean;
-        List<ClientHttpRequestInterceptor> interceptors =
-            new ArrayList<>(restTemplate.getInterceptors());
-        interceptors.add(0, getTracingInterceptor());
-        restTemplate.setInterceptors(interceptors);
-        return bean;
-      }
-
-      // Lazy lookup so that the BPP doesn't end up needing to proxy anything.
-      ClientHttpRequestInterceptor getTracingInterceptor() {
-        return TracingClientHttpRequestInterceptor.create(beanFactory.getBean(HttpTracing.class));
-      }
-    };
-  }
-
   /** Creates server spans for http requests */
   @Bean Filter tracingFilter(HttpTracing httpTracing) {
     return TracingFilter.create(httpTracing);
+  }
+
+  @Bean RestTemplateCustomizer useTracedHttpClient(HttpTracing httpTracing) {
+    final CloseableHttpClient httpClient = TracingHttpClientBuilder.create(httpTracing).build();
+    return new RestTemplateCustomizer() {
+      @Override public void customize(RestTemplate restTemplate) {
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
+      }
+    };
   }
 
   @Autowired SpanCustomizingAsyncHandlerInterceptor webMvcTracingCustomizer;

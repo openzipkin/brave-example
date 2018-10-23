@@ -3,22 +3,18 @@ package brave.webmvc;
 import brave.Tracing;
 import brave.context.log4j2.ThreadContextScopeDecorator;
 import brave.http.HttpTracing;
+import brave.httpclient.TracingHttpClientBuilder;
 import brave.propagation.B3Propagation;
 import brave.propagation.ExtraFieldPropagation;
 import brave.propagation.ThreadLocalCurrentTraceContext;
-import brave.spring.web.TracingClientHttpRequestInterceptor;
 import brave.spring.webmvc.DelegatingTracingFilter;
 import brave.spring.webmvc.SpanCustomizingAsyncHandlerInterceptor;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.PostConstruct;
+import org.apache.http.client.HttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import zipkin2.Span;
@@ -34,11 +30,8 @@ import zipkin2.reporter.okhttp3.OkHttpSender;
  * properly.
  */
 @Configuration
-// Importing these classes is effectively the same as declaring bean methods
-@Import({
-    TracingClientHttpRequestInterceptor.class,
-    SpanCustomizingAsyncHandlerInterceptor.class
-})
+// Importing this class is effectively the same as declaring bean methods
+@Import(SpanCustomizingAsyncHandlerInterceptor.class)
 public class TracingConfiguration extends WebMvcConfigurerAdapter {
 
   /** Configuration for how to send spans to Zipkin */
@@ -68,15 +61,9 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
     return HttpTracing.create(tracing);
   }
 
-  @Autowired RestTemplate restTemplate;
-  @Autowired TracingClientHttpRequestInterceptor clientInterceptor;
-
-  /** adds tracing to the application-defined rest template */
-  @PostConstruct public void init() {
-    List<ClientHttpRequestInterceptor> interceptors =
-        new ArrayList<>(restTemplate.getInterceptors());
-    interceptors.add(clientInterceptor);
-    restTemplate.setInterceptors(interceptors);
+  /** adds tracing to any underlying http client calls */
+  @Bean HttpClient httpClient(HttpTracing httpTracing) {
+    return TracingHttpClientBuilder.create(httpTracing).build();
   }
 
   @Autowired SpanCustomizingAsyncHandlerInterceptor serverInterceptor;
