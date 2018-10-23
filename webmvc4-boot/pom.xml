@@ -44,7 +44,22 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.zipkin.brave</groupId>
+      <artifactId>brave-instrumentation-spring-webmvc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.brave</groupId>
+      <artifactId>brave-instrumentation-spring-web</artifactId>
+    </dependency>
 
+    <!-- Integrates so you can use log patterns like %X{traceId}/%X{spanId} -->
+    <dependency>
+      <groupId>io.zipkin.brave</groupId>
+      <artifactId>brave-context-slf4j</artifactId>
+    </dependency>
+
+    <!-- The below are needed to report traces to http://localhost:9411/api/v2/spans -->
     <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave</artifactId>
@@ -52,18 +67,6 @@
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
       <artifactId>zipkin-sender-okhttp3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-context-slf4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-instrumentation-spring-web</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-instrumentation-spring-webmvc</artifactId>
     </dependency>
   </dependencies>
 

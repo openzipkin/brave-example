@@ -19,7 +19,7 @@
   </bean>
 
   <mvc:interceptors>
-    <bean class="brave.spring.webmvc.SpanCustomizingHandlerInterceptor" />
+    <bean class="brave.spring.webmvc.SpanCustomizingHandlerInterceptor"/>
   </mvc:interceptors>
 
   <!-- Loads the controller -->
