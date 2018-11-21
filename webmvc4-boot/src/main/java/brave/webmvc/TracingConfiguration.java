@@ -1,5 +1,7 @@
 package brave.webmvc;
 
+import brave.CurrentSpanCustomizer;
+import brave.SpanCustomizer;
 import brave.Tracing;
 import brave.context.slf4j.MDCScopeDecorator;
 import brave.http.HttpTracing;
@@ -44,7 +46,7 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
     return AsyncReporter.create(sender());
   }
 
-  /** Controls aspects of tracing such as the name that shows up in the UI */
+  /** Controls aspects of tracing such as the service name that shows up in the UI */
   @Bean Tracing tracing(@Value("${spring.application.name}") String serviceName) {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
@@ -56,7 +58,12 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
         .spanReporter(spanReporter()).build();
   }
 
-  /** decides how to name and tag spans. By default they are named the same as the http method. */
+  /** Allows someone to add tags to a span if a trace is in progress */
+  @Bean SpanCustomizer spanCustomizer(Tracing tracing) {
+    return CurrentSpanCustomizer.create(tracing);
+  }
+
+  /** Decides how to name and tag spans. By default they are named the same as the http method */
   @Bean HttpTracing httpTracing(Tracing tracing) {
     return HttpTracing.create(tracing);
   }

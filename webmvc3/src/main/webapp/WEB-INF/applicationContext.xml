@@ -17,6 +17,7 @@
   <!-- allows us to read the service name from spring config -->
   <context:property-placeholder/>
 
+  <!-- Controls aspects of tracing such as the service name that shows up in the UI -->
   <bean id="tracing" class="brave.spring.beans.TracingFactoryBean">
     <property name="localServiceName" value="${zipkin.service:brave-webmvc-example}"/>
     <property name="spanReporter">
@@ -48,6 +49,12 @@
     </property>
   </bean>
 
+  <!-- Allows someone to add tags to a span if a trace is in progress, via SpanCustomizer -->
+  <bean id="spanCustomizer" class="brave.CurrentSpanCustomizer" factory-method="create">
+    <constructor-arg index="0" ref="tracing"/>
+  </bean>
+
+  <!-- Decides how to name and tag spans. By default they are named the same as the http method. -->
   <bean id="httpTracing" class="brave.spring.beans.HttpTracingFactoryBean">
     <property name="tracing" ref="tracing"/>
   </bean>
