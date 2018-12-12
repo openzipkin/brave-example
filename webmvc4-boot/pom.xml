@@ -46,7 +46,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
+      <artifactId>httpasyncclient</artifactId>
     </dependency>
 
     <!-- Adds the MVC class and method names to server spans -->
@@ -57,7 +57,7 @@
     <!-- Instruments the underlying HttpClient requests that call the backend -->
     <dependency>
       <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-instrumentation-httpclient</artifactId>
+      <artifactId>brave-instrumentation-httpasyncclient</artifactId>
     </dependency>
 
     <!-- Integrates so you can use log patterns like %X{traceId}/%X{spanId} -->
