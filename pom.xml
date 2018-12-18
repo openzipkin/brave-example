@@ -13,7 +13,7 @@
   <description>Example using Armeria with Zipkin to trace RPCs</description>
 
   <properties>
-    <armeria.version>0.75.0</armeria.version>
+    <armeria.version>0.77.0</armeria.version>
   </properties>
 
   <dependencies>
