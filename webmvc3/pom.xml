@@ -17,7 +17,7 @@
     <maven.compiler.target>1.6</maven.compiler.target>
 
     <spring.version>3.2.18.RELEASE</spring.version>
-    <brave.version>5.6.0</brave.version>
+    <brave.version>5.6.1</brave.version>
   </properties>
 
   <dependencyManagement>
