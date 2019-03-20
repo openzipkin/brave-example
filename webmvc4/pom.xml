@@ -17,8 +17,8 @@
     <maven.compiler.target>1.7</maven.compiler.target>
 
     <spring.version>4.3.22.RELEASE</spring.version>
-    <log4j.version>2.11.1</log4j.version>
-    <brave.version>5.6.1</brave.version>
+    <log4j.version>2.11.2</log4j.version>
+    <brave.version>5.6.3</brave.version>
   </properties>
 
   <dependencyManagement>
@@ -150,7 +150,7 @@
         <plugin>
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-maven-plugin</artifactId>
-          <version>9.4.14.v20181114</version>
+          <version>9.4.15.v20190215</version>
         </plugin>
       </plugins>
     </pluginManagement>
