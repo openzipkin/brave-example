@@ -1,5 +1,8 @@
 package armeria;
 
+import java.io.IOException;
+import java.util.logging.Logger;
+
 import com.linecorp.armeria.common.tracing.RequestContextCurrentTraceContext;
 
 import brave.Tracing;
@@ -15,7 +18,7 @@ final class TracingFactory {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
         .currentTraceContext(RequestContextCurrentTraceContext.DEFAULT)
-        .spanReporter(spanReporter())
+        .spanReporter(spanReporter(sender()))
         .build();
   }
 
@@ -25,11 +28,19 @@ final class TracingFactory {
   }
 
   /** Configuration for how to buffer spans into messages for Zipkin */
-  static AsyncReporter<Span> spanReporter() {
-    final AsyncReporter<Span> result = AsyncReporter.create(sender());
-    // make sure spans are reported on shutdown
-    Runtime.getRuntime().addShutdownHook(new Thread(result::close));
-    return result;
+  static AsyncReporter<Span> spanReporter(Sender sender) {
+    final AsyncReporter<Span> spanReporter = AsyncReporter.create(sender);
+
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      spanReporter.close(); // Make sure spans are reported on shutdown
+      try {
+        sender.close(); // Release any network resources used to send spans
+      } catch (IOException e) {
+        Logger.getAnonymousLogger().warning("error closing trace sender: " + e.getMessage());
+      }
+    }));
+
+    return spanReporter;
   }
 
   private TracingFactory() {}
