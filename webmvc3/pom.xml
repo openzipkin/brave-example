@@ -53,7 +53,7 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
       <!-- comment here if you can't use 4.4+ https://github.com/openzipkin/brave/issues/431 -->
-      <version>4.5.7</version>
+      <version>4.5.9</version>
     </dependency>
 
     <!-- Adds the MVC class and method names to server spans -->
@@ -97,13 +97,13 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
+        <version>3.8.1</version>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.1</version>
+        <version>3.2.3</version>
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
           <packagingExcludes>WEB-INF/lib/servlet-api-*.jar</packagingExcludes>

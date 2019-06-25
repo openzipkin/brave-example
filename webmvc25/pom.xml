@@ -92,7 +92,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
+        <version>3.8.1</version>
       </plugin>
 
       <plugin>
@@ -117,7 +117,7 @@
 
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.1</version>
+        <version>3.2.3</version>
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
           <packagingExcludes>WEB-INF/lib/servlet-api-*.jar</packagingExcludes>
