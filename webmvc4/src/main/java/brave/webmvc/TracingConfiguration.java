@@ -20,9 +20,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import zipkin2.Span;
+import zipkin2.codec.Encoding;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Sender;
-import zipkin2.reporter.okhttp3.OkHttpSender;
+import zipkin2.reporter.beans.ActiveMQSenderFactoryBean;
 
 /**
  * This adds tracing configuration to any web mvc controllers or rest template clients.
@@ -37,17 +38,23 @@ import zipkin2.reporter.okhttp3.OkHttpSender;
 public class TracingConfiguration extends WebMvcConfigurerAdapter {
 
   /** Configuration for how to send spans to Zipkin */
-  @Bean Sender sender() {
-    return OkHttpSender.create("http://127.0.0.1:9411/api/v2/spans");
+  @Bean ActiveMQSenderFactoryBean senderFactory() {
+    ActiveMQSenderFactoryBean result = new ActiveMQSenderFactoryBean();
+    result.setUrl("failover:(ssl://b-da18ebe4-54ff-4dfc-835f-3862a6c144b1-1.mq.ap-southeast-1.amazonaws.com:61617,ssl://b-da18ebe4-54ff-4dfc-835f-3862a6c144b1-2.mq.ap-southeast-1.amazonaws.com:61617)");
+    result.setUsername("zipkin");
+    result.setPassword("12345678");
+    result.setMessageMaxBytes(1024);
+    result.setEncoding(Encoding.PROTO3);
+    return result;
   }
 
   /** Configuration for how to buffer spans into messages for Zipkin */
-  @Bean AsyncReporter<Span> spanReporter() {
-    return AsyncReporter.create(sender());
+  @Bean AsyncReporter<Span> spanReporter() throws Exception {
+    return AsyncReporter.create((Sender) senderFactory().getObject());
   }
 
   /** Controls aspects of tracing such as the service name that shows up in the UI */
-  @Bean Tracing tracing(@Value("${zipkin.service:brave-webmvc-example}") String serviceName) {
+  @Bean Tracing tracing(@Value("${zipkin.service:brave-webmvc-example}") String serviceName) throws Exception {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
         .propagationFactory(ExtraFieldPropagation.newFactory(B3Propagation.FACTORY, "user-name"))
