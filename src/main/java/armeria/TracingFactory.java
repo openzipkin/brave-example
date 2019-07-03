@@ -3,7 +3,7 @@ package armeria;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import com.linecorp.armeria.common.tracing.RequestContextCurrentTraceContext;
+import com.linecorp.armeria.common.brave.RequestContextCurrentTraceContext;
 
 import brave.Tracing;
 import zipkin2.Span;
@@ -17,7 +17,7 @@ final class TracingFactory {
   static Tracing create(String serviceName) {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
-        .currentTraceContext(RequestContextCurrentTraceContext.DEFAULT)
+        .currentTraceContext(RequestContextCurrentTraceContext.ofDefault())
         .spanReporter(spanReporter(sender()))
         .build();
   }

@@ -2,11 +2,11 @@ package armeria;
 
 import com.linecorp.armeria.client.HttpClient;
 import com.linecorp.armeria.client.HttpClientBuilder;
-import com.linecorp.armeria.client.tracing.HttpTracingClient;
+import com.linecorp.armeria.client.brave.BraveClient;
 import com.linecorp.armeria.server.Server;
 import com.linecorp.armeria.server.ServerBuilder;
+import com.linecorp.armeria.server.brave.BraveService;
 import com.linecorp.armeria.server.logging.LoggingService;
-import com.linecorp.armeria.server.tracing.HttpTracingService;
 
 import brave.Tracing;
 
@@ -17,14 +17,14 @@ public final class Frontend {
 
     final HttpClient backendClient =
         new HttpClientBuilder("http://localhost:9000/")
-            .decorator(HttpTracingClient.newDecorator(tracing, "backend"))
+            .decorator(BraveClient.newDecorator(tracing, "backend"))
             .build();
 
     final Server server =
         new ServerBuilder()
             .http(8081)
             .service("/", (ctx, res) -> backendClient.get("/api"))
-            .decorator(HttpTracingService.newDecorator(tracing))
+            .decorator(BraveService.newDecorator(tracing))
             .decorator(LoggingService.newDecorator())
             .build();
 
