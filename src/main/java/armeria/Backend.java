@@ -18,7 +18,7 @@ public final class Backend {
     final Server server =
         new ServerBuilder()
             .http(9000)
-            .service("/api", (ctx, res) -> HttpResponse.of(new Date().toString()))
+            .service("/api", (ctx, req) -> HttpResponse.of(new Date().toString()))
             .decorator(BraveService.newDecorator(tracing))
             .decorator(LoggingService.newDecorator())
             .build();

@@ -23,7 +23,7 @@ public final class Frontend {
     final Server server =
         new ServerBuilder()
             .http(8081)
-            .service("/", (ctx, res) -> backendClient.get("/api"))
+            .service("/", (ctx, req) -> backendClient.get("/api"))
             .decorator(BraveService.newDecorator(tracing))
             .decorator(LoggingService.newDecorator())
             .build();
