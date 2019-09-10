@@ -17,7 +17,7 @@ Web requests are served by [Spring MVC](https://spring.io/guides/gs/rest-service
 and tracing is automatically performed for you by [Brave](https://github.com/openzipkin/brave).
 
 This example intentionally avoids advanced topics like async and messaging,
-eventhough Brave supports that, too. Once you get familiar with things,
+even though Brave supports that, too. Once you get familiar with things,
 you can play with more interesting [Brave instrumentation](https://github.com/openzipkin/brave/tree/master/instrumentation).
 
 # Running the example
