@@ -36,7 +36,7 @@
       <dependency>
         <groupId>com.linecorp.armeria</groupId>
         <artifactId>armeria-bom</artifactId>
-        <version>0.92.0</version>
+        <version>0.93.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
