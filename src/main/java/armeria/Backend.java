@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.linecorp.armeria.common.HttpResponse;
 import com.linecorp.armeria.server.Server;
-import com.linecorp.armeria.server.ServerBuilder;
 import com.linecorp.armeria.server.brave.BraveService;
 import com.linecorp.armeria.server.logging.LoggingService;
 
@@ -16,12 +15,12 @@ public final class Backend {
     final Tracing tracing = TracingFactory.create("backend");
 
     final Server server =
-        new ServerBuilder()
-            .http(9000)
-            .service("/api", (ctx, req) -> HttpResponse.of(new Date().toString()))
-            .decorator(BraveService.newDecorator(tracing))
-            .decorator(LoggingService.newDecorator())
-            .build();
+        Server.builder()
+              .http(9000)
+              .service("/api", (ctx, req) -> HttpResponse.of(new Date().toString()))
+              .decorator(BraveService.newDecorator(tracing))
+              .decorator(LoggingService.newDecorator())
+              .build();
 
     server.start().join();
   }

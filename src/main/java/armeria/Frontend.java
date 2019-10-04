@@ -4,7 +4,6 @@ import com.linecorp.armeria.client.HttpClient;
 import com.linecorp.armeria.client.HttpClientBuilder;
 import com.linecorp.armeria.client.brave.BraveClient;
 import com.linecorp.armeria.server.Server;
-import com.linecorp.armeria.server.ServerBuilder;
 import com.linecorp.armeria.server.brave.BraveService;
 import com.linecorp.armeria.server.logging.LoggingService;
 
@@ -21,12 +20,12 @@ public final class Frontend {
             .build();
 
     final Server server =
-        new ServerBuilder()
-            .http(8081)
-            .service("/", (ctx, req) -> backendClient.get("/api"))
-            .decorator(BraveService.newDecorator(tracing))
-            .decorator(LoggingService.newDecorator())
-            .build();
+        Server.builder()
+              .http(8081)
+              .service("/", (ctx, req) -> backendClient.get("/api"))
+              .decorator(BraveService.newDecorator(tracing))
+              .decorator(LoggingService.newDecorator())
+              .build();
 
     server.start().join();
   }
