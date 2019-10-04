@@ -7,7 +7,7 @@ was spent in each service.
 
 Here's an example of what it looks like:
 
-<img width="979" alt="zipkin screen shot" src="https://user-images.githubusercontent.com/64215/31760971-18a9a4dc-b4bf-11e7-9ee2-ab7418f80dc0.png">
+<img width="979" alt="zipkin screen shot" src="https://user-images.githubusercontent.com/6180701/66194897-cb7d1a80-e695-11e9-960d-105d99aa6465.png">
 
 This example was ported from https://github.com/openzipkin/sleuth-webmvc-example
 
