@@ -1,7 +1,6 @@
 package armeria;
 
-import com.linecorp.armeria.client.HttpClient;
-import com.linecorp.armeria.client.HttpClientBuilder;
+import com.linecorp.armeria.client.WebClient;
 import com.linecorp.armeria.client.brave.BraveClient;
 import com.linecorp.armeria.server.Server;
 import com.linecorp.armeria.server.brave.BraveService;
@@ -14,10 +13,10 @@ public final class Frontend {
   public static void main(String[] args) {
     final Tracing tracing = TracingFactory.create("frontend");
 
-    final HttpClient backendClient =
-        new HttpClientBuilder("http://localhost:9000/")
-            .decorator(BraveClient.newDecorator(tracing, "backend"))
-            .build();
+    final WebClient backendClient =
+        WebClient.builder("http://localhost:9000/")
+                 .decorator(BraveClient.newDecorator(tracing, "backend"))
+                 .build();
 
     final Server server =
         Server.builder()
