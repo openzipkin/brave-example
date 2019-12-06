@@ -24,8 +24,8 @@ Next, you can view traces that went through the backend via http://localhost:941
 ## Starting the Services
 In a separate tab or window, start each of [armeria.Frontend](/src/main/java/armeria/Frontend.java) and [armeria.Backend](/src/main/java/armeria/Backend.java):
 ```bash
-$ mvn compile exec:java -Dexec.mainClass=armeria.Frontend
-$ mvn compile exec:java -Dexec.mainClass=armeria.Backend
+$ ./mvnw compile exec:java -Dexec.mainClass=armeria.Frontend
+$ ./mvnw compile exec:java -Dexec.mainClass=armeria.Backend
 ```
 
 Next, run [Zipkin](http://zipkin.io/), which stores and queries traces reported by the above services.
