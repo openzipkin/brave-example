@@ -17,7 +17,7 @@
     <maven.compiler.target>1.6</maven.compiler.target>
 
     <spring.version>3.2.18.RELEASE</spring.version>
-    <brave.version>5.8.0</brave.version>
+    <brave.version>5.10.0</brave.version>
   </properties>
 
   <dependencyManagement>
@@ -52,8 +52,8 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <!-- comment here if you can't use 4.4+ https://github.com/openzipkin/brave/issues/431 -->
-      <version>4.5.9</version>
+      <!-- comment here if you can't use 4.4+ https://github.com/openzipkin/brave/issues/1079 -->
+      <version>4.5.11</version>
     </dependency>
 
     <!-- Adds the MVC class and method names to server spans -->
