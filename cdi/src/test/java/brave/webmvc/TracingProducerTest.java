@@ -1,11 +1,13 @@
 package brave.webmvc;
 
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,10 +17,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import brave.http.HttpTracing;
 import brave.jaxrs2.TracingClientFilter;
+import com.sun.org.apache.regexp.internal.RE;
 import io.smallrye.config.inject.ConfigProducer;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -27,6 +31,7 @@ import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAlternatives;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import zipkin2.Span;
@@ -59,6 +64,11 @@ class TracingProducerTest {
         SERVER.shutdown();
     }
 
+    @AfterEach
+    void afterEach() {
+        REPORTER.clear();
+    }
+
     @Test
     void producesTracing() {
         assertNotNull(TracingProducer.createTracing());
@@ -79,13 +89,40 @@ class TracingProducerTest {
                 .build(TestInterface.class)
                 .test();
         assertEquals("response-text", response);
-        assertEquals(1, REPORTER.getSpans().size(), "There should be a recorded span");
+        assertEquals(1, REPORTER.getSpans().size(), "Wrong number of reported spans");
+    }
+
+    /**
+     * As the tracing filter is not processed no span is reported.
+     * this is due to a wrong TracingClientFilter order / priority.
+     *
+     * @throws InterruptedException if response could not be taken
+     */
+    @Test
+    void noTraceOnErrorResponse() throws InterruptedException {
+        SERVER.enqueue(new MockResponse().setResponseCode(SC_INTERNAL_SERVER_ERROR));
+
+        try {
+            new BuilderResolver().newBuilder()
+                    .baseUri(SERVER.url("").uri())
+                    .register(TracingClientFilter.create(
+                            HttpTracing.create(TracingProducer.createTracing())
+                                    .clientOf("test-service")))
+                    .build(TestInterface.class)
+                    .test();
+        } catch (final WebApplicationException e) {
+            log.log(Level.SEVERE, "Error during mock-server request", e);
+        }
+
+        assertNotNull(SERVER.takeRequest(5, TimeUnit.SECONDS), "No recorded request to mock-server");
+        // FIXME should be 1 instead of 0!
+        assertEquals(0, REPORTER.getSpans().size(), "Wrong number of reported spans");
     }
 
     @javax.enterprise.inject.Produces
     @Dependent
     @Alternative
-    private Reporter<Span> zipkinReporter() {
+    private Reporter<Span> testSpanReporterProducer() {
         return REPORTER;
     }
 
@@ -107,6 +144,10 @@ class TracingProducerTest {
          */
         public List<String> getSpans() {
             return new ArrayList<>(spans);
+        }
+
+        public synchronized void clear() {
+            spans.clear();
         }
     }
 }
