@@ -22,7 +22,6 @@ import javax.ws.rs.core.MediaType;
 
 import brave.http.HttpTracing;
 import brave.jaxrs2.TracingClientFilter;
-import com.sun.org.apache.regexp.internal.RE;
 import io.smallrye.config.inject.ConfigProducer;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -119,6 +118,7 @@ class TracingProducerTest {
         assertEquals(0, REPORTER.getSpans().size(), "Wrong number of reported spans");
     }
 
+    @SuppressWarnings({"SameReturnValue"})
     @javax.enterprise.inject.Produces
     @Dependent
     @Alternative

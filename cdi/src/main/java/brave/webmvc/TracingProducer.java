@@ -36,11 +36,11 @@ public class TracingProducer {
      * {@link Dependent} scope is used. {@link ApplicationScoped} does not work because
      * {@link brave.Tracing#clock(brave.propagation.TraceContext)} is a {@code final} method.
      *
-     * @param spanReporter
-     * @param enabled
-     * @param localServiceName
+     * @param spanReporter injected reporter
+     * @param enabled value of {@link ConfigKeys#TRACING_ENABLED}
+     * @param localServiceName value of {@link ConfigKeys#TRACING_NAME}
      *
-     * @return
+     * @return the configured brave tracing
      */
     @Produces
     @Dependent
