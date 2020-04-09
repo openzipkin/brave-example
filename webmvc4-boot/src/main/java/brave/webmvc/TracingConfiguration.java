@@ -3,11 +3,16 @@ package brave.webmvc;
 import brave.CurrentSpanCustomizer;
 import brave.SpanCustomizer;
 import brave.Tracing;
+import brave.baggage.BaggageField;
+import brave.baggage.BaggagePropagation;
+import brave.baggage.BaggagePropagationConfig.SingleBaggageField;
+import brave.baggage.CorrelationScopeConfig.SingleCorrelationField;
 import brave.context.slf4j.MDCScopeDecorator;
 import brave.http.HttpTracing;
 import brave.httpclient.TracingHttpClientBuilder;
 import brave.propagation.B3Propagation;
-import brave.propagation.ExtraFieldPropagation;
+import brave.propagation.CurrentTraceContext.ScopeDecorator;
+import brave.propagation.Propagation;
 import brave.propagation.ThreadLocalCurrentTraceContext;
 import brave.servlet.TracingFilter;
 import brave.spring.webmvc.SpanCustomizingAsyncHandlerInterceptor;
@@ -35,6 +40,20 @@ import zipkin2.reporter.okhttp3.OkHttpSender;
 // Importing a class is effectively the same as declaring bean methods
 @Import(SpanCustomizingAsyncHandlerInterceptor.class)
 public class TracingConfiguration extends WebMvcConfigurerAdapter {
+  static final BaggageField USER_NAME = BaggageField.create("userName");
+
+  /** Allows log patterns to use {@code %{traceId}} {@code %{spanId}} and {@code %{userName}} */
+  @Bean ScopeDecorator correlationScopeDecorator() {
+    return MDCScopeDecorator.newBuilder()
+        .add(SingleCorrelationField.create(USER_NAME)).build();
+  }
+
+  /** Configures propagation for {@link #USER_NAME}, using the remote header "user-name" */
+  @Bean Propagation.Factory propagationFactory() {
+    return BaggagePropagation.newFactoryBuilder(B3Propagation.FACTORY)
+        .add(SingleBaggageField.newBuilder(USER_NAME).addKeyName("user-name").build())
+        .build();
+  }
 
   /** Configuration for how to send spans to Zipkin */
   @Bean Sender sender() {
@@ -47,23 +66,23 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
   }
 
   /** Controls aspects of tracing such as the service name that shows up in the UI */
-  @Bean Tracing tracing(@Value("${spring.application.name}") String serviceName) {
+  @Bean Tracing tracing(@Value("${zipkin.service:brave-webmvc-example}") String serviceName) {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
-        .propagationFactory(ExtraFieldPropagation.newFactory(B3Propagation.FACTORY, "user-name"))
+        .propagationFactory(propagationFactory())
         .currentTraceContext(ThreadLocalCurrentTraceContext.newBuilder()
-            .addScopeDecorator(MDCScopeDecorator.create()) // puts trace IDs into logs
+            .addScopeDecorator(correlationScopeDecorator())
             .build()
         )
         .spanReporter(spanReporter()).build();
   }
 
-  /** Allows someone to add tags to a span if a trace is in progress */
+  /** Allows someone to add tags to a span if a trace is in progress. */
   @Bean SpanCustomizer spanCustomizer(Tracing tracing) {
     return CurrentSpanCustomizer.create(tracing);
   }
 
-  /** Decides how to name and tag spans. By default they are named the same as the http method */
+  /** Decides how to name and tag spans. By default they are named the same as the http method. */
   @Bean HttpTracing httpTracing(Tracing tracing) {
     return HttpTracing.create(tracing);
   }
