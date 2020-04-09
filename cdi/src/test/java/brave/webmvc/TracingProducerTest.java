@@ -64,7 +64,7 @@ class TracingProducerTest {
     }
 
     @AfterEach
-    void afterEach() {
+    void beforeEach() {
         REPORTER.clear();
     }
 

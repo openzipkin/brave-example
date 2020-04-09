@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.CDI;
 
@@ -59,12 +60,12 @@ class TracingProducer {
         }
 
         if (null != localServiceName && localServiceName.length() > 0) {
-            log.log(Level.FINE, "Setting localServiceName to: " + localServiceName);
+            log.log(Level.INFO, "Setting localServiceName to: " + localServiceName);
             builder.localServiceName(localServiceName);
         }
 
         if (null != spanReporter) {
-            log.log(Level.FINE, "Setting span reporter to: " + spanReporter);
+            log.log(Level.INFO, "Setting span reporter to: " + spanReporter);
             builder.spanReporter(spanReporter);
         }
 
@@ -84,7 +85,8 @@ class TracingProducer {
     Reporter<zipkin2.Span> zipkinReporter(@ConfigProperty(name = TRACING_REPORTER_URL) final String url) {
 
         if (null == url || url.length() == 0) {
-            log.log(Level.FINE, "Missing value for configuration key: " + TRACING_REPORTER_URL);
+            log.log(Level.INFO, "Zipkin reporting disabled due to missing value for configuration key: "
+                    + TRACING_REPORTER_URL);
             return null;
             // Alternative: return Reporter.NOOP;
         }
@@ -95,5 +97,13 @@ class TracingProducer {
                         .endpoint(url)
                         .encoding(Encoding.JSON)
                         .build());
+    }
+
+    /**
+     * @param tracing the instance to be closed
+     */
+    void close(@Disposes final Tracing tracing) {
+        log.log(Level.INFO, "Closing: " + tracing);
+        tracing.close();
     }
 }
