@@ -1,5 +1,7 @@
 package brave.webmvc;
 
+import static brave.webmvc.ConfigKeys.TRACING_REPORTER_URL;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +23,7 @@ import zipkin2.reporter.Reporter;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 
 @ApplicationScoped
-public class TracingProducer {
+class TracingProducer {
 
     private static final Logger log = Logger.getLogger(TracingProducer.class.getName());
 
@@ -44,9 +46,9 @@ public class TracingProducer {
      */
     @Produces
     @Dependent
-    static Tracing createTracing(final Reporter<Span> spanReporter,
-                                 @ConfigProperty(name = ConfigKeys.TRACING_ENABLED) boolean enabled,
-                                 @ConfigProperty(name = ConfigKeys.TRACING_NAME) String localServiceName) {
+    Tracing createTracing(final Reporter<Span> spanReporter,
+                          @ConfigProperty(name = ConfigKeys.TRACING_ENABLED) boolean enabled,
+                          @ConfigProperty(name = ConfigKeys.TRACING_NAME) String localServiceName) {
 
         final Tracing.Builder builder = Tracing.newBuilder();
 
@@ -79,16 +81,12 @@ public class TracingProducer {
 
     @Produces
     @Dependent
-    static Reporter<zipkin2.Span> zipkinReporter(
-            @ConfigProperty(name = ConfigKeys.TRACING_REPORTER_ENABLED) final boolean reporterEnabled,
-            @ConfigProperty(name = ConfigKeys.TRACING_REPORTER_URL) final String url) {
-        if (!reporterEnabled) {
-            //return Optional.of(Reporter.NOOP);
-            return null;// possible because we use Dependent scope! Optional.empty();
-        }
+    Reporter<zipkin2.Span> zipkinReporter(@ConfigProperty(name = TRACING_REPORTER_URL) final String url) {
 
         if (null == url || url.length() == 0) {
-            throw new IllegalArgumentException("Missing value for configuration key: " + ConfigKeys.TRACING_REPORTER_URL);
+            log.log(Level.FINE, "Missing value for configuration key: " + TRACING_REPORTER_URL);
+            return null;
+            // Alternative: return Reporter.NOOP;
         }
 
         log.log(Level.INFO, "Span reporting enabled. URL: " + url);

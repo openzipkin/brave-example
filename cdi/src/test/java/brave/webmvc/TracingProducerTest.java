@@ -110,7 +110,7 @@ class TracingProducerTest {
                     .build(TestInterface.class)
                     .test();
         } catch (final WebApplicationException e) {
-            log.log(Level.SEVERE, "Error during mock-server request", e);
+            log.log(Level.WARNING, "Received expected error response: " + e.getMessage());
         }
 
         assertNotNull(SERVER.takeRequest(5, TimeUnit.SECONDS), "No recorded request to mock-server");
