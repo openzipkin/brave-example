@@ -12,7 +12,7 @@ public class Backend {
 
   @RequestMapping("/api")
   public ResponseEntity<String> printDate(
-      @RequestHeader(value = "user-name", required = false) String username
+      @RequestHeader(value = "user_name", required = false) String username
   ) {
     String result;
     if (username != null) {

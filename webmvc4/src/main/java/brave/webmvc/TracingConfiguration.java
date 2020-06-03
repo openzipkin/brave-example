@@ -48,10 +48,10 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
         .add(SingleCorrelationField.create(USER_NAME)).build();
   }
 
-  /** Configures propagation for {@link #USER_NAME}, using the remote header "user-name" */
+  /** Configures propagation for {@link #USER_NAME}, using the remote header "user_name" */
   @Bean Propagation.Factory propagationFactory() {
     return BaggagePropagation.newFactoryBuilder(B3Propagation.FACTORY)
-        .add(SingleBaggageField.newBuilder(USER_NAME).addKeyName("user-name").build())
+        .add(SingleBaggageField.newBuilder(USER_NAME).addKeyName("user_name").build())
         .build();
   }
 

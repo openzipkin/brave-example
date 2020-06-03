@@ -17,7 +17,7 @@
     <maven.compiler.target>1.7</maven.compiler.target>
 
     <spring-boot.version>1.5.22.RELEASE</spring-boot.version>
-    <brave.version>5.11.2</brave.version>
+    <brave.version>5.12.3</brave.version>
   </properties>
 
   <dependencyManagement>
@@ -82,6 +82,12 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.0.0</version>
       </plugin>
 
       <plugin>

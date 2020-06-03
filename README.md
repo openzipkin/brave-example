@@ -65,7 +65,7 @@ To show how wiring works, we have three copies of the same project
 * [WebMVC 4](./webmvc4) - Spring Java Config on Servlet 3 container 
 
 There are some interesting details that apply to both
-* If you pass the header `user-name` Brave will automatically propagate it to the backend!
-  * `curl -s localhost:8081 -H'user-name: JC'`
+* If you pass the header `user_name` Brave will automatically propagate it to the backend!
+  * `curl -s localhost:8081 -H'user_name: JC'`
 * The below pattern adds trace and span identifiers into log output
   * `%d{ABSOLUTE} [%X{traceId}/%X{spanId}] %-5p [%t] %C{2} (%F:%L) - %m%n`

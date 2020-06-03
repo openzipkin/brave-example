@@ -13,7 +13,7 @@ public class Backend {
   @RequestMapping("/api")
   public void printDate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String result;
-    String username = req.getHeader("user-name");
+    String username = req.getHeader("user_name");
     if (username != null) {
       result = new Date().toString() + " " + username;
     } else {

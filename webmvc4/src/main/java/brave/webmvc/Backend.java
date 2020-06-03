@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class Backend {
 
   @RequestMapping("/api")
-  public String printDate(@RequestHeader(name = "user-name", required = false) String username) {
+  public String printDate(@RequestHeader(name = "user_name", required = false) String username) {
     if (username != null) {
       return new Date().toString() + " " + username;
     }

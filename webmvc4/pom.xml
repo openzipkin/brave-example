@@ -18,7 +18,7 @@
 
     <spring.version>4.3.26.RELEASE</spring.version>
     <log4j.version>2.13.1</log4j.version>
-    <brave.version>5.11.2</brave.version>
+    <brave.version>5.12.3</brave.version>
   </properties>
 
   <dependencyManagement>
