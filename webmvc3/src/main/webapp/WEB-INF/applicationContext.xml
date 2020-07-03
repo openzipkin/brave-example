@@ -16,8 +16,7 @@
   </bean>
 
   <!-- Configuration for how to buffer spans into messages for Zipkin -->
-  <bean id="spanReporter" class="zipkin2.reporter.beans.AsyncReporterFactoryBean">
-    <property name="encoder" value="JSON_V2"/>
+  <bean id="zipkinSpanHandler" class="zipkin2.reporter.beans.AsyncZipkinSpanHandlerFactoryBean">
     <property name="sender" ref="sender"/>
     <!-- wait up to half a second for any in-flight spans on close -->
     <property name="closeTimeout" value="500"/>
@@ -72,7 +71,7 @@
         <property name="scopeDecorators" ref="correlationScopeDecorator"/>
       </bean>
     </property>
-    <property name="spanReporter" ref="spanReporter"/>
+    <property name="spanHandlers" ref="zipkinSpanHandler"/>
   </bean>
 
   <!-- Allows someone to add tags to a span if a trace is in progress, via SpanCustomizer -->

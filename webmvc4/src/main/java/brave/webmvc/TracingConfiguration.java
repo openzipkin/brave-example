@@ -24,9 +24,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import zipkin2.Span;
-import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Sender;
+import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 
 /**
@@ -61,8 +60,8 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
   }
 
   /** Configuration for how to buffer spans into messages for Zipkin */
-  @Bean AsyncReporter<Span> spanReporter() {
-    return AsyncReporter.create(sender());
+  @Bean AsyncZipkinSpanHandler zipkinSpanHandler() {
+    return AsyncZipkinSpanHandler.create(sender());
   }
 
   /** Controls aspects of tracing such as the service name that shows up in the UI */
@@ -74,7 +73,7 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
             .addScopeDecorator(correlationScopeDecorator())
             .build()
         )
-        .spanReporter(spanReporter()).build();
+        .addSpanHandler(zipkinSpanHandler()).build();
   }
 
   /** Allows someone to add tags to a span if a trace is in progress. */
