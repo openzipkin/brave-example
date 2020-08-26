@@ -9,6 +9,7 @@ import brave.Tracing;
 import zipkin2.Span;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Sender;
+import zipkin2.reporter.brave.ZipkinSpanHandler;
 import zipkin2.reporter.urlconnection.URLConnectionSender;
 
 final class TracingFactory {
@@ -18,7 +19,7 @@ final class TracingFactory {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
         .currentTraceContext(RequestContextCurrentTraceContext.ofDefault())
-        .spanReporter(spanReporter(sender()))
+        .addSpanHandler(ZipkinSpanHandler.create(spanReporter(sender())))
         .build();
   }
 
