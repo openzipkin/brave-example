@@ -18,7 +18,6 @@ import brave.servlet.TracingFilter;
 import brave.spring.webmvc.SpanCustomizingAsyncHandlerInterceptor;
 import javax.servlet.Filter;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +26,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import zipkin2.reporter.Sender;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
@@ -38,7 +38,7 @@ import zipkin2.reporter.okhttp3.OkHttpSender;
 @Configuration
 // Importing a class is effectively the same as declaring bean methods
 @Import(SpanCustomizingAsyncHandlerInterceptor.class)
-public class TracingConfiguration extends WebMvcConfigurerAdapter {
+public class TracingConfiguration {
   static final BaggageField USER_NAME = BaggageField.create("userName");
 
   /** Allows log patterns to use {@code %{traceId}} {@code %{spanId}} and {@code %{userName}} */
@@ -55,25 +55,30 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
   }
 
   /** Configuration for how to send spans to Zipkin */
-  @Bean Sender sender() {
-    return OkHttpSender.create("http://127.0.0.1:9411/api/v2/spans");
+  @Bean Sender sender(
+      @Value("${zipkin.endpoint:http://127.0.0.1:9411/api/v2/spans}") String zipkinEndpoint) {
+    return OkHttpSender.create(zipkinEndpoint);
   }
 
   /** Configuration for how to buffer spans into messages for Zipkin */
-  @Bean AsyncZipkinSpanHandler zipkinSpanHandler() {
-    return AsyncZipkinSpanHandler.create(sender());
+  @Bean AsyncZipkinSpanHandler zipkinSpanHandler(Sender sender) {
+    return AsyncZipkinSpanHandler.create(sender);
   }
 
   /** Controls aspects of tracing such as the service name that shows up in the UI */
-  @Bean Tracing tracing(@Value("${zipkin.service:brave-webmvc-example}") String serviceName) {
+  @Bean Tracing tracing(
+      @Value("${spring.application.name:brave-webmvc-example}") String serviceName,
+      Propagation.Factory propagationFactory,
+      ScopeDecorator correlationScopeDecorator,
+      AsyncZipkinSpanHandler zipkinSpanHandler) {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
-        .propagationFactory(propagationFactory())
+        .propagationFactory(propagationFactory)
         .currentTraceContext(ThreadLocalCurrentTraceContext.newBuilder()
-            .addScopeDecorator(correlationScopeDecorator())
+            .addScopeDecorator(correlationScopeDecorator)
             .build()
         )
-        .addSpanHandler(zipkinSpanHandler()).build();
+        .addSpanHandler(zipkinSpanHandler).build();
   }
 
   /** Allows someone to add tags to a span if a trace is in progress. */
@@ -100,10 +105,13 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
     };
   }
 
-  @Autowired SpanCustomizingAsyncHandlerInterceptor webMvcTracingCustomizer;
-
-  /** Decorates server spans with application-defined web tags */
-  @Override public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(webMvcTracingCustomizer);
+  @Bean WebMvcConfigurer tracingWebMvcConfigurer(
+      final SpanCustomizingAsyncHandlerInterceptor webMvcTracingCustomizer) {
+    return new WebMvcConfigurerAdapter() {
+      /** Decorates server spans with application-defined web tags */
+      @Override public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(webMvcTracingCustomizer);
+      }
+    };
   }
 }
