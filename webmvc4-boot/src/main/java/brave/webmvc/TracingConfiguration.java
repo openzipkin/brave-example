@@ -76,12 +76,14 @@ public class TracingConfiguration {
 
   /** Controls aspects of tracing such as the service name that shows up in the UI */
   @Bean Tracing tracing(
-      @Value("${spring.application.name:brave-webmvc-example}") String serviceName,
+      @Value("${spring.application.name}") String serviceName,
+      @Value("${zipkin.supportsJoin:true}") boolean supportsJoin,
       Propagation.Factory propagationFactory,
       CurrentTraceContext currentTraceContext,
       AsyncZipkinSpanHandler zipkinSpanHandler) {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
+        .supportsJoin(supportsJoin)
         .propagationFactory(propagationFactory)
         .currentTraceContext(currentTraceContext)
         .addSpanHandler(zipkinSpanHandler).build();

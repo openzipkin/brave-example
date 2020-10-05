@@ -1,0 +1,7 @@
+#!/bin/bash -v
+
+if [[ "$DOCKER_REPO" == "index.docker.io/openzipkin/example-brave" ]]; then
+  for target in webmvc4-boot; do
+    docker push "openzipkin/example-brave:${target}"
+  done
+fi

@@ -1,0 +1,11 @@
+#!/bin/bash -v
+
+# This hook is called with the current directory set to the same as the Dockerfile, so we go back
+# to top level.
+cd ..
+
+echo "Building images for $SOURCE_BRANCH"
+
+for target in webmvc4-boot; do
+  docker build -f "$DOCKERFILE_PATH" -t "openzipkin/example-brave:${target}" --target ${target} .
+done
