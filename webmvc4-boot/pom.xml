@@ -72,8 +72,10 @@
       <artifactId>spring-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <!-- Intentionally OkHttp 3 as it doesn't have a Kotlin dependency -->
+      <version>3.14.9</version>
     </dependency>
 
     <!-- Adds the MVC class and method names to server spans -->
@@ -84,7 +86,7 @@
     <!-- Instruments the underlying HttpClient requests that call the backend -->
     <dependency>
       <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-instrumentation-httpclient</artifactId>
+      <artifactId>brave-instrumentation-okhttp3</artifactId>
     </dependency>
 
     <!-- Integrates so you can use log patterns like %X{traceId}/%X{spanId} -->

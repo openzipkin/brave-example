@@ -9,21 +9,23 @@ import brave.baggage.BaggagePropagationConfig.SingleBaggageField;
 import brave.baggage.CorrelationScopeConfig.SingleCorrelationField;
 import brave.context.slf4j.MDCScopeDecorator;
 import brave.http.HttpTracing;
-import brave.httpclient.TracingHttpClientBuilder;
+import brave.okhttp3.TracingInterceptor;
 import brave.propagation.B3Propagation;
+import brave.propagation.CurrentTraceContext;
 import brave.propagation.CurrentTraceContext.ScopeDecorator;
 import brave.propagation.Propagation;
 import brave.propagation.ThreadLocalCurrentTraceContext;
 import brave.servlet.TracingFilter;
 import brave.spring.webmvc.SpanCustomizingAsyncHandlerInterceptor;
 import javax.servlet.Filter;
-import org.apache.http.impl.client.CloseableHttpClient;
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -45,6 +47,13 @@ public class TracingConfiguration {
   @Bean ScopeDecorator correlationScopeDecorator() {
     return MDCScopeDecorator.newBuilder()
         .add(SingleCorrelationField.create(USER_NAME)).build();
+  }
+
+  /** Propagates trace context between threads. */
+  @Bean CurrentTraceContext currentTraceContext(ScopeDecorator correlationScopeDecorator) {
+    return ThreadLocalCurrentTraceContext.newBuilder()
+        .addScopeDecorator(correlationScopeDecorator)
+        .build();
   }
 
   /** Configures propagation for {@link #USER_NAME}, using the remote header "user_name" */
@@ -69,15 +78,12 @@ public class TracingConfiguration {
   @Bean Tracing tracing(
       @Value("${spring.application.name:brave-webmvc-example}") String serviceName,
       Propagation.Factory propagationFactory,
-      ScopeDecorator correlationScopeDecorator,
+      CurrentTraceContext currentTraceContext,
       AsyncZipkinSpanHandler zipkinSpanHandler) {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
         .propagationFactory(propagationFactory)
-        .currentTraceContext(ThreadLocalCurrentTraceContext.newBuilder()
-            .addScopeDecorator(correlationScopeDecorator)
-            .build()
-        )
+        .currentTraceContext(currentTraceContext)
         .addSpanHandler(zipkinSpanHandler).build();
   }
 
@@ -96,11 +102,20 @@ public class TracingConfiguration {
     return TracingFilter.create(httpTracing);
   }
 
-  @Bean RestTemplateCustomizer useTracedHttpClient(HttpTracing httpTracing) {
-    final CloseableHttpClient httpClient = TracingHttpClientBuilder.create(httpTracing).build();
+  /**
+   * Trace {@link OkHttpClient} because {@link OkHttp3ClientHttpRequestFactory} doesn't take a
+   * {@link Call.Factory}
+   */
+  @Bean OkHttpClient tracedOkHttpClient(HttpTracing httpTracing) {
+    return new OkHttpClient.Builder()
+        .addNetworkInterceptor(TracingInterceptor.create(httpTracing))
+        .build();
+  }
+
+  @Bean RestTemplateCustomizer useTracedOkHttpClient(final OkHttpClient okHttpClient) {
     return new RestTemplateCustomizer() {
       @Override public void customize(RestTemplate restTemplate) {
-        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
+        restTemplate.setRequestFactory(new OkHttp3ClientHttpRequestFactory(okHttpClient));
       }
     };
   }
