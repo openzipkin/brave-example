@@ -9,24 +9,26 @@ import brave.baggage.BaggagePropagationConfig.SingleBaggageField;
 import brave.baggage.CorrelationScopeConfig.SingleCorrelationField;
 import brave.context.slf4j.MDCScopeDecorator;
 import brave.http.HttpTracing;
-import brave.httpclient.TracingHttpClientBuilder;
+import brave.okhttp3.TracingInterceptor;
 import brave.propagation.B3Propagation;
+import brave.propagation.CurrentTraceContext;
 import brave.propagation.CurrentTraceContext.ScopeDecorator;
 import brave.propagation.Propagation;
 import brave.propagation.ThreadLocalCurrentTraceContext;
 import brave.servlet.TracingFilter;
 import brave.spring.webmvc.SpanCustomizingAsyncHandlerInterceptor;
 import javax.servlet.Filter;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.springframework.beans.factory.annotation.Autowired;
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import zipkin2.reporter.Sender;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
@@ -38,13 +40,20 @@ import zipkin2.reporter.okhttp3.OkHttpSender;
 @Configuration
 // Importing a class is effectively the same as declaring bean methods
 @Import(SpanCustomizingAsyncHandlerInterceptor.class)
-public class TracingConfiguration extends WebMvcConfigurerAdapter {
+public class TracingConfiguration {
   static final BaggageField USER_NAME = BaggageField.create("userName");
 
   /** Allows log patterns to use {@code %{traceId}} {@code %{spanId}} and {@code %{userName}} */
   @Bean ScopeDecorator correlationScopeDecorator() {
     return MDCScopeDecorator.newBuilder()
         .add(SingleCorrelationField.create(USER_NAME)).build();
+  }
+
+  /** Propagates trace context between threads. */
+  @Bean CurrentTraceContext currentTraceContext(ScopeDecorator correlationScopeDecorator) {
+    return ThreadLocalCurrentTraceContext.newBuilder()
+        .addScopeDecorator(correlationScopeDecorator)
+        .build();
   }
 
   /** Configures propagation for {@link #USER_NAME}, using the remote header "user_name" */
@@ -55,25 +64,27 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
   }
 
   /** Configuration for how to send spans to Zipkin */
-  @Bean Sender sender() {
-    return OkHttpSender.create("http://127.0.0.1:9411/api/v2/spans");
+  @Bean Sender sender(
+      @Value("${zipkin.endpoint:http://127.0.0.1:9411/api/v2/spans}") String zipkinEndpoint) {
+    return OkHttpSender.create(zipkinEndpoint);
   }
 
   /** Configuration for how to buffer spans into messages for Zipkin */
-  @Bean AsyncZipkinSpanHandler zipkinSpanHandler() {
-    return AsyncZipkinSpanHandler.create(sender());
+  @Bean AsyncZipkinSpanHandler zipkinSpanHandler(Sender sender) {
+    return AsyncZipkinSpanHandler.create(sender);
   }
 
   /** Controls aspects of tracing such as the service name that shows up in the UI */
-  @Bean Tracing tracing(@Value("${zipkin.service:brave-webmvc-example}") String serviceName) {
+  @Bean Tracing tracing(
+      @Value("${spring.application.name:brave-webmvc-example}") String serviceName,
+      Propagation.Factory propagationFactory,
+      CurrentTraceContext currentTraceContext,
+      AsyncZipkinSpanHandler zipkinSpanHandler) {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
-        .propagationFactory(propagationFactory())
-        .currentTraceContext(ThreadLocalCurrentTraceContext.newBuilder()
-            .addScopeDecorator(correlationScopeDecorator())
-            .build()
-        )
-        .addSpanHandler(zipkinSpanHandler()).build();
+        .propagationFactory(propagationFactory)
+        .currentTraceContext(currentTraceContext)
+        .addSpanHandler(zipkinSpanHandler).build();
   }
 
   /** Allows someone to add tags to a span if a trace is in progress. */
@@ -91,19 +102,31 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
     return TracingFilter.create(httpTracing);
   }
 
-  @Bean RestTemplateCustomizer useTracedHttpClient(HttpTracing httpTracing) {
-    final CloseableHttpClient httpClient = TracingHttpClientBuilder.create(httpTracing).build();
+  /**
+   * Trace {@link OkHttpClient} because {@link OkHttp3ClientHttpRequestFactory} doesn't take a
+   * {@link Call.Factory}
+   */
+  @Bean OkHttpClient tracedOkHttpClient(HttpTracing httpTracing) {
+    return new OkHttpClient.Builder()
+        .addNetworkInterceptor(TracingInterceptor.create(httpTracing))
+        .build();
+  }
+
+  @Bean RestTemplateCustomizer useTracedOkHttpClient(final OkHttpClient okHttpClient) {
     return new RestTemplateCustomizer() {
       @Override public void customize(RestTemplate restTemplate) {
-        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
+        restTemplate.setRequestFactory(new OkHttp3ClientHttpRequestFactory(okHttpClient));
       }
     };
   }
 
-  @Autowired SpanCustomizingAsyncHandlerInterceptor webMvcTracingCustomizer;
-
-  /** Decorates server spans with application-defined web tags */
-  @Override public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(webMvcTracingCustomizer);
+  @Bean WebMvcConfigurer tracingWebMvcConfigurer(
+      final SpanCustomizingAsyncHandlerInterceptor webMvcTracingCustomizer) {
+    return new WebMvcConfigurerAdapter() {
+      /** Decorates server spans with application-defined web tags */
+      @Override public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(webMvcTracingCustomizer);
+      }
+    };
   }
 }

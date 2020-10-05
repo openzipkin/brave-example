@@ -40,13 +40,42 @@
   </dependencyManagement>
 
   <dependencies>
+    <!-- Configures Spring Boot with SLF4J logging -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+    <!-- Configures the lower overhead Jetty container -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jetty</artifactId>
+      <exclusions>
+        <exclusion>
+          <!-- This project doesn't use websocket -->
+          <groupId>org.eclipse.jetty.websocket</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.mortbay.jasper</groupId>
+          <artifactId>apache-el</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Adds the web libraries used in the example app -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <!-- Intentionally OkHttp 3 as it doesn't have a Kotlin dependency -->
+      <version>3.14.9</version>
     </dependency>
 
     <!-- Adds the MVC class and method names to server spans -->
@@ -57,7 +86,7 @@
     <!-- Instruments the underlying HttpClient requests that call the backend -->
     <dependency>
       <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-instrumentation-httpclient</artifactId>
+      <artifactId>brave-instrumentation-okhttp3</artifactId>
     </dependency>
 
     <!-- Integrates so you can use log patterns like %X{traceId}/%X{spanId} -->
@@ -92,6 +121,25 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.0.0</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring-boot.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- This can be overridden to brave.webmvc.Frontend also -->
+          <mainClass>brave.webmvc.Backend</mainClass>
+          <classifier>exec</classifier>
+          <executable>true</executable>
+        </configuration>
       </plugin>
 
       <plugin>

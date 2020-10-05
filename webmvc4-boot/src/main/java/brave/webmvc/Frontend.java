@@ -1,6 +1,7 @@
 package brave.webmvc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -16,12 +17,13 @@ public class Frontend {
 
   final RestTemplate restTemplate;
 
-  @Autowired Frontend(RestTemplateBuilder restTemplateBuilder) {
-    this.restTemplate = restTemplateBuilder.build();
+  @Autowired Frontend(@Value("${backend.rootUri:http://localhost:9000}") String backendEndpoint,
+      RestTemplateBuilder restTemplateBuilder) {
+    this.restTemplate = restTemplateBuilder.rootUri(backendEndpoint).build();
   }
 
   @RequestMapping("/") public String callBackend() {
-    return restTemplate.getForObject("http://localhost:9000/api", String.class);
+    return restTemplate.getForObject("/api", String.class);
   }
 
   public static void main(String[] args) {
