@@ -18,6 +18,9 @@
 
     <spring.version>3.2.18.RELEASE</spring.version>
     <brave.version>5.12.6</brave.version>
+
+    <jetty.groupId>org.mortbay.jetty</jetty.groupId>
+    <jetty.version>7.6.16.v20140903</jetty.version>
   </properties>
 
   <dependencyManagement>
@@ -94,13 +97,51 @@
       <groupId>io.zipkin.reporter2</groupId>
       <artifactId>zipkin-sender-okhttp3</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <!-- 3.12.12 was the last version to support Java 1.7 -->
+      <version>3.12.12 </version>
+    </dependency>
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>${jetty.groupId}</groupId>
+          <artifactId>jetty-maven-plugin</artifactId>
+          <version>${jetty.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <!-- 1.7.0_80 to prevent a compile bug accessing CrossOrigin.
+                       JDK 11 is the last version to compile Java 6 bytecode. -->
+                  <version>[1.7.0_80,12)</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -113,15 +154,6 @@
         </configuration>
       </plugin>
     </plugins>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.mortbay.jetty</groupId>
-          <artifactId>jetty-maven-plugin</artifactId>
-          <version>7.6.16.v20140903</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
   <profiles>
@@ -130,7 +162,7 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.mortbay.jetty</groupId>
+            <groupId>${jetty.groupId}</groupId>
             <artifactId>jetty-maven-plugin</artifactId>
             <configuration>
               <connectors>
@@ -154,7 +186,7 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.mortbay.jetty</groupId>
+            <groupId>${jetty.groupId}</groupId>
             <artifactId>jetty-maven-plugin</artifactId>
             <configuration>
               <connectors>

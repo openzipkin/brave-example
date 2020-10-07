@@ -1,20 +1,15 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:mvc="http://www.springframework.org/schema/mvc"
-    xsi:schemaLocation="
-        http://www.springframework.org/schema/beans
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-        http://www.springframework.org/schema/mvc
-        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
         http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 
-  <bean id="httpClientBuilder" class="brave.httpclient.TracingHttpClientBuilder"
-      factory-method="create">
-    <constructor-arg ref="httpTracing"/>
-  </bean>
-
+  <!-- Declare the builder separate from the client, so that it can be overridden -->
   <bean id="httpClient" factory-bean="httpClientBuilder" factory-method="build"/>
 
   <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
@@ -28,8 +23,18 @@
   <mvc:interceptors>
     <bean class="brave.spring.webmvc.SpanCustomizingHandlerInterceptor"/>
   </mvc:interceptors>
+  <context:property-placeholder/>
+  <!-- Loads the controllers -->
+  <bean class="brave.webmvc.Frontend">
+    <constructor-arg ref="restTemplate"/>
+    <constructor-arg value="${backend.endpoint:http://localhost:9000/api}"/>
+  </bean>
+  <bean class="brave.webmvc.Backend"/>
 
-  <!-- Loads the controller -->
-  <context:component-scan base-package="brave.webmvc"/>
-  <mvc:annotation-driven/>
+  <!-- Creates HTTP client spans for each invocation in RestTemplate -->
+  <!-- TODO: ideally this could be in a different file -->
+  <bean id="httpClientBuilder" class="brave.httpclient.TracingHttpClientBuilder"
+      factory-method="create">
+    <constructor-arg ref="httpTracing"/>
+  </bean>
 </beans>

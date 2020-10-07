@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class Backend {
-
   @RequestMapping("/api")
   public ResponseEntity<String> printDate(
       @RequestHeader(value = "user_name", required = false) String username

@@ -12,11 +12,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class Frontend {
-  @Autowired HttpClient client;
+  final HttpClient client;
+  final String backendEndpoint;
+
+  @Autowired Frontend(HttpClient client, String backendEndpoint) {
+    this.client = client;
+    this.backendEndpoint = backendEndpoint;
+  }
 
   @RequestMapping("/")
   public void callBackend(HttpServletResponse resp) throws IOException {
-    HttpGet request = new HttpGet("http://localhost:9000/api");
+    HttpGet request = new HttpGet(backendEndpoint);
     HttpResponse response = client.execute(request);
     resp.getWriter().write(EntityUtils.toString(response.getEntity()));
   }

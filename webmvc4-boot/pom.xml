@@ -83,7 +83,7 @@
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-instrumentation-spring-webmvc</artifactId>
     </dependency>
-    <!-- Instruments the underlying HttpClient requests that call the backend -->
+    <!-- Instruments the underlying OkHttpClient requests that call the backend -->
     <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-instrumentation-okhttp3</artifactId>

@@ -15,15 +15,13 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @CrossOrigin // So that javascript can be hosted elsewhere
 public class Frontend {
-
-  final String backendEndpoint;
   final RestTemplate restTemplate;
+  final String backendEndpoint;
 
-  @Autowired Frontend(
-      @Value("${backend.endpoint:http://localhost:9000/api}") String backendEndpoint,
-      RestTemplateBuilder restTemplateBuilder) {
-    this.backendEndpoint = backendEndpoint;
+  @Autowired Frontend(RestTemplateBuilder restTemplateBuilder,
+      @Value("${backend.endpoint:http://localhost:9000/api}") String backendEndpoint) {
     this.restTemplate = restTemplateBuilder.build();
+    this.backendEndpoint = backendEndpoint;
   }
 
   @RequestMapping("/") public String callBackend() {
@@ -37,7 +35,7 @@ public class Frontend {
     application.setLogStartupInfo(false);
     application.setBannerMode(Banner.Mode.OFF);
 
-    SpringApplication.run(Frontend.class,
+    application.run(
         "--spring.application.name=frontend",
         "--server.port=8081"
     );

@@ -7,16 +7,16 @@ import brave.baggage.BaggageField;
 import brave.baggage.BaggagePropagation;
 import brave.baggage.BaggagePropagationConfig.SingleBaggageField;
 import brave.baggage.CorrelationScopeConfig.SingleCorrelationField;
-import brave.context.log4j2.ThreadContextScopeDecorator;
+import brave.context.slf4j.MDCScopeDecorator;
 import brave.http.HttpTracing;
-import brave.httpclient.TracingHttpClientBuilder;
+import brave.okhttp3.TracingInterceptor;
 import brave.propagation.B3Propagation;
 import brave.propagation.CurrentTraceContext.ScopeDecorator;
 import brave.propagation.Propagation;
 import brave.propagation.ThreadLocalCurrentTraceContext;
 import brave.spring.webmvc.DelegatingTracingFilter;
 import brave.spring.webmvc.SpanCustomizingAsyncHandlerInterceptor;
-import org.apache.http.client.HttpClient;
+import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +43,7 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
 
   /** Allows log patterns to use {@code %{traceId}} {@code %{spanId}} and {@code %{userName}} */
   @Bean ScopeDecorator correlationScopeDecorator() {
-    return ThreadContextScopeDecorator.newBuilder()
+    return MDCScopeDecorator.newBuilder()
         .add(SingleCorrelationField.create(USER_NAME)).build();
   }
 
@@ -86,14 +86,16 @@ public class TracingConfiguration extends WebMvcConfigurerAdapter {
     return HttpTracing.create(tracing);
   }
 
-  /** adds tracing to any underlying http client calls */
-  @Bean HttpClient httpClient(HttpTracing httpTracing) {
-    return TracingHttpClientBuilder.create(httpTracing).build();
+  /** Adds tracing to any underlying HTTP client calls */
+  @Bean OkHttpClient httpClient(HttpTracing httpTracing) {
+    return new OkHttpClient.Builder()
+        .addNetworkInterceptor(TracingInterceptor.create(httpTracing))
+        .build();
   }
 
   @Autowired SpanCustomizingAsyncHandlerInterceptor serverInterceptor;
 
-  /** adds tracing to the application-defined web controller */
+  /** Adds application-defined web controller details to HTTP server spans */
   @Override public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(serverInterceptor);
   }

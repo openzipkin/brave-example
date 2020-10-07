@@ -9,11 +9,16 @@ import org.springframework.web.client.RestTemplate;
 
 @Controller
 public class Frontend {
-  @Autowired RestTemplate template;
+  final RestTemplate restTemplate;
+  final String backendEndpoint;
 
-  @RequestMapping("/")
-  public ResponseEntity<String> callBackend() {
-    String result = template.getForObject("http://localhost:9000/api", String.class);
+  @Autowired Frontend(RestTemplate restTemplate, String backendEndpoint) {
+    this.backendEndpoint = backendEndpoint;
+    this.restTemplate = restTemplate;
+  }
+
+  @RequestMapping("/") public ResponseEntity<String> callBackend() {
+    String result = restTemplate.getForObject(backendEndpoint, String.class);
     return new ResponseEntity<String>(result, HttpStatus.OK);
   }
 }

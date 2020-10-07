@@ -2,7 +2,7 @@
 
 ### ExampleInitializer
 
-Instead of a web.xml file, this uses a Servlet 3.0
+Instead of a web.xml file, this uses a Servlet 3.1
 `ServletContainerInitializer` to setup the app and tracing of it.
 
 `Initializer` is indirectly invoked by `SpringServletContainerInitializer`,

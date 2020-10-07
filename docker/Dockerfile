@@ -1,47 +1,89 @@
-ARG java_version=15.0.0-15.27.17
+# These examples are setup minimally. In order to reduce repetition, these do not setup
+# non-root users and such as they are not intended to run in production anyway.
 
-# We copy files from the context into a scratch container first to avoid a problem where docker and
-# docker-compose don't share layer hashes https://github.com/docker/compose/issues/883 normally.
-# COPY --from= works around the issue.
-
-FROM scratch as scratch
-
-COPY . /code/
-
-FROM openzipkin/java:${java_version} as built
+## Use JDK 11 to build projects, as that can still compile Java 6
+FROM openzipkin/java:11.0.8-11.41.23 as built
 
 # Copy and build the source
 WORKDIR /code
-COPY --from=scratch /code .
-RUN for TARGET in webmvc4-boot; do cd ${TARGET} && \
+COPY . .
+
+ARG jetty_examples="webmvc25 webmvc3"
+ARG boot_examples=webmvc4-boot
+ARG all_examples="webmvc25 webmvc3 webmvc4-boot"
+
+# All projects build similarly. The difference is in what is packaged
+RUN for project in $all_examples; do cd ${project} && \
       mvn -q --batch-mode -DskipTests package && \
-      JAR=/code/${TARGET}/target/*-exec.jar && \
-      (mkdir -p /built/${TARGET} && cd /built/${TARGET} && jar xf ${JAR}) && \
+      mkdir -p /built/${project} && \
     cd - ; done
 
-# Copy scripts used in the Dockerfile
-RUN cp -r /code/docker/bin/ /built/
+# Jetty based projects use jetty-runner. The built project is the root web context.
+RUN for project in $jetty_examples; do cd /built/${project} && \
+      # Get the same version of jetty-runner as the Maven project uses
+      mvn_property() { mvn -f /code/${project} help:evaluate -Dexpression=$1 -q -DforceStdout;} && \
+      jettyGroupId=$(mvn_property jetty.groupId) && \
+      jettyVersion=$(mvn_property jetty.version) && \
+      # Use maven to get the jetty-runner so it is cached if multiple projects use it
+      mvn -q --batch-mode org.apache.maven.plugins:maven-dependency-plugin:get \
+          -Dtransitive=false -Dartifact=${jettyGroupId}:jetty-runner:${jettyVersion}:jar && \
+      # Unzip the jetty-runner so that it is faster to start
+      find ~/.m2/repository -name jetty-runner-${jettyVersion}.jar -exec jar xf {} \; && \
+      # Add the start script and the root war
+      cp -p /code/docker/bin/start-jetty-example start-brave-example && \
+      cp -r /code/${project}/target/*-SNAPSHOT root && \
+    cd - ; done
 
-# Almost everything is common between variants
-FROM openzipkin/java:${java_version}-jre as brave-example
+# Spring Boot based projects unzip the "exec" jar as it is faster at runtime.
+RUN for project in $boot_examples; do cd /built/${project} && \
+      cp -p /code/docker/bin/start-boot-example start-brave-example && \
+      jar xf /code/${project}/target/*-exec.jar && \
+    cd - ; done
 
-# Use to set heap, trust store or other system properties.
-ENV JAVA_OPTS -Xms32m -Xmx64m -XX:+ExitOnOutOfMemoryError
+## Spring WebMVC 2.5/Servlet 2.5/Jetty 7/Java 6 example
+FROM azul/zulu-openjdk-alpine:6u119-6.22.0.3 as webmvc25
 
-# All content including binaries and logs write under WORKDIR
-ARG USER=brave-example
-WORKDIR /${USER}
-
-# Ensure the process doesn't run as root
-RUN adduser -g '' -h ${PWD} -D ${USER}
-USER ${USER}
-
-COPY --from=built /built/bin/ /usr/local/bin/
+WORKDIR /brave-example
+COPY --from=built /built/webmvc25/ .
 
 EXPOSE 8081 9000
 
-ENTRYPOINT ["start-brave-example"]
+# When using JRE 1.6, we cannot use -XX:+ExitOnOutOfMemoryError
+ENV JAVA_OPTS="-Xms32m -Xmx64m -verbose:gc"
+ENTRYPOINT ["/brave-example/start-brave-example"]
 
-FROM brave-example as webmvc4-boot
+## Spring WebMVC 3/Servlet 2.5/Jetty 7/Java 7 example
+FROM openzipkin/java:1.7.0_261-b02-jre as webmvc3
 
-COPY --from=built --chown=${USER} /built/webmvc4-boot/ .
+WORKDIR /brave-example
+COPY --from=built /built/webmvc3/ .
+
+EXPOSE 8081 9000
+
+ENV JAVA_OPTS="-Xms32m -Xmx64m -XX:+ExitOnOutOfMemoryError -verbose:gc"
+
+ENTRYPOINT ["/brave-example/start-brave-example"]
+
+## Spring WebMVC 4/Servlet 3.1/Jetty 9/Java 8 example
+FROM openzipkin/java:1.8.0_252-b09-jre as webmvc4
+
+WORKDIR /brave-example
+COPY --from=built /built/webmvc4/ .
+
+EXPOSE 8081 9000
+
+ENV JAVA_OPTS="-Xms32m -Xmx64m -XX:+ExitOnOutOfMemoryError -verbose:gc"
+
+ENTRYPOINT ["/brave-example/start-brave-example"]
+
+## Spring WebMVC 4/Spring Boot 1.5/Java 8 example
+FROM openzipkin/java:1.8.0_252-b09-jre as webmvc4-boot
+
+WORKDIR /brave-example
+COPY --from=built /built/webmvc4-boot/ .
+
+EXPOSE 8081 9000
+
+ENV JAVA_OPTS="-Xms32m -Xmx64m -XX:+ExitOnOutOfMemoryError"
+
+ENTRYPOINT ["/brave-example/start-brave-example"]

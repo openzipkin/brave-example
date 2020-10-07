@@ -18,6 +18,9 @@
 
     <spring.version>2.5.6</spring.version>
     <brave.version>5.12.6</brave.version>
+
+    <jetty.groupId>org.mortbay.jetty</jetty.groupId>
+    <jetty.version>7.6.16.v20140903</jetty.version>
   </properties>
 
   <dependencyManagement>
@@ -110,7 +113,9 @@
             <configuration>
               <rules>
                 <requireJavaVersion>
-                  <version>[1.7,1.8)</version>
+                  <!-- 1.7.0_80 to prevent a compile bug accessing CrossOrigin.
+                       JDK 11 is the last version to compile Java 6 bytecode. -->
+                  <version>[1.7.0_80,12)</version>
                 </requireJavaVersion>
               </rules>
             </configuration>
@@ -131,9 +136,9 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.mortbay.jetty</groupId>
+          <groupId>${jetty.groupId}</groupId>
           <artifactId>jetty-maven-plugin</artifactId>
-          <version>7.6.16.v20140903</version>
+          <version>${jetty.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -145,7 +150,7 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.mortbay.jetty</groupId>
+            <groupId>${jetty.groupId}</groupId>
             <artifactId>jetty-maven-plugin</artifactId>
             <configuration>
               <connectors>
@@ -169,7 +174,7 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.mortbay.jetty</groupId>
+            <groupId>${jetty.groupId}</groupId>
             <artifactId>jetty-maven-plugin</artifactId>
             <configuration>
               <connectors>

@@ -76,7 +76,7 @@ public class TracingConfiguration {
 
   /** Controls aspects of tracing such as the service name that shows up in the UI */
   @Bean Tracing tracing(
-      @Value("${spring.application.name}") String serviceName,
+      @Value("${zipkin.service:${spring.application.name}}") String serviceName,
       @Value("${zipkin.supportsJoin:true}") boolean supportsJoin,
       Propagation.Factory propagationFactory,
       CurrentTraceContext currentTraceContext,
@@ -125,7 +125,7 @@ public class TracingConfiguration {
   @Bean WebMvcConfigurer tracingWebMvcConfigurer(
       final SpanCustomizingAsyncHandlerInterceptor webMvcTracingCustomizer) {
     return new WebMvcConfigurerAdapter() {
-      /** Decorates server spans with application-defined web tags */
+      /** Adds application-defined web controller details to HTTP server spans */
       @Override public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(webMvcTracingCustomizer);
       }

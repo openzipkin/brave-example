@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -eu
+
+case "$1" in
+  f|frontend|Frontend )
+    CLASS_NAME=Frontend
+    ;;
+  b|backend|Backend )
+    CLASS_NAME=Backend
+    ;;
+  * )
+    echo "Invalid argument: specify frontend or backend"
+    exit 1
+esac
+
+exec java ${JAVA_OPTS} -cp . \
+  -Dzipkin.endpoint=${ZIPKIN_ENDPOINT:=http://zipkin:9411/api/v2/spans} \
+  -Dzipkin.supportsJoin=${ZIPKIN_SUPPORTS_JOIN:=true} \
+  -Dbackend.endpoint=${BACKEND_ENDPOINT:=http://backend:9000/api} \
+  -Dloader.main=brave.webmvc.${CLASS_NAME} org.springframework.boot.loader.PropertiesLauncher

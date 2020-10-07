@@ -17,8 +17,11 @@
     <maven.compiler.target>1.7</maven.compiler.target>
 
     <spring.version>4.3.28.RELEASE</spring.version>
-    <log4j.version>2.13.3</log4j.version>
+    <slf4j.version>1.7.30</slf4j.version>
     <brave.version>5.12.6</brave.version>
+
+    <jetty.groupId>org.eclipse.jetty</jetty.groupId>
+    <jetty.version>9.4.26.v20200117</jetty.version>
   </properties>
 
   <dependencyManagement>
@@ -51,9 +54,10 @@
       <version>${spring.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>4.5.12</version>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <!-- Intentionally OkHttp 3 as it doesn't have a Kotlin dependency -->
+      <version>3.14.9</version>
     </dependency>
 
     <!-- Adds the MVC class and method names to server spans -->
@@ -61,36 +65,31 @@
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-instrumentation-spring-webmvc</artifactId>
     </dependency>
-    <!-- Instruments the underlying HttpClient requests that call the backend -->
+    <!-- Instruments the underlying OkHttpClient requests that call the backend -->
     <dependency>
       <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-instrumentation-httpclient</artifactId>
+      <artifactId>brave-instrumentation-okhttp3</artifactId>
     </dependency>
 
     <!-- Integrates so you can use log patterns like %X{traceId}/%X{spanId} -->
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <version>${log4j.version}</version>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <version>${slf4j.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jul</artifactId>
-      <version>${log4j.version}</version>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jcl</artifactId>
-      <version>${log4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
-      <version>${log4j.version}</version>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.3</version>
     </dependency>
     <dependency>
       <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-context-log4j2</artifactId>
+      <artifactId>brave-context-slf4j</artifactId>
     </dependency>
 
     <!-- The below are needed to report traces to http://localhost:9411/api/v2/spans -->
@@ -131,8 +130,9 @@
             <configuration>
               <rules>
                 <requireJavaVersion>
-                  <!-- prevent a compile bug accessing CrossOrigin -->
-                  <version>[1.7.0_80,)</version>
+                  <!-- 1.7.0_80 to prevent a compile bug accessing CrossOrigin.
+                     JDK 11 is the last version to compile Java 6 bytecode. -->
+                  <version>[1.7.0_80,12)</version>
                 </requireJavaVersion>
               </rules>
             </configuration>
@@ -152,9 +152,9 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.eclipse.jetty</groupId>
+          <groupId>${jetty.groupId}</groupId>
           <artifactId>jetty-maven-plugin</artifactId>
-          <version>9.4.26.v20200117</version>
+          <version>${jetty.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -166,7 +166,7 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.eclipse.jetty</groupId>
+            <groupId>${jetty.groupId}</groupId>
             <artifactId>jetty-maven-plugin</artifactId>
             <configuration>
               <httpConnector>
@@ -188,7 +188,7 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.eclipse.jetty</groupId>
+            <groupId>${jetty.groupId}</groupId>
             <artifactId>jetty-maven-plugin</artifactId>
             <configuration>
               <httpConnector>

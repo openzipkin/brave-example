@@ -9,3 +9,6 @@
 
 **/Dockerfile
 docker/hooks/**
+
+# Ignore if someone downloaded zipkin using curl here
+zipkin.jar
