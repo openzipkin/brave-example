@@ -8,9 +8,9 @@ FROM openzipkin/java:11.0.8-11.41.23 as built
 WORKDIR /code
 COPY . .
 
-ARG jetty_examples="webmvc25 webmvc3"
+ARG jetty_examples="webmvc25 webmvc3 webmvc4"
 ARG boot_examples=webmvc4-boot
-ARG all_examples="webmvc25 webmvc3 webmvc4-boot"
+ARG all_examples="webmvc25 webmvc3 webmvc4 webmvc4-boot"
 
 # All projects build similarly. The difference is in what is packaged
 RUN for project in $all_examples; do cd ${project} && \
@@ -49,7 +49,7 @@ COPY --from=built /built/webmvc25/ .
 EXPOSE 8081 9000
 
 # When using JRE 1.6, we cannot use -XX:+ExitOnOutOfMemoryError
-ENV JAVA_OPTS="-Xms32m -Xmx64m -verbose:gc"
+ENV JAVA_OPTS="-Xms16m -Xmx16m"
 ENTRYPOINT ["/brave-example/start-brave-example"]
 
 ## Spring WebMVC 3/Servlet 2.5/Jetty 7/Java 7 example
@@ -60,7 +60,7 @@ COPY --from=built /built/webmvc3/ .
 
 EXPOSE 8081 9000
 
-ENV JAVA_OPTS="-Xms32m -Xmx64m -XX:+ExitOnOutOfMemoryError -verbose:gc"
+ENV JAVA_OPTS="-Xms16m -Xmx16m -XX:+ExitOnOutOfMemoryError"
 
 ENTRYPOINT ["/brave-example/start-brave-example"]
 
@@ -72,7 +72,7 @@ COPY --from=built /built/webmvc4/ .
 
 EXPOSE 8081 9000
 
-ENV JAVA_OPTS="-Xms32m -Xmx64m -XX:+ExitOnOutOfMemoryError -verbose:gc"
+ENV JAVA_OPTS="-Xms16m -Xmx16m -XX:+ExitOnOutOfMemoryError"
 
 ENTRYPOINT ["/brave-example/start-brave-example"]
 
