@@ -1,11 +1,10 @@
-#!/bin/bash -v
+#!/bin/sh -v
 
 # This hook is called with the current directory set to the same as the Dockerfile, so we go back
 # to top level.
 cd ..
 
-echo "Building images for $SOURCE_BRANCH"
-
-for target in webmvc4-boot; do
+ALL_EXAMPLES=$(sed -n '/^ARG all_examples/s/.*"\(.*\)"/\1/gp' "$DOCKERFILE_PATH")
+for target in ${ALL_EXAMPLES}; do
   docker build -f "$DOCKERFILE_PATH" -t "openzipkin/example-brave:${target}" --target ${target} .
 done

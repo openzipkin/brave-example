@@ -1,7 +1,9 @@
-#!/bin/bash -v
+#!/bin/sh -v
 
 if [[ "$DOCKER_REPO" == "index.docker.io/openzipkin/example-brave" ]]; then
-  for target in webmvc4-boot; do
+  ALL_EXAMPLES=$(sed -n '/^ARG all_examples/s/.*"\(.*\)"/\1/gp' "$DOCKERFILE_PATH")
+
+  for target in ${ALL_EXAMPLES}; do
     docker push "openzipkin/example-brave:${target}"
   done
 fi
