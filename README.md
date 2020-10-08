@@ -1,7 +1,7 @@
 # Basic example showing distributed tracing across servlet applications
 This is an example app where two Servlet (Java) services collaborate on
 an http request. Notably, timing of these requests are recorded into
-[Zipkin](http://zipkin.io/), a distributed tracing system. This allows
+[Zipkin](https://zipkin.io/), a distributed tracing system. This allows
 you to see the how long the whole operation took, as well how much time
 was spent in each service.
 
@@ -32,8 +32,8 @@ Next, you can view traces that went through the backend via http://localhost:941
 ## Starting the Services
 
 ### Servlet Container Option
-In a separate tab or window, start each of [brave.webmvc.Frontend](/webmvc4/src/main/java/brave/webmvc/Frontend.java)
-and [brave.webmvc.Backend](/webmvc4/src/main/java/brave/webmvc/Backend.java):
+In a separate tab or window, start each of [brave.webmvc.Frontend](/webmvc4-jetty/src/main/java/brave/webmvc/Frontend.java)
+and [brave.webmvc.Backend](/webmvc4-jetty/src/main/java/brave/webmvc/Backend.java):
 ```bash
 # choose webmvc25 webmvc3 or webmvc4
 $ cd webmvc4
@@ -50,7 +50,7 @@ $ mvn compile exec:java -Dexec.mainClass=brave.webmvc.Backend
 $ mvn compile exec:java -Dexec.mainClass=brave.webmvc.Frontend
 ```
 
-Next, run [Zipkin](http://zipkin.io/), which stores and queries traces
+Next, run [Zipkin](https://zipkin.io/), which stores and queries traces
 reported by the above services.
 
 ```bash
@@ -58,11 +58,15 @@ curl -sSL https://zipkin.io/quickstart.sh | bash -s
 java -jar zipkin.jar
 ```
 
+### Docker Option
+You can run any configuration using pre-built Docker images. Look at
+[docker](docker) for examples.
+
 ## Configuration tips
 To show how wiring works, we have three copies of the same project
-* [WebMVC 2.5](./webmvc25) - Spring XML on Servlet 2.5 container 
-* [WebMVC 3](./webmvc3) - Spring XML on Servlet 3 container 
-* [WebMVC 4](./webmvc4) - Spring Java Config on Servlet 3 container 
+* [WebMVC 2.5](webmvc25-jetty) - Spring XML on Servlet 2.5 container
+* [WebMVC 3](webmvc3-jetty) - Spring XML on Servlet 3 container
+* [WebMVC 4](webmvc4-jetty) - Spring Java Config on Servlet 3 container
 
 There are some interesting details that apply to both
 * If you pass the header `user_name` Brave will automatically propagate it to the backend!

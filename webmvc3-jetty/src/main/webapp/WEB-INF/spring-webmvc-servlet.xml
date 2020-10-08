@@ -1,0 +1,43 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+  <!-- Declare the builder separate from the client, so that it can be overridden -->
+  <bean id="httpClient" factory-bean="httpClientBuilder" factory-method="build"/>
+
+  <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+    <constructor-arg>
+      <bean class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+        <constructor-arg ref="httpClient"/>
+      </bean>
+    </constructor-arg>
+  </bean>
+
+  <mvc:interceptors>
+    <bean class="brave.spring.webmvc.SpanCustomizingHandlerInterceptor"/>
+  </mvc:interceptors>
+
+  <!-- allows us to read the backend.endpoint from spring config -->
+  <context:property-placeholder/>
+
+  <!-- Loads the controllers -->
+  <bean class="brave.webmvc.Frontend">
+    <constructor-arg ref="restTemplate"/>
+    <constructor-arg value="${backend.endpoint:http://localhost:9000/api}"/>
+  </bean>
+  <bean class="brave.webmvc.Backend"/>
+
+  <!-- Creates HTTP client spans for each invocation in RestTemplate -->
+  <!-- TODO: ideally this could be in a different file -->
+  <bean id="httpClientBuilder" class="brave.httpclient.TracingHttpClientBuilder"
+      factory-method="create">
+    <constructor-arg ref="httpTracing"/>
+  </bean>
+</beans>

@@ -1,0 +1,11 @@
+#!/bin/sh -v
+
+# This hook is called with the current directory set to the same as the Dockerfile, so we go back
+# to top level.
+cd ..
+
+ALL_EXAMPLES=$(ls */pom.xml|sed 's~/pom.xml~~g')
+for target in ${ALL_EXAMPLES}; do
+  DOCKER_BUILDKIT=1 docker build -f "$DOCKERFILE_PATH" -t "openzipkin/example-brave:${target}" \
+  --target ${target} --build-arg target=${target} .
+done

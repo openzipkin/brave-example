@@ -1,0 +1,44 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+  <bean id="httpClientBuilder" class="brave.httpclient.TracingHttpClientBuilder"
+      factory-method="create">
+    <constructor-arg type="brave.http.HttpTracing" ref="httpTracing"/>
+  </bean>
+
+  <bean id="httpClient" factory-bean="httpClientBuilder" factory-method="build"/>
+
+  <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    <property name="interceptors">
+      <list>
+        <bean class="brave.spring.webmvc.SpanCustomizingHandlerInterceptor"/>
+      </list>
+    </property>
+  </bean>
+
+  <!-- Set the properties the controllers need, configured to override with system properties. -->
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="systemPropertiesMode">
+      <util:constant
+          static-field="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+    </property>
+    <property name="properties">
+      <props>
+        <prop key="backend.endpoint">http://localhost:9000/api</prop>
+      </props>
+    </property>
+  </bean>
+
+  <!-- Loads the controllers -->
+  <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+  <bean class="brave.webmvc.Frontend">
+    <constructor-arg ref="httpClient"/>
+    <constructor-arg value="${backend.endpoint}"/>
+  </bean>
+  <bean class="brave.webmvc.Backend"/>
+</beans>
