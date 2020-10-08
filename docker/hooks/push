@@ -1,5 +1,6 @@
 #!/bin/sh -v
 
+# Override push to avoid pushing a latest tag. We use tags for each example.
 if [ "$DOCKER_REPO" = "index.docker.io/openzipkin/example-brave" ]; then
   ALL_EXAMPLES=$(cd ../; ls */pom.xml|sed 's~/pom.xml~~g')
 

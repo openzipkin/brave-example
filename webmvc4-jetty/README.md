@@ -1,4 +1,4 @@
-## Brave Example: Spring WebMVC 4/Servlet 3.1/Jetty 9
+## Tracing Example: Spring WebMVC 4/Servlet 3.1/Jetty 9
 
 ### ExampleInitializer
 

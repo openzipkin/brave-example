@@ -9,7 +9,7 @@
   <packaging>jar</packaging>
 
   <name>brave-example-webmvc4-boot</name>
-  <description>Brave Example: Spring WebMVC 4/Spring Boot 1.5</description>
+  <description>Tracing Example: Spring WebMVC 4/Spring Boot 1.5</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
