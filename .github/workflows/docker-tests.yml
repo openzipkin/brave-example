@@ -18,7 +18,7 @@ jobs:
         uses: docker-practice/actions-setup-docker@master
         with:
           docker_version: ${{ matrix.docker-version }}
-          docker_buildx: false
+          docker_buildx: true
       - name: Cache docker
         uses: actions/cache@v1
         with:
