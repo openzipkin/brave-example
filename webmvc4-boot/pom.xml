@@ -45,6 +45,11 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
     </dependency>
+    <!-- Adds /health endpoint -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-actuator</artifactId>
+    </dependency>
     <!-- Configures the lower overhead Jetty container -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

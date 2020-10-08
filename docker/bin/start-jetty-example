@@ -16,8 +16,13 @@ case "$1" in
     exit 1
 esac
 
+# write the docker-healthcheck url to a file
+IP="$(hostname -i || echo '127.0.0.1')"
+echo http://${IP}:${PORT}/health > health_url
+
 exec java ${JAVA_OPTS} -cp . \
   -Dzipkin.endpoint=${ZIPKIN_ENDPOINT:=http://zipkin:9411/api/v2/spans} \
   -Dzipkin.supportsJoin=${ZIPKIN_SUPPORTS_JOIN:=true} \
   -Dbackend.endpoint=${BACKEND_ENDPOINT:=http://backend:9000/api} \
-  -Dzipkin.service=${ZIPKIN_SERVICE} org.mortbay.jetty.runner.Runner --port $PORT root
+  -Dzipkin.service=${ZIPKIN_SERVICE} org.eclipse.jetty.runner.Runner \
+  --port $PORT root

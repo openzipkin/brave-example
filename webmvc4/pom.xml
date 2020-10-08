@@ -21,7 +21,8 @@
     <brave.version>5.12.6</brave.version>
 
     <jetty.groupId>org.eclipse.jetty</jetty.groupId>
-    <jetty.version>9.4.26.v20200117</jetty.version>
+    <!-- Last Jetty version to support JRE 1.7 -->
+    <jetty.version>9.2.29.v20191105</jetty.version>
   </properties>
 
   <dependencyManagement>
@@ -56,8 +57,8 @@
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <!-- Intentionally OkHttp 3 as it doesn't have a Kotlin dependency -->
-      <version>3.14.9</version>
+      <!-- 3.12.12 was the last version to support Java 1.7 -->
+      <version>3.12.12</version>
     </dependency>
 
     <!-- Adds the MVC class and method names to server spans -->
