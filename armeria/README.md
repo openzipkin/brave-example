@@ -22,10 +22,10 @@ Next, you can view traces that went through the backend via http://localhost:941
 * This is a locally run zipkin service which keeps traces in memory
 
 ## Starting the Services
-In a separate tab or window, start each of [armeria.Frontend](/src/main/java/armeria/Frontend.java) and [armeria.Backend](/src/main/java/armeria/Backend.java):
+In a separate tab or window, start each of [Frontend](/brave/example/armeria/Frontend.java) and [Backend](/brave/example/armeria/Backend.java):
 ```bash
-$ ./mvnw compile exec:java -Dexec.mainClass=armeria.Frontend
-$ ./mvnw compile exec:java -Dexec.mainClass=armeria.Backend
+$ mvn compile exec:java -Dexec.mainClass=brave.example.Frontend
+$ mvn compile exec:java -Dexec.mainClass=brave.example.Backend
 ```
 
 Next, run [Zipkin](http://zipkin.io/), which stores and queries traces reported by the above services.

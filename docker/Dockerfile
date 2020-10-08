@@ -27,12 +27,30 @@ WORKDIR /install/${target}
 # invoke the platfom-specific install script and copy the results
 RUN cd /code/$target && mvn -q --batch-mode -DskipTests package && \
     platform=$(echo $target|cut -d- -f2) && \
+    if [ "$platform" = "armeria" ]; then platform=java;fi && \
     /code/docker/bin/install-${platform}-example && \
     cp -rp install/* /install/${target}/ && \
 # Add start and health check scripts
     mkdir /install/${target}/docker-bin && cd /install/${target}/docker-bin && \
     cp -p /code/docker/bin/docker-healthcheck . && \
     cp -p /code/docker/bin/start-${platform}-example start-brave-example
+
+FROM openzipkin/java:15.0.0-15.27.17-jre as armeria
+LABEL description="Tracing Example: Armeria/Java 15"
+
+WORKDIR /brave-example
+COPY --from=install /install/armeria/ .
+# Add HEALTHCHECK and ENTRYPOINT scripts into the default search path
+RUN mv docker-bin/* /usr/local/bin/ && rmdir docker-bin
+
+EXPOSE 8081 9000
+
+ENV JAVA_OPTS="-Xms16m -Xmx16m -XX:+ExitOnOutOfMemoryError"
+
+ENTRYPOINT ["start-brave-example"]
+
+# We use start period of 30s to avoid marking the container unhealthy on slow or contended CI hosts
+HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthcheck"]
 
 FROM azul/zulu-openjdk-alpine:6u119-6.22.0.3 as webmvc25-jetty
 LABEL description="Tracing Example: Spring WebMVC 2.5/Servlet 2.5/Jetty 7/Java 6"
@@ -70,23 +88,6 @@ ENTRYPOINT ["start-brave-example"]
 # We use start period of 30s to avoid marking the container unhealthy on slow or contended CI hosts
 HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthcheck"]
 
-FROM openzipkin/java:1.8.0_252-b09-jre as webmvc4-jetty
-LABEL description="Tracing Example: Spring WebMVC 4/Servlet 3.1/Jetty 9/Java 8"
-
-WORKDIR /brave-example
-COPY --from=install /install/webmvc4-jetty/ .
-# Add HEALTHCHECK and ENTRYPOINT scripts into the default search path
-RUN mv docker-bin/* /usr/local/bin/ && rmdir docker-bin
-
-EXPOSE 8081 9000
-
-ENV JAVA_OPTS="-Xms16m -Xmx16m -XX:+ExitOnOutOfMemoryError"
-
-ENTRYPOINT ["start-brave-example"]
-
-# We use start period of 30s to avoid marking the container unhealthy on slow or contended CI hosts
-HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthcheck"]
-
 FROM openzipkin/java:1.8.0_252-b09-jre as webmvc4-boot
 LABEL description="Tracing Example: Spring WebMVC 4/Spring Boot 1.5/Java 8"
 
@@ -98,6 +99,23 @@ RUN mv docker-bin/* /usr/local/bin/ && rmdir docker-bin
 EXPOSE 8081 9000
 
 ENV JAVA_OPTS="-Xms32m -Xmx64m -XX:+ExitOnOutOfMemoryError"
+
+ENTRYPOINT ["start-brave-example"]
+
+# We use start period of 30s to avoid marking the container unhealthy on slow or contended CI hosts
+HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthcheck"]
+
+FROM openzipkin/java:1.8.0_252-b09-jre as webmvc4-jetty
+LABEL description="Tracing Example: Spring WebMVC 4/Servlet 3.1/Jetty 9/Java 8"
+
+WORKDIR /brave-example
+COPY --from=install /install/webmvc4-jetty/ .
+# Add HEALTHCHECK and ENTRYPOINT scripts into the default search path
+RUN mv docker-bin/* /usr/local/bin/ && rmdir docker-bin
+
+EXPOSE 8081 9000
+
+ENV JAVA_OPTS="-Xms16m -Xmx16m -XX:+ExitOnOutOfMemoryError"
 
 ENTRYPOINT ["start-brave-example"]
 

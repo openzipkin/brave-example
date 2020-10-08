@@ -11,7 +11,7 @@ jobs:
   build-on-linux:
     strategy:
       matrix:
-        docker-target: [webmvc25-jetty, webmvc3-jetty, webmvc4-jetty, webmvc4-boot]
+        docker-target: [armeria, webmvc25-jetty, webmvc3-jetty, webmvc4-boot, webmvc4-jetty]
     runs-on: ubuntu-latest
     name: Build and verify Docker images
     steps:

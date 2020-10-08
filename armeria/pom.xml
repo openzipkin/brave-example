@@ -4,30 +4,50 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>armeria.example</groupId>
-  <artifactId>armeria-example</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <groupId>io.zipkin.brave.example</groupId>
+  <artifactId>brave-example-armeria</artifactId>
+  <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>armeria-example</name>
-  <description>Example using Armeria with Zipkin to trace requests</description>
+  <name>brave-example-armeria</name>
+  <description>Tracing Example: Armeria</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+
+    <!-- temporarily revert 1.1.0 until https://github.com/line/armeria/pull/3023 is discussed -->
+    <armeria.version>1.0.0</armeria.version>
+    <brave.version>5.12.6</brave.version>
+  </properties>
 
   <dependencies>
+    <!-- Instruments the underlying Armeria requests -->
     <dependency>
       <groupId>com.linecorp.armeria</groupId>
       <artifactId>armeria-brave</artifactId>
     </dependency>
+
+    <!-- Integrates so you can use log patterns like %X{traceId}/%X{spanId} -->
     <dependency>
       <groupId>com.linecorp.armeria</groupId>
       <artifactId>armeria-logback</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.zipkin.reporter2</groupId>
-      <artifactId>zipkin-sender-urlconnection</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-context-slf4j</artifactId>
+    </dependency>
+
+    <!-- The below are needed to report traces to http://localhost:9411/api/v2/spans -->
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-reporter-brave</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-sender-urlconnection</artifactId>
     </dependency>
   </dependencies>
 
@@ -36,14 +56,14 @@
       <dependency>
         <groupId>com.linecorp.armeria</groupId>
         <artifactId>armeria-bom</artifactId>
-        <version>1.1.0</version>
+        <version>${armeria.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>io.zipkin.brave</groupId>
         <artifactId>brave-bom</artifactId>
-        <version>5.12.6</version>
+        <version>${brave.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -51,17 +71,30 @@
   </dependencyManagement>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.1.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
-        <inherited>true</inherited>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
           <optimize>true</optimize>
           <debug>true</debug>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.0.0</version>
       </plugin>
     </plugins>
   </build>

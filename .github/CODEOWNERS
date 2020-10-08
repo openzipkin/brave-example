@@ -1,3 +1,3 @@
 # https://help.github.com/articles/about-codeowners/
 
-* @adriancole @ikhoon @minwoox @trustin
+armeria/ @adriancole @ikhoon @minwoox @trustin
