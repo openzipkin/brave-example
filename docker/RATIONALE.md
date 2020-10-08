@@ -9,4 +9,4 @@ build the right contents. There's no known way to read the value of the
 `--target` parameter. Hence, we duplicate it as a build argument.
 
 One impact of doing this is `DOCKER_BUILDKIT=1` or similar is required to skip
-unused phases present in the process of starting the image.
+unused phases present in the process of building the image.
