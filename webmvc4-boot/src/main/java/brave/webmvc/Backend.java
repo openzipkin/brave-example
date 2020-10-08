@@ -21,13 +21,7 @@ public class Backend {
   }
 
   public static void main(String[] args) {
-    SpringApplication application = new SpringApplication(Backend.class);
-
-    // Reduce startup overhead and clutter in logs
-    application.setLogStartupInfo(false);
-    application.setBannerMode(Banner.Mode.OFF);
-
-    application.run(
+    SpringApplication.run(
         "--spring.application.name=backend",
         "--server.port=9000"
     );

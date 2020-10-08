@@ -25,17 +25,17 @@ services:
 
 To build the Spring WebMVC 2.5/Servlet 2.5/Jetty 7/Java 6 example:
 ```bash
-$ docker build -t openzipkin/example-brave:webmvc25-jetty -f docker/Dockerfile ---target webmvc25-jetty --build-arg target=webmvc25-jetty .
+$ docker build -t openzipkin/example-brave:webmvc25-jetty -f docker/Dockerfile --target webmvc25-jetty --build-arg target=webmvc25-jetty .
 ```
 
 To build the Spring WebMVC 3/Servlet 3.0/Jetty 8/Java 7 example:
 ```bash
-$ docker build -t openzipkin/example-brave:webmvc3-jetty -f docker/Dockerfile ---target webmvc3-jetty --build-arg target=webmvc3-jetty .
+$ docker build -t openzipkin/example-brave:webmvc3-jetty -f docker/Dockerfile --target webmvc3-jetty --build-arg target=webmvc3-jetty .
 ```
 
 To build the Spring WebMVC 4/Servlet 3.1/Jetty 9/Java 8 example:
 ```bash
-$ docker build -t openzipkin/example-brave:webmvc4-jetty -f docker/Dockerfile ---target webmvc4-jetty --build-arg target=webmvc4-jetty .
+$ docker build -t openzipkin/example-brave:webmvc4-jetty -f docker/Dockerfile --target webmvc4-jetty --build-arg target=webmvc4-jetty .
 ```
 
 To build the Spring WebMVC 4/Spring Boot 1.5/Java 8 example:

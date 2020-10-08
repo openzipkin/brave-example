@@ -29,13 +29,7 @@ public class Frontend {
   }
 
   public static void main(String[] args) {
-    SpringApplication application = new SpringApplication(Frontend.class);
-
-    // Reduce startup overhead and clutter in logs
-    application.setLogStartupInfo(false);
-    application.setBannerMode(Banner.Mode.OFF);
-
-    application.run(
+    SpringApplication.run(
         "--spring.application.name=frontend",
         "--server.port=8081"
     );
