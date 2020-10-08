@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+
+# Copy dependencies and compiled classes
+mvn -q --batch-mode dependency:copy-dependencies -DoutputDirectory=install/lib
+cp -r target/classes install/
