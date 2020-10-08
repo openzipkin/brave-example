@@ -1,0 +1,40 @@
+name: Continuous Build Docker
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-on-linux:
+    strategy:
+      matrix:
+        target: [webmvc25-jetty, webmvc3-jetty, webmvc4-jetty, webmvc4-boot]
+        docker-version: [19.03]
+    runs-on: ubuntu-latest
+    name: Build and run Docker images
+    steps:
+      - name: Install Docker
+        uses: docker-practice/actions-setup-docker@master
+        with:
+          docker_version: ${{ matrix.docker-version }}
+          docker_buildx: false
+      - name: Cache docker
+        uses: actions/cache@v1
+        with:
+          path: ~/.docker
+          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
+          restore-keys: ${{ runner.os }}-docker
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Build Docker image openzipkin/example-brave:${target}
+        run: docker build -t openzipkin/example-brave:${target} -f docker/Dockerfile --target ${target} --build-arg target=${target} .
+      - name: Verify Docker image openzipkin/example-brave:${target}
+        run: |
+          # This just makes sure containers run and the HEALTHCHECK works (for now..)
+          docker run --rm --name frontend -d -t openzipkin/example-brave:${target} frontend
+          docker run --rm --name backend -d -t openzipkin/example-brave:${target} backend
+          docker/bin/block-on-health frontend || exit 1
+          docker/bin/block-on-health backend || exit 1
