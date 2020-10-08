@@ -9,10 +9,10 @@ jobs:
   build-on-linux:
     strategy:
       matrix:
-        target: [webmvc25-jetty, webmvc3-jetty, webmvc4-jetty, webmvc4-boot]
+        docker-target: [webmvc25-jetty, webmvc3-jetty, webmvc4-jetty, webmvc4-boot]
         docker-version: [19.03]
     runs-on: ubuntu-latest
-    name: Build and run Docker images
+    name: Build and verify Docker images
     steps:
       - name: Install Docker
         uses: docker-practice/actions-setup-docker@master
