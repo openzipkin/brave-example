@@ -1,4 +1,4 @@
-## Brave Example: Spring WebMVC 2.5/Servlet 2.5/Jetty 7
+## Tracing Example: Spring WebMVC 2.5/Servlet 2.5/Jetty 7
 
 ### spring-webmvc-servlet.xml
 

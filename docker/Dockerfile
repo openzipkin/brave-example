@@ -34,8 +34,10 @@ RUN cd /code/$target && mvn -q --batch-mode -DskipTests package && \
     cp -p /code/docker/bin/docker-healthcheck . && \
     cp -p /code/docker/bin/start-${platform}-example start-brave-example
 
-## Spring WebMVC 2.5/Servlet 2.5/Jetty 7/Java 6 example
 FROM azul/zulu-openjdk-alpine:6u119-6.22.0.3 as webmvc25-jetty
+LABEL description="Tracing Example: Spring WebMVC 2.5/Servlet 2.5/Jetty 7/Java 6"
+# Adding maintainer label as we are using a 3rd party base layer
+LABEL maintainer="OpenZipkin https://zipkin.io/"
 
 WORKDIR /brave-example
 COPY --from=install /install/webmvc25-jetty/ .
@@ -51,8 +53,8 @@ ENTRYPOINT ["start-brave-example"]
 # We use start period of 30s to avoid marking the container unhealthy on slow or contended CI hosts
 HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthcheck"]
 
-## Spring WebMVC 3/Servlet 3.0/Jetty 8/Java 7 example
 FROM openzipkin/java:1.7.0_261-b02-jre as webmvc3-jetty
+LABEL description="Tracing Example: Spring WebMVC 3/Servlet 3.0/Jetty 8/Java 7"
 
 WORKDIR /brave-example
 COPY --from=install /install/webmvc3-jetty/ .
@@ -68,8 +70,8 @@ ENTRYPOINT ["start-brave-example"]
 # We use start period of 30s to avoid marking the container unhealthy on slow or contended CI hosts
 HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthcheck"]
 
-## Spring WebMVC 4/Servlet 3.1/Jetty 9/Java 8 example
 FROM openzipkin/java:1.8.0_252-b09-jre as webmvc4-jetty
+LABEL description="Tracing Example: Spring WebMVC 4/Servlet 3.1/Jetty 9/Java 8"
 
 WORKDIR /brave-example
 COPY --from=install /install/webmvc4-jetty/ .
@@ -85,8 +87,8 @@ ENTRYPOINT ["start-brave-example"]
 # We use start period of 30s to avoid marking the container unhealthy on slow or contended CI hosts
 HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthcheck"]
 
-## Spring WebMVC 4/Spring Boot 1.5/Java 8 example
 FROM openzipkin/java:1.8.0_252-b09-jre as webmvc4-boot
+LABEL description="Tracing Example: Spring WebMVC 4/Spring Boot 1.5/Java 8"
 
 WORKDIR /brave-example
 COPY --from=install /install/webmvc4-boot/ .

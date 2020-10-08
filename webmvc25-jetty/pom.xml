@@ -9,7 +9,7 @@
   <packaging>war</packaging>
 
   <name>brave-example-webmvc25-jetty</name>
-  <description>Brave Example: Spring WebMVC 2.5/Servlet 2.5/Jetty 7</description>
+  <description>Tracing Example: Spring WebMVC 2.5/Servlet 2.5/Jetty 7</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
