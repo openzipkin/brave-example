@@ -4,23 +4,25 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.zipkin.brave.example</groupId>
-  <artifactId>brave-example-webmvc3</artifactId>
+  <artifactId>brave-example-webmvc4-jetty</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
-  <name>brave-example-webmvc3</name>
-  <description>Brave Example: Spring WebMVC 3/Servlet 3.0/Jetty 8</description>
+  <name>brave-example-webmvc4-jetty</name>
+  <description>Brave Example: Spring WebMVC 4/Servlet 3.1/Jetty 9</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
 
-    <spring.version>3.2.18.RELEASE</spring.version>
+    <spring.version>4.3.28.RELEASE</spring.version>
+    <slf4j.version>1.7.30</slf4j.version>
     <brave.version>5.12.6</brave.version>
 
-    <jetty.groupId>org.mortbay.jetty</jetty.groupId>
-    <jetty.version>8.1.16.v20140903</jetty.version>
+    <jetty.groupId>org.eclipse.jetty</jetty.groupId>
+    <!-- Last Jetty version to support JRE 1.7 -->
+    <jetty.version>9.2.29.v20191105</jetty.version>
   </properties>
 
   <dependencyManagement>
@@ -39,7 +41,7 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-      <version>3.0.1</version>
+      <version>3.1.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -53,9 +55,10 @@
       <version>${spring.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>4.3.6</version>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <!-- 3.12.12 was the last version to support Java 1.7 -->
+      <version>3.12.12</version>
     </dependency>
 
     <!-- Adds the MVC class and method names to server spans -->
@@ -63,21 +66,31 @@
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-instrumentation-spring-webmvc</artifactId>
     </dependency>
-    <!-- Instruments the underlying HttpClient requests that call the backend -->
+    <!-- Instruments the underlying OkHttpClient requests that call the backend -->
     <dependency>
       <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-instrumentation-httpclient</artifactId>
+      <artifactId>brave-instrumentation-okhttp3</artifactId>
     </dependency>
 
     <!-- Integrates so you can use log patterns like %X{traceId}/%X{spanId} -->
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.3</version>
     </dependency>
     <dependency>
       <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-context-log4j12</artifactId>
+      <artifactId>brave-context-slf4j</artifactId>
     </dependency>
 
     <!-- The below are needed to report traces to http://localhost:9411/api/v2/spans -->
@@ -97,25 +110,9 @@
       <groupId>io.zipkin.reporter2</groupId>
       <artifactId>zipkin-sender-okhttp3</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp</artifactId>
-      <!-- 3.12.12 was the last version to support Java 1.7 -->
-      <version>3.12.12 </version>
-    </dependency>
   </dependencies>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>${jetty.groupId}</groupId>
-          <artifactId>jetty-maven-plugin</artifactId>
-          <version>${jetty.version}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -135,7 +132,7 @@
               <rules>
                 <requireJavaVersion>
                   <!-- 1.7.0_80 to prevent a compile bug accessing CrossOrigin.
-                       JDK 11 is the last version to compile Java 6 bytecode. -->
+                     JDK 11 is the last version to compile Java 6 bytecode. -->
                   <version>[1.7.0_80,12)</version>
                 </requireJavaVersion>
               </rules>
@@ -145,7 +142,6 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.2.3</version>
         <configuration>
@@ -154,6 +150,15 @@
         </configuration>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>${jetty.groupId}</groupId>
+          <artifactId>jetty-maven-plugin</artifactId>
+          <version>${jetty.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <profiles>
@@ -165,11 +170,9 @@
             <groupId>${jetty.groupId}</groupId>
             <artifactId>jetty-maven-plugin</artifactId>
             <configuration>
-              <connectors>
-                <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                  <port>8081</port>
-                </connector>
-              </connectors>
+              <httpConnector>
+                <port>8081</port>
+              </httpConnector>
               <systemProperties>
                 <systemProperty>
                   <name>zipkin.service</name>
@@ -189,11 +192,9 @@
             <groupId>${jetty.groupId}</groupId>
             <artifactId>jetty-maven-plugin</artifactId>
             <configuration>
-              <connectors>
-                <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                  <port>9000</port>
-                </connector>
-              </connectors>
+              <httpConnector>
+                <port>9000</port>
+              </httpConnector>
               <systemProperties>
                 <systemProperty>
                   <name>zipkin.service</name>

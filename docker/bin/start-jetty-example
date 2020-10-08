@@ -20,9 +20,12 @@ esac
 IP="$(hostname -i || echo '127.0.0.1')"
 echo http://${IP}:${PORT}/health > health_url
 
-exec java ${JAVA_OPTS} -cp . \
+# Handle the org switch between Jetty 8 and 9
+ORG=$(test -f jetty/org/eclipse/jetty/runner/Runner.class && echo eclipse || echo mortbay)
+
+exec java ${JAVA_OPTS} -cp jetty \
   -Dzipkin.endpoint=${ZIPKIN_ENDPOINT:=http://zipkin:9411/api/v2/spans} \
   -Dzipkin.supportsJoin=${ZIPKIN_SUPPORTS_JOIN:=true} \
   -Dbackend.endpoint=${BACKEND_ENDPOINT:=http://backend:9000/api} \
-  -Dzipkin.service=${ZIPKIN_SERVICE} org.eclipse.jetty.runner.Runner \
+  -Dzipkin.service=${ZIPKIN_SERVICE} org.${ORG}.jetty.runner.Runner \
   --port $PORT root

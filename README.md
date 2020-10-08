@@ -32,8 +32,8 @@ Next, you can view traces that went through the backend via http://localhost:941
 ## Starting the Services
 
 ### Servlet Container Option
-In a separate tab or window, start each of [brave.webmvc.Frontend](/webmvc4/src/main/java/brave/webmvc/Frontend.java)
-and [brave.webmvc.Backend](/webmvc4/src/main/java/brave/webmvc/Backend.java):
+In a separate tab or window, start each of [brave.webmvc.Frontend](/webmvc4-jetty/src/main/java/brave/webmvc/Frontend.java)
+and [brave.webmvc.Backend](/webmvc4-jetty/src/main/java/brave/webmvc/Backend.java):
 ```bash
 # choose webmvc25 webmvc3 or webmvc4
 $ cd webmvc4
@@ -60,9 +60,9 @@ java -jar zipkin.jar
 
 ## Configuration tips
 To show how wiring works, we have three copies of the same project
-* [WebMVC 2.5](./webmvc25) - Spring XML on Servlet 2.5 container 
-* [WebMVC 3](./webmvc3) - Spring XML on Servlet 3 container 
-* [WebMVC 4](./webmvc4) - Spring Java Config on Servlet 3 container 
+* [WebMVC 2.5](webmvc25-jetty) - Spring XML on Servlet 2.5 container
+* [WebMVC 3](webmvc3-jetty) - Spring XML on Servlet 3 container
+* [WebMVC 4](webmvc4-jetty) - Spring Java Config on Servlet 3 container
 
 There are some interesting details that apply to both
 * If you pass the header `user_name` Brave will automatically propagate it to the backend!

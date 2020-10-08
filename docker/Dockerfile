@@ -9,51 +9,36 @@ FROM scratch as scratch
 COPY . /code/
 
 ## Use JDK 11 to build projects, as that can still compile Java 6
-FROM openzipkin/java:11.0.8-11.41.23 as built
+FROM openzipkin/java:11.0.8-11.41.23 as install
 
-# Copy and build the source
+# The final stage to build. Mandatory: ex webmvc4-jetty
+ARG target
+RUN test -z "$target" && \
+    echo "'--build-arg target' must be set to same value as '--target'" && exit 1 || true
+
 WORKDIR /code
 COPY --from=scratch /code .
 
-ARG jetty_examples="webmvc25 webmvc3 webmvc4"
-ARG boot_examples=webmvc4-boot
-ARG all_examples="webmvc25 webmvc3 webmvc4 webmvc4-boot"
+# We copy the result of the build into a target-specific install directory.
+# Each end phase looks for this convention. This strategy enforces a match
+# between --target and the --build-arg target.
+WORKDIR /install/${target}
 
-# All projects build similarly. The difference is in what is packaged
-RUN for project in $all_examples; do cd ${project} && \
-      mvn -q --batch-mode -DskipTests package && \
-      mkdir -p /built/${project}/docker-bin && \
-      cp -p /code/docker/bin/docker-healthcheck /built/${project}/docker-bin/ && \
-    cd - ; done
-
-# Jetty based projects use jetty-runner. The built project is the root web context.
-RUN for project in $jetty_examples; do cd /built/${project} && \
-      # Get the same version of jetty-runner as the Maven project uses
-      mvn_property() { mvn -f /code/${project} help:evaluate -Dexpression=$1 -q -DforceStdout;} && \
-      jettyGroupId=$(mvn_property jetty.groupId) && \
-      jettyVersion=$(mvn_property jetty.version) && \
-      # Use maven to get the jetty-runner so it is cached if multiple projects use it
-      mvn -q --batch-mode org.apache.maven.plugins:maven-dependency-plugin:get \
-          -Dtransitive=false -Dartifact=${jettyGroupId}:jetty-runner:${jettyVersion}:jar && \
-      # Unzip the jetty-runner so that it is faster to start
-      find ~/.m2/repository -name jetty-runner-${jettyVersion}.jar -exec jar xf {} \; && \
-      # Add the start script and the root war
-      cp -p /code/docker/bin/start-jetty-example docker-bin/start-brave-example && \
-      sed -i "s/org.eclipse.jetty/${jettyGroupId}/g" docker-bin/start-brave-example && \
-      cp -r /code/${project}/target/*-SNAPSHOT root && \
-    cd - ; done
-
-# Spring Boot based projects unzip the "exec" jar as it is faster at runtime.
-RUN for project in $boot_examples; do cd /built/${project} && \
-      cp -p /code/docker/bin/start-boot-example docker-bin/start-brave-example && \
-      jar xf /code/${project}/target/*-exec.jar && \
-    cd - ; done
+# invoke the platfom-specific install script and copy the results
+RUN cd /code/$target && mvn -q --batch-mode -DskipTests package && \
+    platform=$(echo $target|cut -d- -f2) && \
+    /code/docker/bin/install-${platform}-example && \
+    cp -rp install/* /install/${target}/ && \
+# Add start and health check scripts
+    mkdir /install/${target}/docker-bin && cd /install/${target}/docker-bin && \
+    cp -p /code/docker/bin/docker-healthcheck . && \
+    cp -p /code/docker/bin/start-${platform}-example start-brave-example
 
 ## Spring WebMVC 2.5/Servlet 2.5/Jetty 7/Java 6 example
-FROM azul/zulu-openjdk-alpine:6u119-6.22.0.3 as webmvc25
+FROM azul/zulu-openjdk-alpine:6u119-6.22.0.3 as webmvc25-jetty
 
 WORKDIR /brave-example
-COPY --from=built /built/webmvc25/ .
+COPY --from=install /install/webmvc25-jetty/ .
 # Add HEALTHCHECK and ENTRYPOINT scripts into the default search path
 RUN mv docker-bin/* /usr/local/bin/ && rmdir docker-bin
 
@@ -67,10 +52,10 @@ ENTRYPOINT ["start-brave-example"]
 HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthcheck"]
 
 ## Spring WebMVC 3/Servlet 3.0/Jetty 8/Java 7 example
-FROM openzipkin/java:1.7.0_261-b02-jre as webmvc3
+FROM openzipkin/java:1.7.0_261-b02-jre as webmvc3-jetty
 
 WORKDIR /brave-example
-COPY --from=built /built/webmvc3/ .
+COPY --from=install /install/webmvc3-jetty/ .
 # Add HEALTHCHECK and ENTRYPOINT scripts into the default search path
 RUN mv docker-bin/* /usr/local/bin/ && rmdir docker-bin
 
@@ -84,10 +69,10 @@ ENTRYPOINT ["start-brave-example"]
 HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthcheck"]
 
 ## Spring WebMVC 4/Servlet 3.1/Jetty 9/Java 8 example
-FROM openzipkin/java:1.8.0_252-b09-jre as webmvc4
+FROM openzipkin/java:1.8.0_252-b09-jre as webmvc4-jetty
 
 WORKDIR /brave-example
-COPY --from=built /built/webmvc4/ .
+COPY --from=install /install/webmvc4-jetty/ .
 # Add HEALTHCHECK and ENTRYPOINT scripts into the default search path
 RUN mv docker-bin/* /usr/local/bin/ && rmdir docker-bin
 
@@ -104,7 +89,7 @@ HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthche
 FROM openzipkin/java:1.8.0_252-b09-jre as webmvc4-boot
 
 WORKDIR /brave-example
-COPY --from=built /built/webmvc4-boot/ .
+COPY --from=install /install/webmvc4-boot/ .
 # Add HEALTHCHECK and ENTRYPOINT scripts into the default search path
 RUN mv docker-bin/* /usr/local/bin/ && rmdir docker-bin
 

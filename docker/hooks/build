@@ -4,7 +4,7 @@
 # to top level.
 cd ..
 
-ALL_EXAMPLES=$(sed -n '/^ARG all_examples/s/.*"\(.*\)"/\1/gp' "$DOCKERFILE_PATH")
+ALL_EXAMPLES=$(ls */pom.xml|sed 's~/pom.xml~~g')
 for target in ${ALL_EXAMPLES}; do
-  docker build -f "$DOCKERFILE_PATH" -t "openzipkin/example-brave:${target}" --target ${target} .
+  docker build -f "$DOCKERFILE_PATH" -t "openzipkin/example-brave:${target}" --target ${target} --build-arg target=${target} .
 done

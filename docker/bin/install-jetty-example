@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -eu
+
+mkdir install
+
+# extract the war under /root
+cp -r target/*-SNAPSHOT install/root
+
+# Get the same version of jetty-runner as the Maven project uses
+mvn_property() { mvn help:evaluate -Dexpression=$1 -q -DforceStdout;}
+jettyGroupId=$(mvn_property jetty.groupId)
+jettyVersion=$(mvn_property jetty.version)
+
+# Use Maven to get the jetty-runner so it is cached if multiple projects use it
+mvn -q --batch-mode org.apache.maven.plugins:maven-dependency-plugin:get \
+    -Dtransitive=false -Dartifact=${jettyGroupId}:jetty-runner:${jettyVersion}:jar
+
+# Unzip the jetty-runner so that it is faster to start
+mkdir install/jetty
+(cd install/jetty; find ~/.m2/repository -name jetty-runner-${jettyVersion}.jar -exec jar xf {} \;)
+
+
+
