@@ -10,14 +10,15 @@ jobs:
     strategy:
       matrix:
         docker-target: [webmvc25-jetty, webmvc3-jetty, webmvc4-jetty, webmvc4-boot]
+        docker-version: [19.03]
     runs-on: ubuntu-latest
     name: Build and verify Docker images
     steps:
       - name: Install Docker
-        uses: docker/setup-buildx-action@v1
-        id: buildx
+        uses: docker-practice/actions-setup-docker@master
         with:
-          install: true
+          docker_version: ${{ matrix.docker-version }}
+          docker_buildx: true
       - name: Cache docker
         uses: actions/cache@v1
         with:
@@ -31,7 +32,8 @@ jobs:
       - name: Build Docker image openzipkin/example-brave:${{ matrix.docker-target }}-test
         run: |
           TARGET=${{ matrix.docker-target }}
-          docker build -f docker/Dockerfile -t openzipkin/example-brave:${TARGET}-test \
+          DOCKER_BUILDKIT=1 docker build -f docker/Dockerfile \
+          -t openzipkin/example-brave:${TARGET}-test \
           --target ${TARGET} --build-arg target=${TARGET} .
       - name: Verify Docker image openzipkin/example-brave:${{ matrix.docker-target }}-test
         run: |
