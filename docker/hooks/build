@@ -6,5 +6,6 @@ cd ..
 
 ALL_EXAMPLES=$(ls */pom.xml|sed 's~/pom.xml~~g')
 for target in ${ALL_EXAMPLES}; do
-  docker build -f "$DOCKERFILE_PATH" -t "openzipkin/example-brave:${target}" --target ${target} --build-arg target=${target} .
+  DOCKER_BUILDKIT=1 docker build -f "$DOCKERFILE_PATH" -t "openzipkin/example-brave:${target}" \
+  --target ${target} --build-arg target=${target} .
 done

@@ -58,6 +58,10 @@ curl -sSL https://zipkin.io/quickstart.sh | bash -s
 java -jar zipkin.jar
 ```
 
+### Docker Option
+You can run any configuration using pre-built Docker images. Look at
+[docker](docker) for examples.
+
 ## Configuration tips
 To show how wiring works, we have three copies of the same project
 * [WebMVC 2.5](webmvc25-jetty) - Spring XML on Servlet 2.5 container
