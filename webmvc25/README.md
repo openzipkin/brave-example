@@ -1,4 +1,4 @@
-## Spring WebMVC 2.5/Servlet 2.5/Jetty 7/Java 6 example
+## Brave Example: Spring WebMVC 2.5/Servlet 2.5/Jetty 7
 
 ### spring-webmvc-servlet.xml
 

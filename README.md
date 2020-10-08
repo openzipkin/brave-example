@@ -1,7 +1,7 @@
 # Basic example showing distributed tracing across servlet applications
 This is an example app where two Servlet (Java) services collaborate on
 an http request. Notably, timing of these requests are recorded into
-[Zipkin](http://zipkin.io/), a distributed tracing system. This allows
+[Zipkin](https://zipkin.io/), a distributed tracing system. This allows
 you to see the how long the whole operation took, as well how much time
 was spent in each service.
 
@@ -50,7 +50,7 @@ $ mvn compile exec:java -Dexec.mainClass=brave.webmvc.Backend
 $ mvn compile exec:java -Dexec.mainClass=brave.webmvc.Frontend
 ```
 
-Next, run [Zipkin](http://zipkin.io/), which stores and queries traces
+Next, run [Zipkin](https://zipkin.io/), which stores and queries traces
 reported by the above services.
 
 ```bash

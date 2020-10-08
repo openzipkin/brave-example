@@ -1,4 +1,4 @@
-## WebMVC 3 Example
+## Brave Example: Spring WebMVC 3/Servlet 3.0/Jetty 8
 
 ### spring-webmvc-servlet.xml
 

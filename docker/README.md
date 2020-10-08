@@ -33,7 +33,7 @@ To build the Spring WebMVC 3/Servlet 3.0/Jetty 8/Java 7 example:
 $ docker build -t openzipkin/example-brave:webmvc3 -f docker/Dockerfile . --target webmvc3
 ```
 
-To build the Spring WebMVC 4/Servlet 3.1/Jetty 9/Java 7 example:
+To build the Spring WebMVC 4/Servlet 3.1/Jetty 9/Java 8 example:
 ```bash
 $ docker build -t openzipkin/example-brave:webmvc4 -f docker/Dockerfile . --target webmvc4
 ```

@@ -1,4 +1,4 @@
-## WebMVC 4 Boot Example
+## Brave Example: Spring WebMVC 4/Spring Boot 1.5
 
 Instead of servlet, this uses Spring Boot 1.5 to create a self-contained
 application that runs Spring WebMVC 4 controllers.

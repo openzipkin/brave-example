@@ -1,12 +1,19 @@
 # These examples are setup minimally. In order to reduce repetition, these do not setup
 # non-root users and such as they are not intended to run in production anyway.
 
+# We copy files from the context into a scratch container first to avoid a problem where docker and
+# docker-compose don't share layer hashes https://github.com/docker/compose/issues/883 normally.
+# COPY --from= works around the issue.
+FROM scratch as scratch
+
+COPY . /code/
+
 ## Use JDK 11 to build projects, as that can still compile Java 6
 FROM openzipkin/java:11.0.8-11.41.23 as built
 
 # Copy and build the source
 WORKDIR /code
-COPY . .
+COPY --from=scratch /code .
 
 ARG jetty_examples="webmvc25 webmvc3 webmvc4"
 ARG boot_examples=webmvc4-boot
@@ -32,7 +39,7 @@ RUN for project in $jetty_examples; do cd /built/${project} && \
       find ~/.m2/repository -name jetty-runner-${jettyVersion}.jar -exec jar xf {} \; && \
       # Add the start script and the root war
       cp -p /code/docker/bin/start-jetty-example docker-bin/start-brave-example && \
-      sed -i "s/org.eclipse.jetty/${jettyGroupId}/~g" docker-bin/start-brave-example && \
+      sed -i "s/org.eclipse.jetty/${jettyGroupId}/g" docker-bin/start-brave-example && \
       cp -r /code/${project}/target/*-SNAPSHOT root && \
     cd - ; done
 
@@ -76,8 +83,8 @@ ENTRYPOINT ["start-brave-example"]
 # We use start period of 30s to avoid marking the container unhealthy on slow or contended CI hosts
 HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthcheck"]
 
-## Spring WebMVC 4/Servlet 3.1/Jetty 9/Java 7 example
-FROM openzipkin/java:1.7.0_261-b02-jre as webmvc4
+## Spring WebMVC 4/Servlet 3.1/Jetty 9/Java 8 example
+FROM openzipkin/java:1.8.0_252-b09-jre as webmvc4
 
 WORKDIR /brave-example
 COPY --from=built /built/webmvc4/ .
