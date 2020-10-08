@@ -19,6 +19,3 @@ mvn -q --batch-mode org.apache.maven.plugins:maven-dependency-plugin:get \
 # Unzip the jetty-runner so that it is faster to start
 mkdir install/jetty
 (cd install/jetty; find ~/.m2/repository -name jetty-runner-${jettyVersion}.jar -exec jar xf {} \;)
-
-
-

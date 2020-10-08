@@ -23,7 +23,10 @@
   <mvc:interceptors>
     <bean class="brave.spring.webmvc.SpanCustomizingHandlerInterceptor"/>
   </mvc:interceptors>
+
+  <!-- allows us to read the backend.endpoint from spring config -->
   <context:property-placeholder/>
+
   <!-- Loads the controllers -->
   <bean class="brave.webmvc.Frontend">
     <constructor-arg ref="restTemplate"/>
