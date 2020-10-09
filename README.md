@@ -1,4 +1,4 @@
-# Basic example showing distributed tracing across HTTP applications
+# Basic example showing distributed tracing across Java applications
 This is an example app where two Java services collaborate on a request.
 
 Notably, these services send data to [Zipkin](https://zipkin.io/), a
