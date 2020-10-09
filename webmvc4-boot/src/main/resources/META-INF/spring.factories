@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-brave.example.TracingConfiguration
+brave.example.TracingAutoConfiguration

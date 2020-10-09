@@ -40,7 +40,7 @@ import zipkin2.reporter.okhttp3.OkHttpSender;
 @Configuration
 // Importing a class is effectively the same as declaring bean methods
 @Import(SpanCustomizingAsyncHandlerInterceptor.class)
-public class TracingConfiguration {
+public class TracingAutoConfiguration {
   static final BaggageField USER_NAME = BaggageField.create("userName");
 
   /** Allows log patterns to use {@code %{traceId}} {@code %{spanId}} and {@code %{userName}} */

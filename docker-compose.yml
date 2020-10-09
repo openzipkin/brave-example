@@ -1,0 +1,27 @@
+services:
+  # Generate traffic by hitting http://localhost:8081
+  frontend:
+    container_name: frontend
+    image: openzipkin/example-brave:${PROJECT:-armeria}
+    command: frontend
+    environment: 
+        - ZIPKIN_SUPPORTS_JOIN=false
+    ports:
+      - 8081:8081
+    depends_on:
+      - backend
+      - zipkin
+  # Serves the /api endpoint the frontend uses
+  backend:
+    container_name: backend
+    image: openzipkin/example-brave:${PROJECT:-armeria}
+    command: backend
+    depends_on:
+      - zipkin
+  # View traces at http://localhost:9411/zipkin
+  zipkin:
+    image: openzipkin/zipkin-slim
+    container_name: zipkin
+    ports:
+      - 9411:9411
+
