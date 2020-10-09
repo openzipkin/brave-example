@@ -2,7 +2,7 @@
 
 The only argument to the image is the name of the service, which is `frontend` or `backend`.
 
-Here's an example, using the [webmvc4-jetty](../webmvc4-jetty) configuration:
+Here's an example, using the [armeria](../armeria) configuration:
 ```yaml
 version: '2.4'
 services:
