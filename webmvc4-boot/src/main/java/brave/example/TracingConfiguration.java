@@ -1,4 +1,4 @@
-package brave.webmvc;
+package brave.example;
 
 import brave.CurrentSpanCustomizer;
 import brave.SpanCustomizer;

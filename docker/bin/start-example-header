@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eu
+
+case "$1" in
+  frontend )
+    ZIPKIN_SERVICE=frontend
+    MAIN_CLASS=brave.example.Frontend
+    PORT=8081
+    ;;
+  backend )
+    ZIPKIN_SERVICE=backend
+    MAIN_CLASS=brave.example.Backend
+    PORT=9000
+    ;;
+  * )
+    echo "Invalid argument: specify frontend or backend"
+    exit 1
+esac
+
+# write the docker-healthcheck url to a file
+IP="$(hostname -i || echo '127.0.0.1')"
+echo http://${IP}:${PORT}/health > health_url

@@ -1,4 +1,4 @@
-package brave.webmvc;
+package brave.example;
 
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;

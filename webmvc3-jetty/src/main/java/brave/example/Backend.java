@@ -1,4 +1,4 @@
-package brave.webmvc;
+package brave.example;
 
 import java.util.Date;
 import org.springframework.http.HttpStatus;

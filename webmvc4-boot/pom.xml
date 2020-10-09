@@ -2,22 +2,23 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.zipkin.brave.example</groupId>
+    <artifactId>brave-example-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../parent-pom.xml</relativePath>
+  </parent>
 
-  <groupId>io.zipkin.brave.example</groupId>
   <artifactId>brave-example-webmvc4-boot</artifactId>
-  <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>brave-example-webmvc4-boot</name>
-  <description>Tracing Example: Spring WebMVC 4/Spring Boot 1.5</description>
+  <description>Tracing Example: Spring WebMVC 4/Spring Boot 1.5/JRE 8</description>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <jre.version>8</jre.version>
 
     <spring-boot.version>1.5.22.RELEASE</spring-boot.version>
-    <brave.version>5.12.6</brave.version>
   </properties>
 
   <dependencyManagement>
@@ -26,13 +27,6 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring-boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>io.zipkin.brave</groupId>
-        <artifactId>brave-bom</artifactId>
-        <version>${brave.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -118,17 +112,6 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.0.0</version>
-      </plugin>
-
-      <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${spring-boot.version}</version>
@@ -140,32 +123,11 @@
           </execution>
         </executions>
         <configuration>
-          <!-- This can be overridden to brave.webmvc.Frontend also -->
-          <mainClass>brave.webmvc.Backend</mainClass>
+          <!-- This can be overridden to brave.example.Frontend also -->
+          <mainClass>brave.example.Backend</mainClass>
           <classifier>exec</classifier>
           <executable>true</executable>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M3</version>
-        <executions>
-          <execution>
-            <id>enforce-java</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireJavaVersion>
-                  <!-- Spring Boot 1.5 doesn't require Java 1.8, but latest OkHttp 3 does -->
-                  <version>[1.8,)</version>
-                </requireJavaVersion>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

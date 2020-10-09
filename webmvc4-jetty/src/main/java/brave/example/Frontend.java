@@ -1,4 +1,4 @@
-package brave.webmvc;
+package brave.example;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

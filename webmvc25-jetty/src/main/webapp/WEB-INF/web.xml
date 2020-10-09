@@ -9,7 +9,7 @@
 
   <servlet>
     <servlet-name>health</servlet-name>
-    <servlet-class>brave.servlet.HealthServlet</servlet-class>
+    <servlet-class>brave.example.HealthServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>

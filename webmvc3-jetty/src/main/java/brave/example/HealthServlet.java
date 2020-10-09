@@ -1,4 +1,4 @@
-package brave.servlet;
+package brave.example;
 
 import java.io.IOException;
 import java.io.PrintWriter;

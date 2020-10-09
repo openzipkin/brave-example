@@ -11,7 +11,7 @@ jobs:
   build-on-linux:
     strategy:
       matrix:
-        docker-target: [armeria, webmvc25-jetty, webmvc3-jetty, webmvc4-boot, webmvc4-jetty]
+        project: [armeria, webmvc25-jetty, webmvc3-jetty, webmvc4-boot, webmvc4-jetty]
     runs-on: ubuntu-latest
     name: Build and verify Docker images
     steps:
@@ -30,16 +30,12 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
-      - name: Build Docker image openzipkin/example-brave:${{ matrix.docker-target }}-test
-        run: |
-          TARGET=${{ matrix.docker-target }}
-          DOCKER_BUILDKIT=1 docker build -f docker/Dockerfile \
-          -t openzipkin/example-brave:${TARGET}-test \
-          --target ${TARGET} --build-arg target=${TARGET} .
-      - name: Verify Docker image openzipkin/example-brave:${{ matrix.docker-target }}-test
+      - name: Build Docker image openzipkin/example-brave:${{ matrix.project }}-test
+        run:  docker/build_image ${{ matrix.project }} ${{ matrix.project }}-test
+      - name: Verify Docker image openzipkin/example-brave:${{ matrix.project }}-test
         run: |
           # This just makes sure containers run and the HEALTHCHECK works (for now..)
-          IMAGE=openzipkin/example-brave:${{ matrix.docker-target }}-test
+          IMAGE=openzipkin/example-brave:${{ matrix.project }}-test
           docker run --rm --name frontend -d ${IMAGE} frontend
           docker run --rm --name backend -d ${IMAGE} backend
           docker/bin/block-on-health frontend || exit 1
