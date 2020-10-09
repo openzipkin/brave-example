@@ -28,33 +28,33 @@ Afterwards, you can view traces that went through the backend via http://localho
 
 Here are the example projects you can try:
 
-* [armeria](armeria)
+* [armeria](armeria) - `PROJECT=armeria docker-compose up`
   * [Armeria](https://armeria.dev/)
   * [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * [Java configuration](armeria/src/main/java/brave/example/HttpTracingFactory.java)
   * JRE 15 Runtime
-* [webmvc25-jetty](webmvc25-jetty)
+* [webmvc25-jetty](webmvc25-jetty) - `PROJECT=webmvc25-jetty docker-compose up`
   * [Servlet 2.5](https://github.com/openzipkin/brave/tree/master/instrumentation/servlet)
   * [Spring MVC 3](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-webmvc)
   * [Apache HttpClient](https://github.com/openzipkin/brave/tree/master/instrumentation/httpclient)
   * [Log4J 1.2](https://github.com/openzipkin/brave/tree/master/context/log4j12)
   * [Spring XML configuration](webmvc25-jetty/src/main/webapp/WEB-INF/applicationContext.xml)
   * Jetty 7/JRE 6 Runtime
-* [webmvc3-jetty](webmvc3-jetty)
+* [webmvc3-jetty](webmvc3-jetty) - `PROJECT=webmvc3-jetty docker-compose up`
   * [Servlet 3.0](https://github.com/openzipkin/brave/tree/master/instrumentation/servlet)
   * [Spring MVC 3](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-webmvc)
   * [Apache HttpClient](https://github.com/openzipkin/brave/tree/master/instrumentation/httpclient)
   * [Log4J 1.2](https://github.com/openzipkin/brave/tree/master/context/log4j12)
   * [Spring XML configuration](webmvc3-jetty/src/main/webapp/WEB-INF/applicationContext.xml)
   * Jetty 8/JRE 7 Runtime
-* [webmvc4-jetty](webmvc4-jetty)
+* [webmvc4-jetty](webmvc4-jetty) - `PROJECT=webmvc4-jetty docker-compose up`
   * [Servlet 3.1](https://github.com/openzipkin/brave/tree/master/instrumentation/servlet)
   * [Spring MVC 4](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-webmvc)
   * [OkHttp 3](https://github.com/openzipkin/brave/tree/master/instrumentation/okhttp3)
   * [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * [Spring Java Config](webmvc4-jetty/src/main/java/brave/example/TracingConfiguration.java)
   * Jetty 9/JRE 8 Runtime
-* [webmvc4-boot](webmvc4-boot)
+* [webmvc4-boot](webmvc4-boot) - `PROJECT=webmvc4-boot docker-compose up`
   * [Servlet 3.1](https://github.com/openzipkin/brave/tree/master/instrumentation/servlet)
   * [Spring MVC 4](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-webmvc)
   * [OkHttp 3](https://github.com/openzipkin/brave/tree/master/instrumentation/okhttp3)
