@@ -38,19 +38,22 @@ FROM $jre_image
 ARG USER=brave-example
 WORKDIR /${USER}
 
+# Ensure the process doesn't run as root
+RUN adduser -g '' -h ${PWD} -D ${USER}
+
 # Copy binaries and config we installed earlier
 COPY --from=install --chown=${USER} /install .
 
 # Add HEALTHCHECK and ENTRYPOINT scripts into the default search path
 RUN mv bin/* /usr/local/bin/ && rm -rf bin
 
-# Ensure the process doesn't run as root
-RUN adduser -g '' -h ${PWD} -D ${USER}
+# Switch to runtime user
 USER ${USER}
 
 # We use start period of 30s to avoid marking the container unhealthy on slow or contended CI hosts
 HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthcheck"]
-ENTRYPOINT ["start-brave-example"]
 
 # Expose the default ports for the frontend and backend
 EXPOSE 8081 9000
+
+ENTRYPOINT ["start-brave-example"]
