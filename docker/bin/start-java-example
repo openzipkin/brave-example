@@ -4,4 +4,4 @@ exec java ${JAVA_OPTS} -cp 'classes:lib/*' \
   -Dzipkin.endpoint=${ZIPKIN_ENDPOINT:=http://zipkin:9411/api/v2/spans} \
   -Dzipkin.supportsJoin=${ZIPKIN_SUPPORTS_JOIN:=true} \
   -Dbackend.endpoint=${BACKEND_ENDPOINT:=http://backend:9000/api} \
-  brave.example.$(echo "${ZIPKIN_SERVICE}" | sed 's/.*/\u&/')
+  ${MAIN_CLASS}

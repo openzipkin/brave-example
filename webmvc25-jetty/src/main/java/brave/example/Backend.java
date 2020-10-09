@@ -1,4 +1,4 @@
-package brave.webmvc;
+package brave.example;
 
 import java.io.IOException;
 import java.util.Date;

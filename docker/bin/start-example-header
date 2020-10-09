@@ -5,10 +5,12 @@ set -eu
 case "$1" in
   frontend )
     ZIPKIN_SERVICE=frontend
+    MAIN_CLASS=brave.example.Frontend
     PORT=8081
     ;;
   backend )
     ZIPKIN_SERVICE=backend
+    MAIN_CLASS=brave.example.Backend
     PORT=9000
     ;;
   * )

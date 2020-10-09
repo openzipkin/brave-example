@@ -36,9 +36,9 @@
 
   <!-- Loads the controllers -->
   <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
-  <bean class="brave.webmvc.Frontend">
+  <bean class="brave.example.Frontend">
     <constructor-arg ref="httpClient"/>
     <constructor-arg value="${backend.endpoint}"/>
   </bean>
-  <bean class="brave.webmvc.Backend"/>
+  <bean class="brave.example.Backend"/>
 </beans>

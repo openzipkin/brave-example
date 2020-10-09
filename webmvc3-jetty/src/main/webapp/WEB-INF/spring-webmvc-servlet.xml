@@ -28,11 +28,11 @@
   <context:property-placeholder/>
 
   <!-- Loads the controllers -->
-  <bean class="brave.webmvc.Frontend">
+  <bean class="brave.example.Frontend">
     <constructor-arg ref="restTemplate"/>
     <constructor-arg value="${backend.endpoint:http://localhost:9000/api}"/>
   </bean>
-  <bean class="brave.webmvc.Backend"/>
+  <bean class="brave.example.Backend"/>
 
   <!-- Creates HTTP client spans for each invocation in RestTemplate -->
   <!-- TODO: ideally this could be in a different file -->

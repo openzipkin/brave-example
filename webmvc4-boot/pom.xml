@@ -123,8 +123,8 @@
           </execution>
         </executions>
         <configuration>
-          <!-- This can be overridden to brave.webmvc.Frontend also -->
-          <mainClass>brave.webmvc.Backend</mainClass>
+          <!-- This can be overridden to brave.example.Frontend also -->
+          <mainClass>brave.example.Backend</mainClass>
           <classifier>exec</classifier>
           <executable>true</executable>
         </configuration>

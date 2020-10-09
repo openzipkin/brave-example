@@ -3,8 +3,8 @@
 Instead of servlet, this uses Spring Boot 1.5 to create a self-contained
 application that runs Spring WebMVC 4 controllers.
 
-*   brave.webmvc.Frontend and Backend : Rest controllers with no tracing configuration
-*   brave.webmvc.TracingConfiguration : This adds tracing by configuring the tracer, server and client tracing interceptors.
+*   brave.example.Frontend and Backend : Rest controllers with no tracing configuration
+*   brave.example.TracingConfiguration : This adds tracing by configuring the tracer, server and client tracing interceptors.
 
 `TracingConfiguration` is automatically loaded due to `META-INF/spring.factories`
 This allows the `Frontend` and `Backend` controllers to have no tracing
