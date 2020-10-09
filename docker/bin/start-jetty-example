@@ -1,27 +1,8 @@
-#!/bin/sh
-
-set -eu
-
-case "$1" in
-  f|frontend|Frontend )
-    ZIPKIN_SERVICE=frontend
-    PORT=8081
-    ;;
-  b|backend|Backend )
-    ZIPKIN_SERVICE=backend
-    PORT=9000
-    ;;
-  * )
-    echo "Invalid argument: specify frontend or backend"
-    exit 1
-esac
-
-# write the docker-healthcheck url to a file
-IP="$(hostname -i || echo '127.0.0.1')"
-echo http://${IP}:${PORT}/health > health_url
-
 # Handle the org switch between Jetty 8 and 9
 ORG=$(test -f jetty/org/eclipse/jetty/runner/Runner.class && echo eclipse || echo mortbay)
+
+# No ' -XX:+ExitOnOutOfMemoryError' in case running Java 1.6
+JAVA_OPTS=${JAVA_OPTS:-"-Xms16m -Xmx16m"}
 
 exec java ${JAVA_OPTS} -cp jetty \
   -Dzipkin.endpoint=${ZIPKIN_ENDPOINT:=http://zipkin:9411/api/v2/spans} \

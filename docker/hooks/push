@@ -2,9 +2,9 @@
 
 # Override push to avoid pushing a latest tag. We use tags for each example.
 if [ "$DOCKER_REPO" = "index.docker.io/openzipkin/example-brave" ]; then
-  ALL_EXAMPLES=$(cd ../; ls */pom.xml|sed 's~/pom.xml~~g')
+  ALL_PROJECTS=$(cd ../; ls */pom.xml |sed 's~/pom.xml~~g')
 
-  for target in ${ALL_EXAMPLES}; do
-    docker push "openzipkin/example-brave:${target}"
+  for PROJECT in ${ALL_PROJECTS}; do
+    docker push "openzipkin/example-brave:${PROJECT}"
   done
 fi

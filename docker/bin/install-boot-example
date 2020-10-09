@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-mkdir install
+mkdir -p install/bin
 
 # extract the exec jar
 cd install && jar xf ../target/*-exec.jar

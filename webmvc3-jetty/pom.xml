@@ -2,38 +2,27 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.zipkin.brave.example</groupId>
+    <artifactId>brave-example-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../parent-pom.xml</relativePath>
+  </parent>
 
-  <groupId>io.zipkin.brave.example</groupId>
   <artifactId>brave-example-webmvc3-jetty</artifactId>
-  <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
   <name>brave-example-webmvc3-jetty</name>
-  <description>Tracing Example: Spring WebMVC 3/Servlet 3.0/Jetty 8</description>
+  <description>Tracing Example: Spring WebMVC 3/Servlet 3.0/Jetty 8/JRE 7</description>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
+    <jre.version>7</jre.version>
 
     <spring.version>3.2.18.RELEASE</spring.version>
-    <brave.version>5.12.6</brave.version>
 
     <jetty.groupId>org.mortbay.jetty</jetty.groupId>
     <jetty.version>8.1.16.v20140903</jetty.version>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.zipkin.brave</groupId>
-        <artifactId>brave-bom</artifactId>
-        <version>${brave.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -101,7 +90,7 @@
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
       <!-- 3.12.12 was the last version to support Java 1.7 -->
-      <version>3.12.12 </version>
+      <version>3.12.12</version>
     </dependency>
   </dependencies>
 
@@ -118,40 +107,7 @@
 
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M3</version>
-        <executions>
-          <execution>
-            <id>enforce-java</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireJavaVersion>
-                  <!-- 1.7.0_80 to prevent a compile bug accessing CrossOrigin.
-                       JDK 11 is the last version to compile Java 6 bytecode. -->
-                  <version>[1.7.0_80,12)</version>
-                </requireJavaVersion>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.3</version>
-        <configuration>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
-          <packagingExcludes>WEB-INF/lib/servlet-api-*.jar</packagingExcludes>
-        </configuration>
       </plugin>
     </plugins>
   </build>

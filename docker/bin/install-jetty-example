@@ -2,7 +2,7 @@
 
 set -eu
 
-mkdir install
+mkdir -p install/bin
 
 # extract the war under /root
 cp -r target/*-SNAPSHOT install/root

@@ -1,0 +1,47 @@
+#!/bin/sh
+# This script is only a convenience as the build environment is controlled in
+# the Dockerfile. That said, it uses only basic shell commands to help it work
+# on developer laptops as well as CI nodes. Mainly, this centralizes the base
+# Java image mappings and ensures all metadata needed is taken from pom.xml.
+set -ue
+
+PROJECT=$1
+POM="${PROJECT}/pom.xml"
+
+if [ -f "${POM}" ]
+then
+  DESCRIPTION=$(sed -n 's/.*<description>\(.*\)<\/description>.*/\1/p' "${POM}")
+  JRE_VERSION=$(sed -n 's/.*<jre.version>\(.*\)<\/jre.version>.*/\1/p' "${POM}")
+else
+  echo "Expected ${POM} to exist"
+  exit 1
+fi
+
+TAG=${2:-${PROJECT}}
+
+case "${JRE_VERSION}" in
+  6 )
+    JRE_IMAGE=azul/zulu-openjdk-alpine:6u119-6.22.0.3
+    ;;
+  7 )
+    JRE_IMAGE=openzipkin/java:1.7.0_261-b02-jre
+    ;;
+  8 )
+    JRE_IMAGE=openzipkin/java:1.8.0_252-b09-jre
+    ;;
+  11 )
+    JRE_IMAGE=openzipkin/java:11.0.8-11.41.23-jre
+    ;;
+  15 )
+    JRE_IMAGE=openzipkin/java:15.0.0-15.27.17-jre
+    ;;
+  * )
+    echo "Invalid JRE_VERSION: ${JRE_VERSION}"
+    exit 1
+esac
+
+# Build the project
+docker build -f docker/Dockerfile -t openzipkin/example-brave:${TAG} \
+    --build-arg jre_image=${JRE_IMAGE} --build-arg project=${PROJECT} \
+    --label "description=${DESCRIPTION}" .
+

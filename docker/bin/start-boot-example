@@ -1,28 +1,8 @@
-#!/bin/sh
-
-set -eu
-
-case "$1" in
-  f|frontend|Frontend )
-    CLASS_NAME=Frontend
-    PORT=8081
-    ;;
-  b|backend|Backend )
-    CLASS_NAME=Backend
-    PORT=9000
-    ;;
-  * )
-    echo "Invalid argument: specify frontend or backend"
-    exit 1
-esac
-
-# write the docker-healthcheck url to a file
-IP="$(hostname -i || echo '127.0.0.1')"
-echo http://${IP}:${PORT}/health > health_url
+JAVA_OPTS=${JAVA_OPTS:-"-Xms32m -Xmx64m -XX:+ExitOnOutOfMemoryError"}
 
 exec java ${JAVA_OPTS} -cp . \
   -Dzipkin.endpoint=${ZIPKIN_ENDPOINT:=http://zipkin:9411/api/v2/spans} \
   -Dzipkin.supportsJoin=${ZIPKIN_SUPPORTS_JOIN:=true} \
   -Dbackend.endpoint=${BACKEND_ENDPOINT:=http://backend:9000/api} \
-  -Dloader.main=brave.webmvc.${CLASS_NAME} org.springframework.boot.loader.PropertiesLauncher \
-  --server.port=${PORT}
+  -Dloader.main=brave.webmvc.$(echo "${ZIPKIN_SERVICE}" | sed 's/.*/\u&/') \
+   org.springframework.boot.loader.PropertiesLauncher --server.port=${PORT}
