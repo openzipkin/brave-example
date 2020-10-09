@@ -47,7 +47,7 @@ COPY --from=install --chown=${USER} /install .
 # Add HEALTHCHECK and ENTRYPOINT scripts into the default search path
 RUN mv bin/* /usr/local/bin/ && rm -rf bin
 
-# Switch to runtime user
+# Switch to the runtime user
 USER ${USER}
 
 # We use start period of 30s to avoid marking the container unhealthy on slow or contended CI hosts
