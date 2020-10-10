@@ -100,16 +100,7 @@ public class TracingConfiguration {
     return HttpTracing.create(tracing);
   }
 
-  /**
-   * Trace {@link OkHttpClient} because {@link OkHttp3ClientHttpRequestFactory} doesn't take a
-   * {@link Call.Factory}
-   */
-  @Bean OkHttpClient tracedOkHttpClient(HttpTracing httpTracing) {
-    return new OkHttpClient.Builder()
-        .addNetworkInterceptor(TracingInterceptor.create(httpTracing))
-        .build();
-  }
-
+  /** Adds MVC Controller tags to server spans */
   @Bean WebMvcConfigurer tracingWebMvcConfigurer(
       final SpanCustomizingAsyncHandlerInterceptor webMvcTracingCustomizer) {
     return new WebMvcConfigurerAdapter() {
@@ -118,5 +109,17 @@ public class TracingConfiguration {
         registry.addInterceptor(webMvcTracingCustomizer);
       }
     };
+  }
+
+  /**
+   * Creates client spans for HTTP requests.
+   *
+   * <p>{@link OkHttpClient} because {@link OkHttp3ClientHttpRequestFactory} doesn't take a
+   * {@link Call.Factory}
+   */
+  @Bean OkHttpClient tracedOkHttpClient(HttpTracing httpTracing) {
+    return new OkHttpClient.Builder()
+        .addNetworkInterceptor(TracingInterceptor.create(httpTracing))
+        .build();
   }
 }

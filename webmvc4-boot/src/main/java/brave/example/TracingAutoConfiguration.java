@@ -21,12 +21,10 @@ import javax.servlet.Filter;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -34,9 +32,7 @@ import zipkin2.reporter.Sender;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 
-/**
- * This adds tracing configuration to any web mvc controllers or rest template clients.
- */
+/** This adds tracing configuration to any web mvc controllers or rest template clients. */
 @Configuration
 // Importing a class is effectively the same as declaring bean methods
 @Import(SpanCustomizingAsyncHandlerInterceptor.class)
@@ -99,29 +95,12 @@ public class TracingAutoConfiguration {
     return HttpTracing.create(tracing);
   }
 
-  /** Creates server spans for http requests */
+  /** Creates server spans for HTTP requests */
   @Bean Filter tracingFilter(HttpTracing httpTracing) {
     return TracingFilter.create(httpTracing);
   }
 
-  /**
-   * Trace {@link OkHttpClient} because {@link OkHttp3ClientHttpRequestFactory} doesn't take a
-   * {@link Call.Factory}
-   */
-  @Bean OkHttpClient tracedOkHttpClient(HttpTracing httpTracing) {
-    return new OkHttpClient.Builder()
-        .addNetworkInterceptor(TracingInterceptor.create(httpTracing))
-        .build();
-  }
-
-  @Bean RestTemplateCustomizer useTracedOkHttpClient(final OkHttpClient okHttpClient) {
-    return new RestTemplateCustomizer() {
-      @Override public void customize(RestTemplate restTemplate) {
-        restTemplate.setRequestFactory(new OkHttp3ClientHttpRequestFactory(okHttpClient));
-      }
-    };
-  }
-
+  /** Adds MVC Controller tags to server spans */
   @Bean WebMvcConfigurer tracingWebMvcConfigurer(
       final SpanCustomizingAsyncHandlerInterceptor webMvcTracingCustomizer) {
     return new WebMvcConfigurerAdapter() {
@@ -130,5 +109,17 @@ public class TracingAutoConfiguration {
         registry.addInterceptor(webMvcTracingCustomizer);
       }
     };
+  }
+
+  /**
+   * Creates client spans for HTTP requests.
+   *
+   * <p>{@link OkHttpClient} because {@link OkHttp3ClientHttpRequestFactory} doesn't take a
+   * {@link Call.Factory}
+   */
+  @Bean OkHttpClient tracedOkHttpClient(HttpTracing httpTracing) {
+    return new OkHttpClient.Builder()
+        .addNetworkInterceptor(TracingInterceptor.create(httpTracing))
+        .build();
   }
 }
