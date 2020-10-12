@@ -19,9 +19,9 @@ To setup the demo, you need to start Frontend, Backend and Zipkin. You can do
 this using Java commands or Docker.
 
 Once the services start, open http://localhost:8081/
-* This calls the backend (http://localhost:9000/api) and shows its result: a formatted date.
+* This calls the backend (http://127.0.0.1:9000/api) and shows its result: a formatted date.
 
-Afterwards, you can view traces that went through the backend via http://localhost:9411/zipkin?serviceName=backend
+Afterwards, you can view traces that went through the backend via http://127.0.0.1:9411/zipkin?serviceName=backend
 * This is a locally run zipkin service which keeps traces in memory
 
 ## Example projects

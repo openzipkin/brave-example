@@ -69,7 +69,7 @@
       <artifactId>brave-context-log4j12</artifactId>
     </dependency>
 
-    <!-- The below are needed to report traces to http://localhost:9411/api/v2/spans -->
+    <!-- The below are needed to report traces to http://127.0.0.1:9411/api/v2/spans -->
     <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-spring-beans</artifactId>

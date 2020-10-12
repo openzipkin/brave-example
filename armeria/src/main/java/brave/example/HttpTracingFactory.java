@@ -62,7 +62,7 @@ final class HttpTracingFactory {
   /** Configuration for how to send spans to Zipkin */
   static Sender sender() {
     return URLConnectionSender.create(
-        System.getProperty("zipkin.endpoint", "http://127.0.0.1:9411/api/v2/spans"));
+        System.getProperty("zipkin.baseUrl", "http://127.0.0.1:9411") + "/api/v2/spans");
   }
 
   /** Configuration for how to buffer spans into messages for Zipkin */

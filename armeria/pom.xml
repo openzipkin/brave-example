@@ -41,7 +41,7 @@
       <artifactId>brave-context-slf4j</artifactId>
     </dependency>
 
-    <!-- The below are needed to report traces to http://localhost:9411/api/v2/spans -->
+    <!-- The below are needed to report traces to http://127.0.0.1:9411/api/v2/spans -->
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
       <artifactId>zipkin-reporter-brave</artifactId>

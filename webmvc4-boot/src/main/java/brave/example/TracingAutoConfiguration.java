@@ -61,7 +61,7 @@ public class TracingAutoConfiguration {
 
   /** Configuration for how to send spans to Zipkin */
   @Bean Sender sender(
-      @Value("${zipkin.endpoint:http://127.0.0.1:9411/api/v2/spans}") String zipkinEndpoint) {
+      @Value("${zipkin.baseUrl:http://127.0.0.1:9411}/api/v2/spans}") String zipkinEndpoint) {
     return OkHttpSender.create(zipkinEndpoint);
   }
 

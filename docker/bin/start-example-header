@@ -21,3 +21,14 @@ esac
 # write the docker-healthcheck url to a file
 IP="$(hostname -i || echo '127.0.0.1')"
 echo http://${IP}:${PORT}/health > health_url
+
+BACKEND_ENDPOINT=${BACKEND_ENDPOINT:-http://backend:9000/api}
+
+ZIPKIN_BASEURL=${ZIPKIN_BASEURL:-http://zipkin:9411}
+ZIPKIN_SUPPORTS_JOIN=${ZIPKIN_SUPPORTS_JOIN:-true}
+
+EXAMPLE_OPTS="\
+-Dzipkin.service=${ZIPKIN_SERVICE} \
+-Dzipkin.baseUrl=${ZIPKIN_BASEURL} \
+-Dzipkin.supportsJoin=${ZIPKIN_SUPPORTS_JOIN} \
+-Dbackend.endpoint=${BACKEND_ENDPOINT}"

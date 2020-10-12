@@ -17,19 +17,10 @@ ARG project
 WORKDIR /code
 COPY --from=scratch /code .
 
-RUN cd $project && \
-    # Invoke the platform-specific install script
-    platform=$(echo "${project}"|cut -d- -f2) && \
-    if [ "${platform}" = "armeria" ]; then platform=java;fi && \
-    mvn -q --batch-mode -DskipTests package && \
-    /code/docker/bin/install-${platform}-example && \
-    # Move the completed installation root
-    mv install /install && \
-    # Add scripts used at runtime
-    cd /install/bin && \
-    cp -p /code/docker/bin/start-example-header start-brave-example && \
-    cat /code/docker/bin/start-${platform}-example >> start-brave-example && \
-    cp -p /code/docker/bin/docker-healthcheck .
+# This results in:
+# * /install - the project home
+# * /install/bin - scripts that should be copied into the search path
+RUN /code/docker/bin/install-example $project
 
 # Make the final layer that the example will run in
 FROM $jre_image

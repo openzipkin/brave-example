@@ -30,7 +30,7 @@
   <!-- Loads the controllers -->
   <bean class="brave.example.Frontend">
     <constructor-arg ref="restTemplate"/>
-    <constructor-arg value="${backend.endpoint:http://localhost:9000/api}"/>
+    <constructor-arg value="${backend.endpoint:http://127.0.0.1:9000/api}"/>
   </bean>
   <bean class="brave.example.Backend"/>
 
