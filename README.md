@@ -24,6 +24,14 @@ Once the services start, open http://localhost:8081/
 Afterwards, you can view traces that went through the backend via http://127.0.0.1:9411/zipkin?serviceName=backend
 * This is a locally run zipkin service which keeps traces in memory
 
+## Tips
+
+There are some interesting details that apply to all examples:
+* If you pass the header `user_name` Brave will automatically propagate it to the backend!
+  * `curl -s localhost:8081 -H'user_name: JC'`
+* The below Logback pattern adds trace and span identifiers into log output
+  * `%d{HH:mm:ss.SSS} [%thread] [%X{userName}] [%X{traceId}/%X{spanId}] %-5level %logger{36} - %msg%n`
+
 ## Example projects
 
 Here are the example projects you can try:
@@ -68,7 +76,7 @@ Armeria starts by default. To use a different project, set the `PROJECT` variabl
 
 Ex. `PROJECT=webmvc25-jetty docker-compose up`
 
-## Starting the services with Java
+## Starting the services from source
 
 When not using Docker, you'll need to start services according to the frameworks used.
 
@@ -81,9 +89,10 @@ curl -sSL https://zipkin.io/quickstart.sh | bash -s
 java -jar zipkin.jar
 ```
 
-### Armeria
-In a separate tab or window, start each of [brave.example.Frontend](/armeria/src/main/java/brave/example/Frontend.java)
-and [brave.example.Backend](/armeria/src/main/java/brave/example/Backend.java):
+### Java
+In a separate tab or window, start each of `brave.example.Frontend` and `brave.example.Backend`.
+
+Ex.
 ```bash
 $ cd armeria
 $ mvn compile exec:java -Dexec.mainClass=brave.example.Backend
@@ -91,27 +100,11 @@ $ mvn compile exec:java -Dexec.mainClass=brave.example.Frontend
 ```
 
 ### Servlet
-In a separate tab or window, start each of [brave.example.Frontend](/webmvc4-jetty/src/main/java/brave/example/Frontend.java)
-and [brave.example.Backend](/webmvc4-jetty/src/main/java/brave/example/Backend.java):
+In a separate tab or window, start a Jetty container for "backend" and "frontend".
+
+Ex.
 ```bash
 $ cd webmvc4-jetty
 $ mvn jetty:run -Pfrontend
 $ mvn jetty:run -Pbackend
 ```
-
-### Spring Boot
-In a separate tab or window, start each of [brave.example.Frontend](/webmvc4-boot/src/main/java/brave/example/Frontend.java)
-and [brave.example.Backend](/webmvc4-boot/src/main/java/brave/example/Backend.java):
-```bash
-$ cd webmvc4-boot
-$ mvn compile exec:java -Dexec.mainClass=brave.example.Backend
-$ mvn compile exec:java -Dexec.mainClass=brave.example.Frontend
-```
-
-## Tips
-
-There are some interesting details that apply to all examples:
-* If you pass the header `user_name` Brave will automatically propagate it to the backend!
-  * `curl -s localhost:8081 -H'user_name: JC'`
-* The below Logback pattern adds trace and span identifiers into log output
-  * `%d{HH:mm:ss.SSS} [%thread] [%X{userName}] [%X{traceId}/%X{spanId}] %-5level %logger{36} - %msg%n`
