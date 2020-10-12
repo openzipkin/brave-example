@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.zipkin.brave.example</groupId>
+    <artifactId>brave-example-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../parent-pom.xml</relativePath>
+  </parent>
+
+  <artifactId>brave-example-dropwizard</artifactId>
+  <packaging>jar</packaging>
+
+  <name>brave-example-dropwizard</name>
+  <description>Tracing Example: Dropwizard/ Java 15</description>
+
+  <properties>
+    <jre.version>15</jre.version>
+    <maven.compiler.release>8</maven.compiler.release>
+
+    <!-- You don't have to add a dependency on Dropwizard because dropwizard-zipkin manages it -->
+    <dropwizard-zipkin.version>2.0.12-1</dropwizard-zipkin.version>
+  </properties>
+
+  <dependencies>
+    <!-- Instruments the underlying Dropwizard requests -->
+    <dependency>
+      <groupId>com.smoketurner.dropwizard</groupId>
+      <artifactId>zipkin-core</artifactId>
+      <version>${dropwizard-zipkin.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.smoketurner.dropwizard</groupId>
+      <artifactId>zipkin-client</artifactId>
+      <version>${dropwizard-zipkin.version}</version>
+    </dependency>
+  </dependencies>
+</project>

@@ -4,7 +4,7 @@ PROJECT=$1
 
 # Determine the platform explicitly or via convention
 case ${PROJECT} in
-  armeria) PLATFORM=java;;
+  armeria|dropwizard) PLATFORM=java;;
   *) PLATFORM=$(echo "${PROJECT}"|cut -d- -f2);;
 esac
 
