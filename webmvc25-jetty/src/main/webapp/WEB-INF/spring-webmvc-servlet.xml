@@ -29,7 +29,7 @@
     </property>
     <property name="properties">
       <props>
-        <prop key="backend.endpoint">http://localhost:9000/api</prop>
+        <prop key="backend.endpoint">http://127.0.0.1:9000/api</prop>
       </props>
     </property>
   </bean>

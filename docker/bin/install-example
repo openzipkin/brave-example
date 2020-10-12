@@ -1,0 +1,25 @@
+#!/bin/sh
+set -eu
+PROJECT=$1
+
+# Determine the platform explicitly or via convention
+case ${PROJECT} in
+  armeria) PLATFORM=java;;
+  *) PLATFORM=$(echo "${PROJECT}"|cut -d- -f2);;
+esac
+
+# Build the source
+cd ${PROJECT}
+mvn -q --batch-mode -DskipTests package
+
+# Invoke the platform-specific install script
+/code/docker/bin/install-${PLATFORM}-example
+
+# Move the completed installation root
+mv install /install
+
+# Add scripts used at runtime
+cd /install/bin
+cp -p /code/docker/bin/start-example-header start-brave-example
+cat /code/docker/bin/start-${PLATFORM}-example >> start-brave-example
+cp -p /code/docker/bin/docker-healthcheck .

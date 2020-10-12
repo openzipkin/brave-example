@@ -1,7 +1,3 @@
 JAVA_OPTS=${JAVA_OPTS:-"-Xms16m -Xmx16m -XX:+ExitOnOutOfMemoryError"}
 
-exec java ${JAVA_OPTS} -cp 'classes:lib/*' \
-  -Dzipkin.endpoint=${ZIPKIN_ENDPOINT:=http://zipkin:9411/api/v2/spans} \
-  -Dzipkin.supportsJoin=${ZIPKIN_SUPPORTS_JOIN:=true} \
-  -Dbackend.endpoint=${BACKEND_ENDPOINT:=http://backend:9000/api} \
-  ${MAIN_CLASS}
+exec java ${JAVA_OPTS} -cp 'classes:lib/*' ${EXAMPLE_OPTS} ${MAIN_CLASS}

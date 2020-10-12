@@ -4,9 +4,4 @@ ORG=$(test -f jetty/org/eclipse/jetty/runner/Runner.class && echo eclipse || ech
 # No ' -XX:+ExitOnOutOfMemoryError' in case running Java 1.6
 JAVA_OPTS=${JAVA_OPTS:-"-Xms16m -Xmx16m"}
 
-exec java ${JAVA_OPTS} -cp jetty \
-  -Dzipkin.endpoint=${ZIPKIN_ENDPOINT:=http://zipkin:9411/api/v2/spans} \
-  -Dzipkin.supportsJoin=${ZIPKIN_SUPPORTS_JOIN:=true} \
-  -Dbackend.endpoint=${BACKEND_ENDPOINT:=http://backend:9000/api} \
-  -Dzipkin.service=${ZIPKIN_SERVICE} org.${ORG}.jetty.runner.Runner \
-  --port $PORT root
+exec java ${JAVA_OPTS} -cp jetty ${EXAMPLE_OPTS} org.${ORG}.jetty.runner.Runner --port $PORT root

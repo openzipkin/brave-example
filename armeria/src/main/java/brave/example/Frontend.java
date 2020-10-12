@@ -14,7 +14,7 @@ public final class Frontend {
     final HttpTracing httpTracing = HttpTracingFactory.create("frontend");
 
     final WebClient backendClient =
-        WebClient.builder(System.getProperty("backend.endpoint", "http://localhost:9000/api"))
+        WebClient.builder(System.getProperty("backend.endpoint", "http://127.0.0.1:9000/api"))
             .decorator(BraveClient.newDecorator(httpTracing.clientOf("backend")))
             .build();
 

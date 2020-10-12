@@ -12,7 +12,7 @@
 
   <!-- Configuration for how to send spans to Zipkin -->
   <bean id="sender" class="zipkin2.reporter.beans.OkHttpSenderFactoryBean">
-    <property name="endpoint" value="${zipkin.endpoint:http://localhost:9411/api/v2/spans}"/>
+    <property name="endpoint" value="${zipkin.baseUrl:http://127.0.0.1:9411}/api/v2/spans}"/>
   </bean>
 
   <!-- Configuration for how to buffer spans into messages for Zipkin -->

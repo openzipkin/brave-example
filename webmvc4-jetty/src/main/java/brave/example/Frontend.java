@@ -16,7 +16,7 @@ public class Frontend {
   final String backendEndpoint;
 
   @Autowired Frontend(RestTemplate restTemplate,
-      @Value("${backend.endpoint:http://localhost:9000/api}") String backendEndpoint) {
+      @Value("${backend.endpoint:http://127.0.0.1:9000/api}") String backendEndpoint) {
     this.restTemplate = restTemplate;
     this.backendEndpoint = backendEndpoint;
   }
