@@ -11,7 +11,7 @@ jobs:
   build-on-linux:
     strategy:
       matrix:
-        project: [armeria, dropwizard, webmvc25-jetty, webmvc3-jetty, webmvc4-boot, webmvc4-jetty]
+        project: [armeria, dropwizard, ratpack, webmvc25-jetty, webmvc3-jetty, webmvc4-boot, webmvc4-jetty]
     runs-on: ubuntu-latest
     name: Build and verify Docker images
     steps:
@@ -19,7 +19,6 @@ jobs:
         uses: docker-practice/actions-setup-docker@master
         with:
           docker_version: 19.03
-          docker_buildx: true
       - name: Cache docker
         uses: actions/cache@v1
         with:
