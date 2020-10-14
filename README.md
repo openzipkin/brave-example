@@ -41,7 +41,7 @@ Here are the example projects you can try:
   * Trace Instrumentation: [Armeria](https://armeria.dev/), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](armeria/src/main/java/brave/example/HttpTracingFactory.java)
 
-* [dropwizard](dropwizard) `PROJECT=webmvc4-boot docker-compose up`
+* [dropwizard](dropwizard) `PROJECT=dropwizard docker-compose up`
   * Runtime: JaxRS 2, Jersey 2.31, Apache HttpClient 4.5, Jetty 9.4, SLF4J 1.7, JRE 15
   * Trace Instrumentation: [Jersey Server](https://github.com/openzipkin/brave/tree/master/instrumentation/jersey-server), [JaxRS 2](https://github.com/openzipkin/brave/tree/master/instrumentation/jaxrs2), [Apache HttpClient](https://github.com/openzipkin/brave/tree/master/instrumentation/httpclient), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Dropwizard Zipkin](https://github.com/smoketurner/dropwizard-zipkin) [Java](dropwizard/src/main/java/brave/example/ExampleApplication.java) [Yaml](dropwizard/src/main/resources/server.yml)

@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+set -eux
 PROJECT=$1
 
 # Determine the platform explicitly or via convention

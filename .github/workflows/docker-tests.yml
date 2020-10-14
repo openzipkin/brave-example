@@ -19,7 +19,6 @@ jobs:
         uses: docker-practice/actions-setup-docker@master
         with:
           docker_version: 19.03
-          docker_buildx: true
       - name: Cache docker
         uses: actions/cache@v1
         with:
