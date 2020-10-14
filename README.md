@@ -47,7 +47,7 @@ Here are the example projects you can try:
   * Trace Configuration: [Dropwizard Zipkin](https://github.com/smoketurner/dropwizard-zipkin) [Java](dropwizard/src/main/java/brave/example/ExampleApplication.java) [Yaml](dropwizard/src/main/resources/server.yml)
 
 * [ratpack](ratpack) `PROJECT=ratpack docker-compose up`
-  * Runtime: Ratpack, Guice, SLF4J 1.7, JRE 15
+  * Runtime: Ratpack 1.8, Guice 4, SLF4J 1.7, JRE 15
   * Trace Instrumentation: [Brave Ratpack](https://github.com/openzipkin-contrib/brave-ratpack)
   * Trace Configuration: [Brave Ratpack Guice](https://github.com/openzipkin-contrib/brave-ratpack) [Java](ratpack/src/main/java/brave/example/Backend.java)
 
