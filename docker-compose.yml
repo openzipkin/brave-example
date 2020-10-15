@@ -8,8 +8,6 @@ services:
     container_name: frontend
     image: openzipkin/example-brave:${PROJECT:-armeria}
     command: frontend
-    environment: 
-        - ZIPKIN_SUPPORTS_JOIN=false
     ports:
       - 8081:8081
     depends_on:
