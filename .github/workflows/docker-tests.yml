@@ -23,6 +23,7 @@ jobs:
           # Make a string like: [{"project":"armeria"},{"project":"dropwizard"}]
           PROJECTS=$(ls */pom.xml|sed 's~\(.*\)/pom.xml~{"project":"\1"}~g'|tr '\n' ','|sed 's/\(.*\),$/[\1]/')
           echo "::set-output name=matrix::{\"include\":[${PROJECTS}]}"
+
   build-and-verify-docker:
     name: Build and verify Docker images
     needs: discover-projects
