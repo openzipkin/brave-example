@@ -38,6 +38,10 @@ jobs:
           path: ~/.docker
           key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
           restore-keys: ${{ runner.os }}-docker
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
       - name: Build Docker image openzipkin/example-brave:${{ matrix.project }}-test
         run:  docker/build_image ${{ matrix.project }} ${{ matrix.project }}-test
       - name: Verify Docker image openzipkin/example-brave:${{ matrix.project }}-test
