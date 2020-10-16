@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -ue
+
+# Formats a json list of projects for the GitHub Actions JSON output option.
+# The approach was adapted from https://github.com/golangci/golangci-lint/issues/828
+
+# Make a string like: [{"project":"armeria"},{"project":"dropwizard"}]
+PROJECTS=$(ls */pom.xml|sed 's~\(.*\)/pom.xml~{"project":"\1"}~g'|tr '\n' ','|sed 's/\(.*\),$/[\1]/')
+# Build the GitHub Actions JSON output option
+echo "::set-output name=matrix::{\"include\":[${PROJECTS}]}"
