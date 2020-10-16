@@ -1,4 +1,6 @@
-#!/bin/sh -v
+#!/bin/sh -x
+
+set -ue
 
 # This hook is called with the current directory set to the same as the Dockerfile, so we go back
 # to top level.

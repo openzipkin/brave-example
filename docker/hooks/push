@@ -1,4 +1,6 @@
-#!/bin/sh -v
+#!/bin/sh -x
+
+set -ue
 
 # Override push to avoid pushing a latest tag. We use tags for each example.
 if [ "$DOCKER_REPO" = "index.docker.io/openzipkin/example-brave" ]; then

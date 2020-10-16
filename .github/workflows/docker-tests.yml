@@ -8,12 +8,28 @@ on:
       - master
 
 jobs:
-  build-on-linux:
+  discover-projects:
+    name: Build project matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout Sources
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - id: set-matrix
+        run: |
+          # Make a string like: [{"project":"armeria"},{"project":"dropwizard"}]
+          PROJECTS=$(ls */pom.xml|sed 's~\(.*\)/pom.xml~{"project":"\1"}~g'|tr '\n' ','|sed 's/\(.*\),$/[\1]/')
+          echo "::set-output name=matrix::{\"include\":[${PROJECTS}]}"
+  build-and-verify-docker:
+    name: Build and verify Docker images
+    needs: discover-projects
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        project: [armeria, dropwizard, webmvc25-jetty, webmvc3-jetty, webmvc4-boot, webmvc4-jetty]
-    runs-on: ubuntu-latest
-    name: Build and verify Docker images
+        matrix: ${{ fromJson(needs.discover-projects.outputs.matrix) }}
     steps:
       - name: Install Docker
         uses: docker-practice/actions-setup-docker@master
@@ -25,10 +41,6 @@ jobs:
           path: ~/.docker
           key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
           restore-keys: ${{ runner.os }}-docker
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
       - name: Build Docker image openzipkin/example-brave:${{ matrix.project }}-test
         run:  docker/build_image ${{ matrix.project }} ${{ matrix.project }}-test
       - name: Verify Docker image openzipkin/example-brave:${{ matrix.project }}-test
