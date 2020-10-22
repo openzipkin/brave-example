@@ -20,8 +20,7 @@
     <jre.version>15</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
-    <!-- temporarily revert 1.1.0 until https://github.com/line/armeria/pull/3023 is discussed -->
-    <armeria.version>1.0.0</armeria.version>
+    <armeria.version>1.2.0</armeria.version>
   </properties>
 
   <dependencies>
