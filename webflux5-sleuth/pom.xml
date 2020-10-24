@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.zipkin.brave.example</groupId>
+    <artifactId>brave-example-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../parent-pom.xml</relativePath>
+  </parent>
+
+  <artifactId>brave-example-webflux5-sleuth</artifactId>
+  <packaging>jar</packaging>
+
+  <name>brave-example-webflux5-sleuth</name>
+  <description>Tracing Example: Spring 5.2, Reactor Netty 0.9, Spring Boot 2.3, Spring Cloud Sleuth 2.2, Log4J 2.13, JRE 15</description>
+
+  <properties>
+    <jre.version>15</jre.version>
+    <maven.compiler.release>8</maven.compiler.release>
+
+    <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
+    <sleuth.version>2.2.5.RELEASE</sleuth.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Configures Spring Boot with WebFlux SLF4J logging -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
+    <!-- Adds /actuator/health endpoint we re-map to /health used by our Docker HEALTHCHECK -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <!-- spring-cloud-starter-zipkin configures instrumentation including what's in Brave and their own. -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-zipkin</artifactId>
+      <version>${sleuth.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring-boot.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- This can be overridden to brave.example.Frontend also -->
+          <mainClass>brave.example.Backend</mainClass>
+          <classifier>exec</classifier>
+          <executable>true</executable>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -51,6 +51,11 @@ Here are the example projects you can try:
   * Trace Instrumentation: [Brave Ratpack](https://github.com/openzipkin-contrib/brave-ratpack)
   * Trace Configuration: [Brave Ratpack Guice](https://github.com/openzipkin-contrib/brave-ratpack) [Java](ratpack/src/main/java/brave/example/Backend.java)
 
+* [webflux5-sleuth](webflux5-sleuth) `PROJECT=webflux5-sleuth docker-compose up`
+  * Runtime: Spring 5.2, Reactor Netty 0.9, Spring Boot 2.3, Spring Cloud Sleuth 2.2, Log4J 2.13, JRE 15
+  * Trace Instrumentation: [WebFlux Server](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/TraceWebFilter.java), [WebFlux Client](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/client/TraceWebClientBeanPostProcessor.java), [Reactor Context](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/reactor/ScopePassingSpanSubscriber.java), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
+  * Trace Configuration: [Spring Cloud Sleuth](https://github.com/spring-cloud/spring-cloud-sleuth/tree/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/autoconfig) [Properties](webflux5-sleuth/src/main/resources/application.properties)
+
 * [webmvc25-jetty](webmvc25-jetty) `PROJECT=webmvc25-jetty docker-compose up`
   * Runtime: Spring 2.5, Apache HttpClient 4.3, Servlet 2.5, Jetty 7.6, Log4J 1.2, JRE 6
   * Trace Instrumentation: [Servlet](https://github.com/openzipkin/brave/tree/master/instrumentation/servlet), [Spring MVC](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-webmvc), [Apache HttpClient](https://github.com/openzipkin/brave/tree/master/instrumentation/httpclient), [Log4J 1.2](https://github.com/openzipkin/brave/tree/master/context/log4j12)
