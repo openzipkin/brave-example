@@ -21,19 +21,19 @@ TAG=${2:-${PROJECT}}
 
 case "${JRE_VERSION}" in
   6 )
-    JRE_IMAGE=azul/zulu-openjdk-alpine:6u119-6.22.0.3
+    JRE_IMAGE=openzipkin/java:6u119-6.22.0.3
     ;;
   7 )
-    JRE_IMAGE=openzipkin/java:1.7.0_261-b02-jre
+    JRE_IMAGE=openzipkin/java:7u282-7.42.0.13
     ;;
   8 )
-    JRE_IMAGE=openzipkin/java:1.8.0_252-b09-jre
+    JRE_IMAGE=openzipkin/java:8u272-8.50.0.21-jre-headless
     ;;
   11 )
-    JRE_IMAGE=openzipkin/java:11.0.8-11.41.23-jre
+    JRE_IMAGE=openzipkin/java:11.0.9-11.43.21-jre
     ;;
   15 )
-    JRE_IMAGE=openzipkin/java:15.0.0-15.27.17-jre
+    JRE_IMAGE=openzipkin/java:15.0.1-15.28.13-jre
     ;;
   * )
     echo "Invalid JRE_VERSION: ${JRE_VERSION}"
