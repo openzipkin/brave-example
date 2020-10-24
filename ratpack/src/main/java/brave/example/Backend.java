@@ -20,15 +20,15 @@ public final class Backend {
 
   public static void main(String[] args) throws Exception {
     ServerConfig serverConfig = ServerConfig.embedded()
-        .props(Collections.singletonMap("zipkin.service", "backend"))
-        .sysProps() // allows overrides like ratpack.zipkin.baseUrl=...
+        .props(Collections.singletonMap("brave.localServiceName", "backend"))
+        .sysProps() // allows overrides like ratpack.brave.zipkin.baseUrl=...
         .port(9000)
         .build();
 
     RatpackServer.start(server -> server.serverConfig(serverConfig)
         .registry(Guice.registry(bindings -> bindings
             .moduleConfig(ServerTracingModule.class,
-                serverConfig.get("/zipkin", ZipkinConfig.class).toModuleConfig())
+                serverConfig.get("/brave", BraveConfig.class).toModuleConfig())
             .bind(Backend.class)
         ))
         .handlers(chain -> chain

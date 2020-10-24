@@ -117,7 +117,7 @@
               </connectors>
               <systemProperties>
                 <systemProperty>
-                  <name>zipkin.service</name>
+                  <name>brave.localServiceName</name>
                   <value>frontend</value>
                 </systemProperty>
               </systemProperties>
@@ -141,7 +141,7 @@
               </connectors>
               <systemProperties>
                 <systemProperty>
-                  <name>zipkin.service</name>
+                  <name>brave.localServiceName</name>
                   <value>backend</value>
                 </systemProperty>
               </systemProperties>
