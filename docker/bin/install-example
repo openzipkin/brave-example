@@ -5,6 +5,7 @@ PROJECT=$1
 # Determine the platform explicitly or via convention
 case ${PROJECT} in
   armeria|dropwizard|ratpack) PLATFORM=java;;
+  webflux5-sleuth) PLATFORM=boot;;
   *) PLATFORM=$(echo "${PROJECT}"|cut -d- -f2);;
 esac
 
