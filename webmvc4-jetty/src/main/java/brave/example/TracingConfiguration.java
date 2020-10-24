@@ -66,7 +66,7 @@ public class TracingConfiguration {
 
   /** Configuration for how to send spans to Zipkin */
   @Bean Sender sender(
-      @Value("${zipkin.baseUrl:http://127.0.0.1:9411}/api/v2/spans") String zipkinEndpoint) {
+      @Value("${brave.zipkin.baseUrl:http://127.0.0.1:9411}/api/v2/spans") String zipkinEndpoint) {
     return OkHttpSender.create(zipkinEndpoint);
   }
 
@@ -77,14 +77,16 @@ public class TracingConfiguration {
 
   /** Controls aspects of tracing such as the service name that shows up in the UI */
   @Bean Tracing tracing(
-      @Value("${zipkin.service:${spring.application.name}}") String serviceName,
-      @Value("${zipkin.supportsJoin:true}") boolean supportsJoin,
+      @Value("${brave.localServiceName:${spring.application.name}}") String serviceName,
+      @Value("${brave.supportsJoin:true}") boolean supportsJoin,
+      @Value("${brave.traceId128Bit:false}") boolean traceId128Bit,
       Propagation.Factory propagationFactory,
       CurrentTraceContext currentTraceContext,
       AsyncZipkinSpanHandler zipkinSpanHandler) {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
         .supportsJoin(supportsJoin)
+        .traceId128Bit(traceId128Bit)
         .propagationFactory(propagationFactory)
         .currentTraceContext(currentTraceContext)
         .addSpanHandler(zipkinSpanHandler).build();

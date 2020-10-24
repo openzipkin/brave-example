@@ -23,14 +23,15 @@ final class HttpTracingFactory {
 
   /** Decides how to name and tag spans. By default they are named the same as the http method. */
   static HttpTracing create(String serviceName) {
-    return HttpTracing.create(tracing((System.getProperty("zipkin.service", serviceName))));
+    return HttpTracing.create(tracing((System.getProperty("brave.localServiceName", serviceName))));
   }
 
   /** Controls aspects of tracing such as the service name that shows up in the UI */
   static Tracing tracing(String serviceName) {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
-        .supportsJoin(Boolean.parseBoolean(System.getProperty("zipkin.supportsJoin", "true")))
+        .supportsJoin(Boolean.parseBoolean(System.getProperty("brave.supportsJoin", "true")))
+        .supportsJoin(Boolean.parseBoolean(System.getProperty("brave.traceId128Bit", "false")))
         .propagationFactory(propagationFactory())
         .currentTraceContext(currentTraceContext(correlationScopeDecorator()))
         .addSpanHandler(spanHandler(sender()))
@@ -62,7 +63,7 @@ final class HttpTracingFactory {
   /** Configuration for how to send spans to Zipkin */
   static Sender sender() {
     return URLConnectionSender.create(
-        System.getProperty("zipkin.baseUrl", "http://127.0.0.1:9411") + "/api/v2/spans");
+        System.getProperty("brave.zipkin.baseUrl", "http://127.0.0.1:9411") + "/api/v2/spans");
   }
 
   /** Configuration for how to buffer spans into messages for Zipkin */

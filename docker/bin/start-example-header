@@ -4,12 +4,12 @@ set -eu
 
 case "$1" in
   frontend )
-    ZIPKIN_SERVICE=frontend
+    BRAVE_SERVICE=frontend
     MAIN_CLASS=brave.example.Frontend
     PORT=8081
     ;;
   backend )
-    ZIPKIN_SERVICE=backend
+    BRAVE_SERVICE=backend
     MAIN_CLASS=brave.example.Backend
     PORT=9000
     ;;
@@ -25,10 +25,12 @@ echo http://${IP}:${PORT}/health > health_url
 BACKEND_ENDPOINT=${BACKEND_ENDPOINT:-http://backend:9000/api}
 
 ZIPKIN_BASEURL=${ZIPKIN_BASEURL:-http://zipkin:9411}
-ZIPKIN_SUPPORTS_JOIN=${ZIPKIN_SUPPORTS_JOIN:-true}
+BRAVE_SUPPORTS_JOIN=${BRAVE_SUPPORTS_JOIN:-true}
+BRAVE_TRACEID_128=${BRAVE_TRACEID_128:-false}
 
 EXAMPLE_OPTS="\
--Dzipkin.service=${ZIPKIN_SERVICE} \
--Dzipkin.baseUrl=${ZIPKIN_BASEURL} \
--Dzipkin.supportsJoin=${ZIPKIN_SUPPORTS_JOIN} \
--Dbackend.endpoint=${BACKEND_ENDPOINT}"
+-Dbackend.endpoint=${BACKEND_ENDPOINT} \
+-Dbrave.localServiceName=${BRAVE_SERVICE} \
+-Dbrave.supportsJoin=${BRAVE_SUPPORTS_JOIN} \
+-Dbrave.traceId128Bit=${BRAVE_TRACEID_128} \
+-Dbrave.zipkin.baseUrl=${ZIPKIN_BASEURL}"

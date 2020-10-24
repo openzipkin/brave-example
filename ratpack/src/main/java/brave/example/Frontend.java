@@ -29,16 +29,16 @@ public final class Frontend {
   public static void main(String[] args) throws Exception {
     ServerConfig serverConfig = ServerConfig.embedded()
         .props(ImmutableMap.of(
-            "zipkin.service", "frontend",
+            "brave.localServiceName", "frontend",
             "backend.endpoint", "http://127.0.0.1:9000/api"))
-        .sysProps() // allows overrides like ratpack.zipkin.baseUrl=...
+        .sysProps() // allows overrides like ratpack.brave.zipkin.baseUrl=...
         .port(8081)
         .build();
 
     RatpackServer.start(server -> server.serverConfig(serverConfig)
         .registry(Guice.registry(bindings -> bindings
             .moduleConfig(ServerTracingModule.class,
-                serverConfig.get("/zipkin", ZipkinConfig.class).toModuleConfig())
+                serverConfig.get("/brave", BraveConfig.class).toModuleConfig())
             .binder(b ->
                 b.bind(String.class).annotatedWith(Names.named("backendEndpoint"))
                     .toInstance(serverConfig.get("/backend/endpoint", String.class)))

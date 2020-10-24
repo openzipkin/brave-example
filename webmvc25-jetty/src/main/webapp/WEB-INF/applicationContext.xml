@@ -18,15 +18,16 @@
     </property>
     <property name="properties">
       <props>
-        <prop key="zipkin.baseUrl">http://127.0.0.1:9411</prop>
-        <prop key="zipkin.supportsJoin">true</prop>
+        <prop key="brave.zipkin.baseUrl">http://127.0.0.1:9411</prop>
+        <prop key="brave.supportsJoin">true</prop>
+        <prop key="brave.traceId128Bit">false</prop>
       </props>
     </property>
   </bean>
 
   <!-- Configuration for how to send spans to Zipkin -->
   <bean id="sender" class="zipkin2.reporter.beans.URLConnectionSenderFactoryBean">
-    <property name="endpoint" value="${zipkin.baseUrl}/api/v2/spans"/>
+    <property name="endpoint" value="${brave.zipkin.baseUrl}/api/v2/spans"/>
   </bean>
 
   <!-- Configuration for how to buffer spans into messages for Zipkin -->
@@ -79,8 +80,9 @@
 
   <!-- Controls aspects of tracing such as the service name that shows up in the UI -->
   <bean id="tracing" class="brave.spring.beans.TracingFactoryBean">
-    <property name="localServiceName" value="${zipkin.service}"/>
-    <property name="supportsJoin" value="${zipkin.supportsJoin}"/>
+    <property name="localServiceName" value="${brave.localServiceName}"/>
+    <property name="supportsJoin" value="${brave.supportsJoin}"/>
+    <property name="traceId128Bit" value="${brave.traceId128Bit}"/>
     <property name="propagationFactory" ref="propagationFactory"/>
     <property name="currentTraceContext">
       <bean class="brave.spring.beans.CurrentTraceContextFactoryBean">
