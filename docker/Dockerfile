@@ -10,7 +10,7 @@ FROM scratch as scratch
 COPY . /code/
 
 ## Use JDK 11 to build projects, as that can still compile Java 6
-FROM openzipkin/java:11.0.9-11.43.21 as install
+FROM ghcr.io/openzipkin/java:11.0.9-11.43.21 as install
 
 ARG project
 
