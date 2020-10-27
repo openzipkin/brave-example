@@ -9,7 +9,7 @@ services:
   # Generate traffic by hitting http://localhost:8081
   frontend:
     container_name: frontend
-    image: openzipkin/example-brave:armeria
+    image: openzipkin/brave-example:armeria
     command: frontend
     ports:
       - 8081:8081
@@ -18,7 +18,7 @@ services:
         condition: service_healthy
   backend:
     container_name: backend
-    image: openzipkin/example-brave:armeria
+    image: openzipkin/brave-example:armeria
     command: backend
 ```
 
@@ -26,7 +26,7 @@ services:
 
 To build an example, from the root directory, invoke `docker/build_image YOUR_PROJECT`:
 
-Ex. To build the Armeria example as the image 'openzipkin/example-brave:test'
+Ex. To build the Armeria example as the image 'openzipkin/brave-example:test'
 ```bash
 $ docker/build_image armeria test
 ```

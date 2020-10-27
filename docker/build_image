@@ -21,19 +21,19 @@ TAG=${2:-${PROJECT}}
 
 case "${JRE_VERSION}" in
   6 )
-    JRE_IMAGE=openzipkin/java:6u119-6.22.0.3
+    JRE_IMAGE=ghcr.io/openzipkin/java:6u119-6.22.0.3
     ;;
   7 )
-    JRE_IMAGE=openzipkin/java:7u282-7.42.0.13
+    JRE_IMAGE=ghcr.io/openzipkin/java:7u282-7.42.0.13
     ;;
   8 )
-    JRE_IMAGE=openzipkin/java:8u272-8.50.0.21-jre-headless
+    JRE_IMAGE=ghcr.io/openzipkin/java:8u272-8.50.0.21-jre-headless
     ;;
   11 )
-    JRE_IMAGE=openzipkin/java:11.0.9-11.43.21-jre
+    JRE_IMAGE=ghcr.io/openzipkin/java:11.0.9-11.43.21-jre
     ;;
   15 )
-    JRE_IMAGE=openzipkin/java:15.0.1-15.28.13-jre
+    JRE_IMAGE=ghcr.io/openzipkin/java:15.0.1-15.28.13-jre
     ;;
   * )
     echo "Invalid JRE_VERSION: ${JRE_VERSION}"
@@ -41,7 +41,7 @@ case "${JRE_VERSION}" in
 esac
 
 # Build the project
-docker build -f docker/Dockerfile -t openzipkin/example-brave:${TAG} \
+docker build -f docker/Dockerfile -t openzipkin/brave-example:${TAG} \
     --build-arg jre_image=${JRE_IMAGE} --build-arg project=${PROJECT} \
     --label "description=${DESCRIPTION}" .
 

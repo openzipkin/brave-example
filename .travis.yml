@@ -1,0 +1,31 @@
+# We only use travis to publish our Docker images
+dist: focal
+language: bash
+
+services:
+  - docker
+
+before_script:
+  # Log in to Docker Hub for releasing the image
+  - echo "$GH_TOKEN"| docker login ghcr.io -u "$GH_USER" --password-stdin
+
+script: travis/publish.sh
+
+branches:
+  only:
+    - master
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/ead3c37d57527214e9f2
+      - https://webhooks.gitter.im/e/9f1ee2f315d32956f8d6
+    on_success: change
+    on_failure: always
+
+env:
+  global:
+    # Ex. travis encrypt GH_USER=your_github_account
+    - secure: "jZs5FSpDPg/1Vo5fltYbLm0P8gc99Er0ql0uLqzbgDw2WdNXXbR8lk/gC6sqmrYryDSAo+yiEPV8oAy/6sL5DU+KVcg2YdR6WytCalS/LZO6wa0C2ZdUyfYQW9IgXzkejv3MF6n1OwVoiUva+VED+Oh4snKbeUU5ehLi4heqt/g="
+    # Ex. travis encrypt GH_TOKEN=XXX-https://github.com/settings/tokens-XXX --add
+    - secure: "RUuzwjjIKPSqiKs0nQyAfCCm6lBkhn+HpjAph9x6NkN0myB308hVAw6Bqs99ZFvS432vkbpXkF0v91TKdWHlLuRsFgQs28Sk/j1sHvQhRo32YcDDrqEUyp3TPbSIjRvkINmgYQi2SPUPsYTgNU8X6z5u10EAgyB7xhLf3uBVe+Y="

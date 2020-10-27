@@ -2,11 +2,10 @@
 
 set -ue
 
-# This hook is called with the current directory set to the same as the Dockerfile, so we go back
-# to top level.
-cd ..
-
 ALL_PROJECTS=$(ls */pom.xml|sed 's~/pom.xml~~g')
 for PROJECT in ${ALL_PROJECTS}; do
   docker/build_image "${PROJECT}"
+  IMAGE="openzipkin/brave-example:${PROJECT}"
+  docker tag $IMAGE ghcr.io/$IMAGE
+  docker push ghcr.io/$IMAGE
 done

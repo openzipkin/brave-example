@@ -47,12 +47,12 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
-      - name: Build Docker image openzipkin/example-brave:${{ matrix.project }}-test
+      - name: Build Docker image openzipkin/brave-example:${{ matrix.project }}-test
         run:  docker/build_image ${{ matrix.project }} ${{ matrix.project }}-test
-      - name: Verify Docker image openzipkin/example-brave:${{ matrix.project }}-test
+      - name: Verify Docker image openzipkin/brave-example:${{ matrix.project }}-test
         run: |
           # This just makes sure containers run and the HEALTHCHECK works (for now..)
-          IMAGE=openzipkin/example-brave:${{ matrix.project }}-test
+          IMAGE=openzipkin/brave-example:${{ matrix.project }}-test
           docker run --rm --name frontend -d ${IMAGE} frontend
           docker run --rm --name backend -d ${IMAGE} backend
           docker/bin/block-on-health frontend || exit 1
