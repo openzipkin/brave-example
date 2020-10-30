@@ -5,7 +5,10 @@
 # Java image mappings and ensures all metadata needed is taken from pom.xml.
 set -ue
 
-PROJECT=$1
+
+PROJECT=${1:-armeria}
+TAG=${2:-openzipkin/brave-example:test}
+OP=${3:-load}
 POM="${PROJECT}/pom.xml"
 
 if [ -f "${POM}" ]
@@ -17,31 +20,71 @@ else
   exit 1
 fi
 
-TAG=${2:-${PROJECT}}
+JAVA_VERSION=${JAVA_VERSION:-15.0.1_p9}
+
+# Arch of the running host. This determines which platform we load into Docker
+ARCH=${ARCH:-$(uname -m)}
+case ${ARCH} in
+  x86_64* )
+    ARCH=amd64
+    ;;
+  amd64* )
+    ;;
+  arm64* )
+    ;;
+  aarch64* )
+    ARCH=arm64
+    ;;
+  * )
+    echo ARCH ${ARCH} not yet supported in this script. export manually to amd64 or report issue.
+    exit 1
+esac
+
+# Platform to load into "docker images"
+PLATFORM=${PLATFORM:-linux/${ARCH}}
+# Platforms to eventually push to the registry
+PLATFORMS="linux/amd64,linux/arm64"
 
 case "${JRE_VERSION}" in
   6 )
     JRE_IMAGE=ghcr.io/openzipkin/java:6u119-6.22.0.3
+    # single arch image
+    PLATFORMS=linux/amd64
     ;;
   7 )
     JRE_IMAGE=ghcr.io/openzipkin/java:7u282-7.42.0.13
+    # single arch image
+    PLATFORMS=linux/amd64
     ;;
   8 )
-    JRE_IMAGE=ghcr.io/openzipkin/java:8u272-8.50.0.21-jre-headless
+    JRE_IMAGE=ghcr.io/openzipkin/java:8.252.09-jre
     ;;
   11 )
-    JRE_IMAGE=ghcr.io/openzipkin/java:11.0.9-11.43.21-jre
+    JRE_IMAGE=ghcr.io/openzipkin/java:11.0.9_p11-jre
     ;;
   15 )
-    JRE_IMAGE=ghcr.io/openzipkin/java:15.0.1-15.28.13-jre
+    JRE_IMAGE=ghcr.io/openzipkin/java:15.0.1_p9-jre
     ;;
   * )
     echo "Invalid JRE_VERSION: ${JRE_VERSION}"
     exit 1
 esac
 
-# Build the project
-docker build -f docker/Dockerfile -t openzipkin/brave-example:${TAG} \
-    --build-arg jre_image=${JRE_IMAGE} --build-arg project=${PROJECT} \
-    --label "description=${DESCRIPTION}" .
+BUILDX="docker buildx build --progress plain -f docker/Dockerfile \
+--build-arg project=${PROJECT} --label project=${PROJECT} \
+--build-arg jre_image=${JRE_IMAGE}"
 
+case ${OP} in
+  load )
+    # We can only load with one platform/arch https://github.com/docker/buildx/issues/59
+    echo "Building image ${TAG} with platform ${PLATFORM} and Java version ${JAVA_VERSION}"
+    ${BUILDX} --tag ${TAG} --platform=${PLATFORM} . --load
+    ;;
+  push )
+    echo "Pushing image ${TAG} with platforms ${PLATFORMS} and Java version ${JAVA_VERSION}"
+    ${BUILDX} --tag ${TAG} --label description="${DESCRIPTION}" --platform=${PLATFORMS} . --push
+    ;;
+  * )
+    echo "Invalid OP: ${OP}, Ex. load or push"
+    exit 1
+esac

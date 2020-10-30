@@ -28,5 +28,5 @@ To build an example, from the root directory, invoke `docker/build_image YOUR_PR
 
 Ex. To build the Armeria example as the image 'openzipkin/brave-example:test'
 ```bash
-$ docker/build_image armeria test
+$ docker/build_image armeria
 ```
