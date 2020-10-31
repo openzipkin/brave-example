@@ -1,38 +1,23 @@
-# We only use travis to publish our Docker images
-dist: focal
-language: bash
+# Run `travis lint` when changing this file to avoid breaking the build.
+
+# We need a full VM so that testcontainers can use Docker
+# See https://docs.travis-ci.com/user/reference/overview/#for-a-particular-travisyml-configuration
+arch: amd64           # arm64 is LXD containers which we can't use because we run Docker tests
+os: linux             # required for arch different than amd64
+dist: focal           # newest available distribution
 
 services:
   - docker
 
-
+# Credentials entered into https://travis-ci.org/github/openzipkin/${REPO}/settings are access
+# controlled by branch (typically only master). Check to see if a well-known env is available
+# before attempting to log in.
 before_install:
-  # Ensure Docker buildx is available and can build multi-architecture
   - |
-    # Enable experimental features on the server (multi-arch)
-    echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-    sudo service docker restart
-    # Enable experimental client features (eg docker buildx)
-    mkdir -p $HOME/.docker && echo '{"experimental":"enabled"}' > $HOME/.docker/config.json
-  - |
-    # Add buildx plugin
-    BUILDX_VERSION=0.4.2
-    BUILDX_URL=https://github.com/docker/buildx/releases/download/v${BUILDX_VERSION}/buildx-v${BUILDX_VERSION}.linux-${TRAVIS_CPU_ARCH}
-    mkdir -p $HOME/.docker/cli-plugins
-    ( cd $HOME/.docker/cli-plugins && wget -qO- $BUILDX_URL > docker-buildx && chmod 755 docker-buildx)
-    docker version
-  - |
-    # Enable execution of different multi-architecture containers by QEMU and binfmt_misc
-    # See https://github.com/multiarch/qemu-user-static
-    if [ "$(uname -m)" = "x86_64" ]; then
-      docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-    fi
-    docker buildx create --name builder --use
-  - |
-    # Credentials entered into https://travis-ci.org/github/openzipkin/${REPO}/settings are access
-    # controlled by branch (typically only master). Check to see if a well-known env is available
-    # before attempting to log in.
     if [[ -n "$GH_USER" ]]; then
+      # re-use this condition to control if we prepare Docker for multi-arch
+      build-bin/setup_multiarch_docker
+
       # Log in to Docker Hub for releasing the image
       echo "$GH_TOKEN"| docker login ghcr.io -u "$GH_USER" --password-stdin
     fi
