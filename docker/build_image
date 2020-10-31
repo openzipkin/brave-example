@@ -21,27 +21,6 @@ else
 fi
 
 JAVA_VERSION=${JAVA_VERSION:-15.0.1_p9}
-
-# Arch of the running host. This determines which platform we load into Docker
-ARCH=${ARCH:-$(uname -m)}
-case ${ARCH} in
-  x86_64* )
-    ARCH=amd64
-    ;;
-  amd64* )
-    ;;
-  arm64* )
-    ;;
-  aarch64* )
-    ARCH=arm64
-    ;;
-  * )
-    echo ARCH ${ARCH} not yet supported in this script. export manually to amd64 or report issue.
-    exit 1
-esac
-
-# Platform to load into "docker images"
-PLATFORM=${PLATFORM:-linux/${ARCH}}
 # Platforms to eventually push to the registry
 PLATFORMS="linux/amd64,linux/arm64"
 
@@ -70,21 +49,39 @@ case "${JRE_VERSION}" in
     exit 1
 esac
 
-BUILDX="docker buildx build --progress plain -f docker/Dockerfile \
---build-arg project=${PROJECT} --label project=${PROJECT} \
---build-arg jre_image=${JRE_IMAGE}"
+DOCKER_ARGS="-f docker/Dockerfile --tag ${TAG} \
+--build-arg project=${PROJECT} --label brave-example=${PROJECT} \
+--build-arg jre_image=${JRE_IMAGE} \
+--label org.opencontainers.image.source=https://github.com/openzipkin/brave-example \
+--label org.opencontainers.image.version=$(git rev-parse --short HEAD) ."
 
-case ${OP} in
-  load )
-    # We can only load with one platform/arch https://github.com/docker/buildx/issues/59
-    echo "Building image ${TAG} with platform ${PLATFORM} and Java version ${JAVA_VERSION}"
-    ${BUILDX} --tag ${TAG} --platform=${PLATFORM} . --load
+# Avoid buildx for two reasons:
+#  * It only supports one platform/arch on load https://github.com/docker/buildx/issues/59
+#  * It would pull Docker Hub for moby/buildkit or multiarch/qemu-user-static images, using up quota
+if [ "${OP}" = "load" ]; then
+  echo "Building image ${TAG} with java_version ${JAVA_VERSION}"
+  docker build --label org.opencontainers.image.description="${DESCRIPTION}" ${DOCKER_ARGS}
+  exit $?
+fi
+
+if [ "${OP}" != "push" ]; then
+  echo "Invalid OP: ${OP}, Ex. load or push"
+  exit 1
+fi
+
+
+# This can be less manual in the future, for example checking buildx to see what it can do.
+ARCH=${ARCH:-$(uname -m)}
+case ${ARCH} in
+  x86_64* )
     ;;
-  push )
-    echo "Pushing image ${TAG} with platforms ${PLATFORMS} and Java version ${JAVA_VERSION}"
-    ${BUILDX} --tag ${TAG} --label description="${DESCRIPTION}" --platform=${PLATFORMS} . --push
+  amd64* )
     ;;
   * )
-    echo "Invalid OP: ${OP}, Ex. load or push"
+    echo Pushing platforms ${PLATFORMS} with arch ${ARCH} is not yet supported.
     exit 1
 esac
+
+echo "Pushing image ${TAG} with platforms ${PLATFORMS} and Java version ${JAVA_VERSION}"
+docker buildx build --progress plain --platform=${PLATFORMS} \
+       --label org.opencontainers.image.description="${DESCRIPTION}" ${DOCKER_ARGS} --push

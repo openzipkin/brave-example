@@ -13,7 +13,7 @@ jettyGroupId=$(mvn_property jetty.groupId)
 jettyVersion=$(mvn_property jetty.version)
 
 # Use Maven to get the jetty-runner so it is cached if multiple projects use it
-mvn -q --batch-mode org.apache.maven.plugins:maven-dependency-plugin:get \
+mvn -q --batch-mode --batch-mode org.apache.maven.plugins:maven-dependency-plugin:3.1.2:get \
     -Dtransitive=false -Dartifact=${jettyGroupId}:jetty-runner:${jettyVersion}:jar
 
 # Unzip the jetty-runner so that it is faster to start
