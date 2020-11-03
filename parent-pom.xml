@@ -33,7 +33,7 @@
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <brave.version>5.12.6</brave.version>
+    <brave.version>5.13.0</brave.version>
 
     <!-- The JRE used in Docker images can be higher than ${maven.compiler.release}. -->
     <jre.version>SET MANUALLY IN PROJECTS</jre.version>
