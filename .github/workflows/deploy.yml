@@ -1,0 +1,49 @@
+# yamllint --format github .github/workflows/deploy.yml
+---
+name: deploy
+
+on:
+  # We deploy non-tagged pushes to master that aren't deploy documentation-only commits.
+  push:
+    tags: ''
+    branches: master
+    paths-ignore: '**/*.md'
+
+jobs:
+  discover-versions:
+    name: Build version matrix
+    runs-on: ubuntu-20.04  # newest available distribution, aka focal
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - id: set-matrix
+        name: Generate outputs.matrix from pom.xml listing
+        run: echo "::set-output name=matrix::{\"include\":$(.github/workflows/versions-as-json)}"
+  test:
+    runs-on: ubuntu-20.04  # newest available distribution, aka focal
+    needs: discover-versions
+    strategy:
+      matrix: ${{ fromJson(needs.discover-versions.outputs.matrix) }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-${{ matrix.version }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.project }}-maven-
+      - name: Cache Docker
+        uses: actions/cache@v2
+        with:
+          path: ~/.docker
+          key: ${{ runner.os }}-${{ matrix.version }}-docker-${{ hashFiles('**/Dockerfile') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.project }}-docker
+      - name: Deploy ${{ matrix.version }}
+        run: build-bin/configure_test && build-bin/test ${{ matrix.version }}

@@ -1,0 +1,14 @@
+# permit depends_on/condition: service_healthy
+version: "2.4"
+
+services:
+  frontend:
+    container_name: frontend
+    image: openzipkin/brave-example:${VERSION}-test
+    command: frontend
+    depends_on:
+      - backend
+  backend:
+    container_name: backend
+    image: openzipkin/brave-example:${VERSION}-test
+    command: backend

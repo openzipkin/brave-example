@@ -82,9 +82,9 @@ Here are the example projects you can try:
 
 Just run `docker-compose up`.
 
-Armeria starts by default. To use a different project, set the `PROJECT` variable first.
+Armeria starts by default. To use a different version of the project, set the `VERSION` variable.
 
-Ex. `PROJECT=webmvc25-jetty docker-compose up`
+Ex. `VERSION=webmvc25-jetty docker-compose up`
 
 ## Starting the services from source
 

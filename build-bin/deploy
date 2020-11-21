@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -ue
+
+# This script deploys an example version.
+#
+# See [README.md] for an explanation of this and how CI should use it.
+
+export VERSION=${1:-armeria}
+. $(dirname "$0")/docker_args
+
+# Examples are not pushed to Docker Hub (docker.io)
+export DOCKER_RELEASE_REPOS=ghcr.io
+
+# Don't make latest tag
+build-bin/docker/docker_push openzipkin/brave-example ${VERSION}

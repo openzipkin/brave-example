@@ -1,6 +1,0 @@
-#!/bin/sh
-
-set -ue
-
-# Make a string like: [{"project":"armeria"},{"project":"dropwizard"}]
-ls */pom.xml|sed 's~\(.*\)/pom.xml~{"project":"\1"}~g'|tr '\n' ','|sed 's/\(.*\),$/[\1]/'
