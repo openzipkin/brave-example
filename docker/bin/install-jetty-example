@@ -12,4 +12,6 @@ mvn_property() { mvn help:evaluate -Dexpression=$1 -q -DforceStdout;}
 jettyGroupId=$(mvn_property jetty.groupId)
 jettyVersion=$(mvn_property jetty.version)
 
+# Unzip the jetty-runner so that it is faster to start
 /code/build-bin/maven/maven_unjar ${jettyGroupId} jetty-runner ${jettyVersion}
+mv jetty-runner install/jetty
