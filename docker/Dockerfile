@@ -1,6 +1,12 @@
 # These examples are setup minimally. In order to reduce repetition, these do not setup
 # non-root users and such as they are not intended to run in production anyway.
-ARG java_version=15.0.1_p9
+
+# java_version is the jre version tag appropriate for the example being built.
+#
+# Use latest version here: https://github.com/orgs/openzipkin/packages/container/package/java
+# This is defined in many places because Docker has no "env" script functionality unless you use
+# docker-compose: When updating, update everywhere.
+ARG java_version=15.0.1_p9-jre
 
 # We copy files from the context into a scratch container first to avoid a problem where docker and
 # docker-compose don't share layer hashes https://github.com/docker/compose/issues/883 normally.
@@ -12,11 +18,12 @@ COPY . /code/
 ## Use JDK 11 to build projects, as that can still compile Java 6
 FROM ghcr.io/openzipkin/java:11.0.9_p11 as install
 
-# version of the project. ex armeria or ratpack
-ARG version=armeria
 
 WORKDIR /code
 COPY --from=scratch /code .
+
+# version of the project, matching /code/$version/pom.xml. ex armeria or ratpack
+ARG version=armeria
 
 # This results in:
 # * /install - the version home
