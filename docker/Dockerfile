@@ -18,7 +18,6 @@ COPY . /code/
 ## Use JDK 11 to build projects, as that can still compile Java 6
 FROM ghcr.io/openzipkin/java:11.0.9_p11 as install
 
-
 WORKDIR /code
 COPY --from=scratch /code .
 

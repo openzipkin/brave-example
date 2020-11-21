@@ -29,5 +29,5 @@ then
 EXAMPLE_OPTS=$(echo ${EXAMPLE_OPTS} |sed "s/-D/-Dratpack./g")
 EOF
 fi
-cat /code/docker/bin/start-${VERSION}-example >> start-brave-example
+cat /code/docker/bin/start-${PLATFORM}-example >> start-brave-example
 cp -p /code/docker/bin/docker-healthcheck .
