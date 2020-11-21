@@ -24,9 +24,9 @@ services:
 
 ## Building images
 
-To build an example, from the root directory, invoke `docker/build_image YOUR_PROJECT`:
+The build-arg `version` controls which project is built.
 
-Ex. To build the Armeria example as the image 'openzipkin/brave-example:test'
+Ex. To build the Armeria example as the image 'openzipkin/brave-example:test':
 ```bash
-$ docker/build_image armeria
+$ docker build -f docker/Dockerfile --build-arg version=armeria -t openzipkin/brave-example:test .
 ```

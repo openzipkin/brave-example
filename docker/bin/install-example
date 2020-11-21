@@ -1,16 +1,16 @@
 #!/bin/sh
 set -eux
-PROJECT=$1
+VERSION=$1
 
 # Determine the platform explicitly or via convention
-case ${PROJECT} in
+case ${VERSION} in
   armeria|dropwizard|ratpack) PLATFORM=java;;
   webflux5-sleuth) PLATFORM=boot;;
-  *) PLATFORM=$(echo "${PROJECT}"|cut -d- -f2);;
+  *) PLATFORM=$(echo "${VERSION}"|cut -d- -f2);;
 esac
 
 # Build the source
-cd ${PROJECT}
+cd ${VERSION}
 mvn -q --batch-mode -DskipTests package
 
 # Invoke the platform-specific install script
@@ -22,12 +22,12 @@ mv install /install
 # Add scripts used at runtime
 cd /install/bin
 cp -p /code/docker/bin/start-example-header start-brave-example
-if [ "${PROJECT}" = "ratpack" ]
+if [ "${VERSION}" = "ratpack" ]
 then
   cat >> start-brave-example <<-'EOF'
 # Add property prefix "ratpack."
 EXAMPLE_OPTS=$(echo ${EXAMPLE_OPTS} |sed "s/-D/-Dratpack./g")
 EOF
 fi
-cat /code/docker/bin/start-${PLATFORM}-example >> start-brave-example
+cat /code/docker/bin/start-${VERSION}-example >> start-brave-example
 cp -p /code/docker/bin/docker-healthcheck .

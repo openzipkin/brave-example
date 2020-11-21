@@ -1,6 +1,6 @@
 # These examples are setup minimally. In order to reduce repetition, these do not setup
 # non-root users and such as they are not intended to run in production anyway.
-ARG jre_image
+ARG java_version=15.0.1_p9
 
 # We copy files from the context into a scratch container first to avoid a problem where docker and
 # docker-compose don't share layer hashes https://github.com/docker/compose/issues/883 normally.
@@ -10,20 +10,21 @@ FROM scratch as scratch
 COPY . /code/
 
 ## Use JDK 11 to build projects, as that can still compile Java 6
-FROM ghcr.io/openzipkin/java:11.0.9-11.43.21 as install
+FROM ghcr.io/openzipkin/java:11.0.9_p11 as install
 
-ARG project
+# version of the project. ex armeria or ratpack
+ARG version=armeria
 
 WORKDIR /code
 COPY --from=scratch /code .
 
 # This results in:
-# * /install - the project home
+# * /install - the version home
 # * /install/bin - scripts that should be copied into the search path
-RUN /code/docker/bin/install-example $project
+RUN /code/docker/bin/install-example $version
 
 # Make the final layer that the example will run in
-FROM $jre_image
+FROM ghcr.io/openzipkin/java:$java_version
 
 # All content including binaries and logs write under WORKDIR
 ARG USER=brave-example
