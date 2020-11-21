@@ -31,6 +31,14 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- Sleuth's BOM pins an old version of Brave. Order this before to avoid that. -->
+      <dependency>
+        <groupId>io.zipkin.brave</groupId>
+        <artifactId>brave-bom</artifactId>
+        <version>${brave.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies</artifactId>
