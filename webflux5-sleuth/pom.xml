@@ -20,7 +20,6 @@
     <maven.compiler.release>8</maven.compiler.release>
 
     <spring-boot.version>2.4.0</spring-boot.version>
-    <sleuth.version>2.2.6.RELEASE</sleuth.version>
   </properties>
 
   <dependencyManagement>
@@ -29,6 +28,14 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <!-- Hoxton includes Spring Cloud Sleuth 2.2.x -->
+        <version>Hoxton.SR9</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -47,11 +54,14 @@
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
-    <!-- spring-cloud-starter-zipkin configures instrumentation including what's in Brave and their own. -->
+    <!-- spring-cloud-starter-zipkin was removed in Spring Cloud 3.0, so add this manually. -->
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-zipkin</artifactId>
-      <version>${sleuth.version}</version>
+      <artifactId>spring-cloud-starter-sleuth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-sleuth-zipkin</artifactId>
     </dependency>
   </dependencies>
 
