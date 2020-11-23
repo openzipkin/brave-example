@@ -19,8 +19,8 @@
     <jre.version>15</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
-    <spring-boot.version>2.3.6.RELEASE</spring-boot.version>
-    <sleuth.version>2.2.6.RELEASE</sleuth.version>
+    <spring-boot.version>2.4.0</spring-boot.version>
+    <sleuth.version>3.0.0-M5</sleuth.version>
   </properties>
 
   <dependencyManagement>
@@ -47,10 +47,16 @@
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
-    <!-- spring-cloud-starter-zipkin configures instrumentation including what's in Brave and their own. -->
+    <!-- spring-cloud-starter-sleuth configures instrumentation including what's in Brave and their own. -->
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-zipkin</artifactId>
+      <artifactId>spring-cloud-starter-sleuth</artifactId>
+      <version>${sleuth.version}</version>
+    </dependency>
+    <!-- spring-cloud-sleuth-zipkin configures zipkin -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-sleuth-zipkin</artifactId>
       <version>${sleuth.version}</version>
     </dependency>
   </dependencies>
@@ -77,4 +83,79 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>spring</id>
+      <repositories>
+        <repository>
+          <id>spring-snapshots</id>
+          <name>Spring Snapshots</name>
+          <url>https://repo.spring.io/snapshot</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+        </repository>
+        <!-- BRAVE & OTEL -->
+        <repository>
+          <id>jfrog-snapshots</id>
+          <name>JFrog Snapshots</name>
+          <url>https://oss.jfrog.org/oss-snapshot-local/</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+        </repository>
+        <repository>
+          <id>spring-milestones</id>
+          <name>Spring Milestones</name>
+          <url>https://repo.spring.io/milestone</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>spring-releases</id>
+          <name>Spring Releases</name>
+          <url>https://repo.spring.io/release</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>spring-snapshots</id>
+          <name>Spring Snapshots</name>
+          <url>https://repo.spring.io/snapshot</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+        </pluginRepository>
+        <pluginRepository>
+          <id>spring-milestones</id>
+          <name>Spring Milestones</name>
+          <url>https://repo.spring.io/milestone</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+          <id>spring-releases</id>
+          <name>Spring Releases</name>
+          <url>https://repo.spring.io/release</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
 </project>
