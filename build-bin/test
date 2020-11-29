@@ -15,5 +15,5 @@ echo "Building Docker image..."
 build-bin/docker/docker_build ${docker_image} ${VERSION}
 
 echo "Verifying Docker image..."
-build-bin/docker/docker_test_image ${docker_image} build-bin/docker-compose.test.yml
+build-bin/docker/docker_test_image ${docker_image} build-bin/docker-compose.test.yml frontend
 

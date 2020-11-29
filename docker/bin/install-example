@@ -1,27 +1,29 @@
 #!/bin/sh
 set -eux
-VERSION=$1
-
-# Determine the platform explicitly or via convention
-case ${VERSION} in
-  *-jetty ) PLATFORM=jetty;;
-  * ) PLATFORM=java;;
-esac
+version=$1
 
 # Build the code and copy the results into the installation root
-cd ${VERSION}
+cd ${version}
 /code/build-bin/maven/maven_build
-/code/docker/bin/install-${PLATFORM}-example
+mkdir -p install/classes install/lib
+case ${version} in
+  *-jetty ) /code/docker/bin/install-example-jetty;;
+  * )
+   # copy compiled classes and dependencies
+   mvn -q --batch-mode -DoutputDirectory=install/lib dependency:copy-dependencies
+   cp -r target/classes/* install/classes/
+   ;;
+esac
+
 mv install /install
 
-cd /install/bin
+mkdir /install/bin && cd /install/bin
 
 # Generate ENTRYPOINT scripts used in the Dockerfile
 cat > start-frontend <<-'EOF'
 #!/bin/sh
 BRAVE_SERVICE=frontend
 PORT=8081
-EXAMPLE_OPTS="-Dbackend.endpoint=http://backend:9000/api"
 EOF
 
 cat > start-backend <<-'EOF'
@@ -39,25 +41,32 @@ EOF
 
 # Add common elements for web apps
 tee -a start-frontend start-backend <<-'EOF'
+JAVA_OPTS=${JAVA_OPTS:-"-Xms32m -Xmx32m -XX:+ExitOnOutOfMemoryError"}
 
 # write the docker-healthcheck url to a file
 echo http://${IP}:${PORT}/health > health_url
 
-EXAMPLE_OPTS="\
+exec java ${JAVA_OPTS} -cp 'classes:lib/*' \
 -Dbrave.localServiceName=${BRAVE_SERVICE} \
 -Dbrave.supportsJoin=${BRAVE_SUPPORTS_JOIN} \
 -Dbrave.traceId128Bit=${BRAVE_TRACEID_128} \
--Dbrave.zipkin.baseUrl=${ZIPKIN_BASEURL}"
+-Dbrave.zipkin.baseUrl=${ZIPKIN_BASEURL} \
 EOF
 
-cat /code/docker/bin/start-${PLATFORM}-example | tee -a start-frontend start-backend
-sed -i 's/Frontend/Backend/' start-backend
-chmod 755 start-frontend start-backend
+# Add the main class
+echo '-Dbackend.endpoint=http://backend:9000/api \
+brave.example.Frontend "$@"' >> start-frontend
+echo 'brave.example.Backend "$@"' >> start-backend
 
 # Add HEALTHCHECK script used in the Dockerfile
 cp -p /code/docker/bin/docker-healthcheck .
 
 # Make any platform-specific revisions
-if [ "${VERSION}" = "ratpack" ]; then
-  sed -i 's/-D/-Dratpack./g' start-frontend start-backend
-fi
+case ${version} in
+  # Jetty apps don't use the main class
+  *-jetty ) /code/docker/bin/post-install-example-jetty;;
+  # Ratpack system properties must be prefixed with "ratpack."
+  ratpack ) sed -i 's/-D/-Dratpack./g' start-frontend start-backend;;
+esac
+
+chmod 755 *

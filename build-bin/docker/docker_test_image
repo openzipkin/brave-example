@@ -18,28 +18,33 @@ set -ue
 # test a an image by awaiting its HEALTHCHECK
 
 docker_image=${1?docker_image is required, notably without a tag. Ex openzipkin/zipkin}
-
 # This just makes sure containers run and the HEALTHCHECK works (for now..)
-compose_file=${2:-build-bin/docker-compose-$(echo ${docker_image}| cut -f2 -d/).yml}
+docker_compose_file=${2:-build-bin/docker-compose-$(echo ${docker_image}| cut -f2 -d/).yml}
+docker_container=${3:-sut}
 
 health_rc=0
-if test -f "${compose_file}"; then
-  # This may fail even if exit code is success when a health condition fails
-  docker-compose -f "${compose_file}" up -d --quiet-pull || health_rc=1
+if test -f "${docker_compose_file}"; then
+  docker-compose -f "${docker_compose_file}" up --remove-orphans -d --quiet-pull || health_rc=1
 else
-  docker run --name sut -d ${docker_image}:test
+  docker run --name ${docker_container} -d ${docker_image}:test || health_rc=1
 fi
 
 # This will fail if the container isn't healthy or doesn't exist (ex compose failed before creation)
-if [ "${health_rc}" = "1" ] || ! build-bin/docker/docker_block_on_health sut; then
-  docker logs sut || true
+if [ "${health_rc}" = "1" ] || ! build-bin/docker/docker_block_on_health ${docker_container}; then
+  >&2 echo "*** Failed waiting for health of ${docker_container}"
+  docker inspect --format='{{json .State.Health.Log}}' ${docker_container} || true
+  if test -f "${docker_compose_file}"; then
+    docker-compose -f "${docker_compose_file}" logs
+  else
+    docker logs ${docker_container} || true
+  fi
   health_rc=1
 fi
 
-if test -f "${compose_file}"; then
-  docker-compose -f "${compose_file}" down
+if test -f "${docker_compose_file}"; then
+  docker-compose -f "${docker_compose_file}" down
 else
-  docker kill sut && docker rm sut
+  docker kill ${docker_container} && docker rm ${docker_container}
 fi
 
 exit ${health_rc}

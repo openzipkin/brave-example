@@ -2,11 +2,12 @@
 version: "2.4"
 
 services:
-  # Use fixed service and container name 'sut; so our test script can copy/pasta
-  sut:
-    container_name: sut
+  frontend:
+    container_name: frontend
     image: openzipkin/brave-example:${VERSION}-test
     entrypoint: start-frontend
+    healthcheck:
+      test: docker-healthcheck && ${TEST:-wget -qO- http://localhost:8081}
     depends_on:
       backend:
         condition: service_healthy
@@ -22,5 +23,3 @@ services:
   zipkin:
     image: ghcr.io/openzipkin/zipkin-slim
     container_name: zipkin
-    ports:
-      - 9411:9411

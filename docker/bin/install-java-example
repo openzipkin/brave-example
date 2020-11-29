@@ -1,9 +1,0 @@
-#!/bin/sh
-set -eu
-
-mkdir -p install/bin
-
-# Copy dependencies and compiled classes.
-# Use fixed maven-dependency-plugin to avoid downloading plugins
-mvn -q --batch-mode org.apache.maven.plugins:maven-dependency-plugin:3.1.2:copy-dependencies -DoutputDirectory=install/lib
-cp -r target/classes install/
