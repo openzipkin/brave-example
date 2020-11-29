@@ -59,7 +59,7 @@ if [ -n "${JAVA_VERSION}" ]; then
 fi
 
 # When non-empty, becomes the build-arg maven_classifier. Ex. "module" or "exec"
-# Used as the classifier arg to ./build-bin/java/maven_unjar. Allows building two images with the
+# Used as the classifier arg to ./build-bin/maven/maven_unjar. Allows building two images with the
 # same Dockerfile, varying on classifier, like openzipkin/zipkin vs openzipkin/zipkin-slim
 if [ -n "${MAVEN_CLASSIFIER}" ]; then
   docker_args="${docker_args} --build-arg maven_classifier=${MAVEN_CLASSIFIER}"

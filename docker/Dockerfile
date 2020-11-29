@@ -54,4 +54,4 @@ HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthche
 # Expose the default ports for the frontend and backend
 EXPOSE 8081 9000
 
-ENTRYPOINT ["start-brave-example"]
+ENTRYPOINT ["start-frontend"]

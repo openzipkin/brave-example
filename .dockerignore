@@ -1,28 +1,19 @@
 # https://docs.docker.com/engine/reference/builder/#dockerignore-file
-.git*
-.idea
-**/*.iml
-.mvn
-mvnw*
-.*yml
-.editorconfig
-.dockerignore
-.settings.xml
-LICENSE
-docker
-docs
-**/*.md
-**/src/test/**
-**/target
+**
 
-# Install script runs within Docker
-build-bin/**
-!build-bin/maven/maven_unjar
+# Install scripts run within Docker
+!build-bin/maven/*
 !docker/bin/*
 
-# Allow on-demand "mvn package"
-!**/src/main/**
+# Allow on-demand "mvn package".
+!armeria/src/main/**
+!dropwizard/src/main/**
+!ratpack/src/main/**
+!webflux5-sleuth/src/main/**
+!webmvc3-jetty/src/main/**
+!webmvc4-boot/src/main/**
+!webmvc4-jetty/src/main/**
+!webmvc25-jetty/src/main/**
 !**/pom.xml
+!/parent-pom.xml
 
-# Ignore if someone downloaded zipkin using curl here
-zipkin.jar

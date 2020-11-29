@@ -33,7 +33,7 @@
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <brave.version>5.13.1</brave.version>
+    <brave.version>5.13.2</brave.version>
 
     <!-- The JRE used in Docker images can be higher than ${maven.compiler.release}. -->
     <jre.version>SET MANUALLY IN PROJECTS</jre.version>
@@ -42,9 +42,10 @@
 
     <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <!-- Use same version as https://github.com/openzipkin/docker-java -->
     <maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
     <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-    <maven-war-plugin.version>3.2.3</maven-war-plugin.version>
+    <maven-war-plugin.version>3.3.1</maven-war-plugin.version>
   </properties>
 
   <!-- Only declare Brave dependencies here as we want projects to control their own settings -->
