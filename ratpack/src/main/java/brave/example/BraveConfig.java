@@ -2,66 +2,42 @@ package brave.example;
 
 import brave.sampler.Sampler;
 import ratpack.zipkin.ServerTracingModule;
-import zipkin2.reporter.AsyncReporter;
-import zipkin2.reporter.urlconnection.URLConnectionSender;
+import zipkin2.Span;
+import zipkin2.reporter.Reporter;
 
 public final class BraveConfig {
   String localServiceName;
   boolean supportsJoin = true;
   boolean traceId128Bit = false;
-  ZipkinConfig zipkin = new ZipkinConfig();
+  Reporter<Span> spanReporter;
 
-  public String getLocalServiceName() {
-    return localServiceName;
-  }
-
-  public void setLocalServiceName(String localServiceName) {
+  public BraveConfig setLocalServiceName(String localServiceName) {
     this.localServiceName = localServiceName;
+    return this;
   }
 
-  public boolean isSupportsJoin() {
-    return supportsJoin;
-  }
-
-  public void setSupportsJoin(boolean supportsJoin) {
+  public BraveConfig setSupportsJoin(boolean supportsJoin) {
     this.supportsJoin = supportsJoin;
+    return this;
   }
 
-  public boolean isTraceId128Bit() {
-    return traceId128Bit;
-  }
-
-  public void setTraceId128Bit(boolean traceId128Bit) {
+  public BraveConfig setTraceId128Bit(boolean traceId128Bit) {
     this.traceId128Bit = traceId128Bit;
+    return this;
   }
 
-  public ZipkinConfig getZipkin() {
-    return zipkin;
-  }
-
-  public void setZipkin(ZipkinConfig zipkin) {
-    this.zipkin = zipkin;
-  }
-
-  public static final class ZipkinConfig {
-    String baseUrl = "http://127.0.0.1:9411";
-
-    public String getBaseUrl() {
-      return baseUrl;
-    }
-
-    public void setBaseUrl(String baseUrl) {
-      this.baseUrl = baseUrl;
-    }
+  public BraveConfig setSpanReporter(Reporter<Span> spanReporter) {
+    this.spanReporter = spanReporter;
+    return this;
   }
 
   ServerTracingModule.Config toModuleConfig() {
     return new ServerTracingModule.Config()
-        // TODO spanHandler
-        .spanReporterV2(
-            AsyncReporter.create(URLConnectionSender.create(zipkin.baseUrl + "/api/v2/spans")))
         .serviceName(localServiceName)
-        // TODO supportsJoin traceId128Bit
-        .sampler(Sampler.ALWAYS_SAMPLE);
+        .sampler(Sampler.ALWAYS_SAMPLE)
+        .spanReporterV2(spanReporter)
+        // TODO: supportsJoin
+        // TODO: traceId128Bit
+        ;
   }
 }

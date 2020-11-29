@@ -34,7 +34,7 @@ EOF
 
 tee -a start-frontend start-backend <<-'EOF'
 IP="$(hostname -i || echo '127.0.0.1')"
-ZIPKIN_BASEURL=${ZIPKIN_BASEURL:-http://zipkin:9411}
+ZIPKIN_BASEURL=${ZIPKIN_BASEURL:-http://zipkin:9411/}
 BRAVE_SUPPORTS_JOIN=${BRAVE_SUPPORTS_JOIN:-true}
 BRAVE_TRACEID_128=${BRAVE_TRACEID_128:-false}
 EOF
