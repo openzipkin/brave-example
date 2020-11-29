@@ -46,4 +46,12 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.version }}-docker-${{ hashFiles('**/Dockerfile') }}
           restore-keys: ${{ runner.os }}-${{ matrix.project }}-docker
       - name: Deploy ${{ matrix.version }}
-        run: build-bin/configure_test && build-bin/test ${{ matrix.version }}
+        env:
+          # GH_USER=<user that created GH_TOKEN>
+          GH_USER: ${{ secrets.GH_USER }}
+          # GH_TOKEN=<hex token value>
+          #   - pushes Docker images to ghcr.io
+          #   - create via https://github.com/settings/tokens
+          #   - needs repo:status, public_repo, write:packages, delete:packages
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: build-bin/configure_deploy && build-bin/deploy ${{ matrix.version }}
