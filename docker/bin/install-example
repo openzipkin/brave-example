@@ -50,7 +50,7 @@ exec java ${JAVA_OPTS} -cp 'classes:lib/*' \
 -Dbrave.localServiceName=${BRAVE_SERVICE} \
 -Dbrave.supportsJoin=${BRAVE_SUPPORTS_JOIN} \
 -Dbrave.traceId128Bit=${BRAVE_TRACEID_128} \
--Dbrave.zipkin.baseUrl=${ZIPKIN_BASEURL} \
+-Dzipkin.baseUrl=${ZIPKIN_BASEURL} \
 EOF
 
 # Add the main class
@@ -63,8 +63,8 @@ cp -p /code/docker/bin/docker-healthcheck .
 
 # Make any platform-specific revisions
 case ${version} in
-  # Jetty apps don't use the main class
   *-jetty ) /code/docker/bin/post-install-example-jetty;;
+  dropwizard ) /code/docker/bin/post-install-example-dropwizard;;
   # Ratpack system properties must be prefixed with "ratpack."
   ratpack ) sed -i 's/-D/-Dratpack./g' start-frontend start-backend;;
 esac

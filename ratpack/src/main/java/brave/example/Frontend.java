@@ -31,7 +31,7 @@ public final class Frontend {
         .props(ImmutableMap.of(
             "brave.localServiceName", "frontend",
             "backend.endpoint", "http://127.0.0.1:9000/api"))
-        .sysProps() // allows overrides like ratpack.brave.zipkin.baseUrl=...
+        .sysProps() // allows overrides like ratpack.zipkin.baseUrl=...
         .port(8081)
         .build();
 

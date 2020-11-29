@@ -21,7 +21,7 @@ public final class Backend {
   public static void main(String[] args) throws Exception {
     ServerConfig serverConfig = ServerConfig.embedded()
         .props(Collections.singletonMap("brave.localServiceName", "backend"))
-        .sysProps() // allows overrides like ratpack.brave.zipkin.baseUrl=...
+        .sysProps() // allows overrides like ratpack.zipkin.baseUrl=...
         .port(9000)
         .build();
 

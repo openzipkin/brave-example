@@ -2,12 +2,33 @@
 version: "2.4"
 
 services:
+  sut:
+    container_name: sut
+    image: ${DOCKER_IMAGE}
+    entrypoint: /bin/sh
+    # Keep the container running until HEALTHCHECK passes
+    command: "-c \"sleep infinity\""
+    healthcheck:
+      # Return 0 when we can read back our trace ID
+      test: wget -qO- --spider http://zipkin:9411/api/v2/trace/cafebabecafebabe
+    depends_on:
+      get_frontend:
+        condition: service_started
+  get_frontend:
+    container_name: get_frontend
+    image: ${DOCKER_IMAGE}
+    entrypoint: /bin/sh
+    # Pass a trace header with a constant trace ID, so that we know what to look for later
+    command: "-c \"wget -qO- --header 'b3: cafebabecafebabe-cafebabecafebabe-1' http://frontend:8081 >/dev/null\""
+    depends_on:
+      frontend:
+        condition: service_healthy
   frontend:
     container_name: frontend
-    image: openzipkin/brave-example:${VERSION}-test
+    image: ${DOCKER_IMAGE}
     entrypoint: start-frontend
     healthcheck:
-      test: docker-healthcheck && ${TEST:-wget -qO- http://localhost:8081}
+      test: docker-healthcheck
     depends_on:
       backend:
         condition: service_healthy
@@ -15,7 +36,7 @@ services:
         condition: service_healthy
   backend:
     container_name: backend
-    image: openzipkin/brave-example:${VERSION}-test
+    image: ${DOCKER_IMAGE}
     entrypoint: start-backend
     depends_on:
       zipkin:
