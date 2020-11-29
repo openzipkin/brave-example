@@ -27,8 +27,6 @@ services:
     container_name: frontend
     image: ${DOCKER_IMAGE}
     entrypoint: start-frontend
-    healthcheck:
-      test: docker-healthcheck
     depends_on:
       backend:
         condition: service_healthy
