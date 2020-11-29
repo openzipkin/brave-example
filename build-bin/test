@@ -5,22 +5,14 @@ set -ue
 # This script runs the tests of the project.
 #
 # See [README.md] for an explanation of this and how CI should use it.
-
 export VERSION=${1:-armeria}
-. $(dirname "$0")/docker_args
-export DOCKER_IMAGE=openzipkin/brave-example:${VERSION}-test
+# Some images override base layers or other properties of the docker build
+. build-bin/docker_args
 
-echo "Building Docker image ${DOCKER_IMAGE}..."
-build-bin/docker/docker_build ${DOCKER_IMAGE} ${VERSION}
+docker_image=openzipkin/brave-example:${VERSION}-test
 
-echo "Verifying Docker image ${DOCKER_IMAGE}..."
-# This just makes sure containers run and the HEALTHCHECK works (for now..)
-docker-compose -f build-bin/docker-compose.test.yml up -d --quiet-pull
-if build-bin/docker/block_on_health frontend; then
-  health_rc=0
-else
-  health_rc=1
-  docker logs frontend
-fi
-docker-compose -f build-bin/docker-compose.test.yml down
-exit $health_rc
+echo "Building Docker image..."
+build-bin/docker/docker_build ${docker_image} ${VERSION}
+
+echo "Verifying Docker image..."
+build-bin/docker/docker_test_image ${docker_image} build-bin/docker-compose.test.yml

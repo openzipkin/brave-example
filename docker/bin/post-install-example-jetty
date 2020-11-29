@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eux
+
+# Jetty apps don't use the main class
+sed -i 's/brave.example.*/org.eclipse.jetty.runner.Runner --port $PORT root/g' start-frontend start-backend
+
+# Handle Jetty 7->8 package change
+if test -f ../classes/org/mortbay/jetty/runner/Runner.class; then
+  # No ' -XX:+ExitOnOutOfMemoryError' in case running Java 1.6
+  sed -i 's/ -XX:+ExitOnOutOfMemoryError//g' start-frontend start-backend
+  sed -i 's/eclipse/mortbay/g' start-frontend start-backend
+fi

@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eux
+
+# DropWizard crashes if properties are unknown
+sed -i 's/brave.localServiceName/zipkin.serviceName/g' start-frontend start-backend
+
+# dropwizard-zipkin doesn't understand these yet
+sed -i '/brave.supportsJoin/d' start-frontend start-backend
+sed -i '/brave.traceId128Bit/d' start-frontend start-backend
+
+# DropWizard system properties must be prefixed with "dw."
+sed -i 's/-D/-Ddw./g' start-frontend start-backend

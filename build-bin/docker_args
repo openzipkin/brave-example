@@ -15,27 +15,27 @@ DOCKER_PLATFORMS="linux/amd64,linux/arm64"
 
 case "${JRE_VERSION}" in
   6 )
-    JAVA_VERSION=6u119-6.22.0.3
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:6u119-6.22.0.3
     # single arch image
     DOCKER_PLATFORMS=linux/amd64
     ;;
   7 )
-    JAVA_VERSION=7u282-7.42.0.13
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:7u282-7.42.0.13
     # single arch image
     DOCKER_PLATFORMS=linux/amd64
     ;;
   8 )
-    JAVA_VERSION=8.272.10-jre
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:8.272.10-jre
     ;;
   11 )
-    JAVA_VERSION=11.0.9_p11-jre
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:11.0.9_p11-jre
     ;;
   15 )
-    JAVA_VERSION=15.0.1_p9-jre
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:15.0.1_p9-jre
     ;;
   * )
     echo "Invalid JRE_VERSION: ${JRE_VERSION}"
     exit 1
 esac
 
-export JAVA_VERSION DOCKER_PLATFORMS
+export DOCKER_PARENT_IMAGE DOCKER_PLATFORMS

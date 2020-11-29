@@ -1,3 +1,0 @@
-JAVA_OPTS=${JAVA_OPTS:-"-Xms32m -Xmx32m -XX:+ExitOnOutOfMemoryError"}
-
-exec java ${JAVA_OPTS} -cp 'classes:lib/*' ${EXAMPLE_OPTS} ${MAIN_CLASS}

@@ -1,10 +1,7 @@
 #!/bin/sh
+set -eux
 
-set -eu
-
-mkdir -p install/bin
-
-# extract the war under /root
+# Copy the extracted war as the "root" application
 cp -r target/*-SNAPSHOT install/root
 
 # Get the same version of jetty-runner as the Maven project uses
@@ -14,4 +11,4 @@ jettyVersion=$(mvn_property jetty.version)
 
 # Unzip the jetty-runner so that it is faster to start
 /code/build-bin/maven/maven_unjar ${jettyGroupId} jetty-runner ${jettyVersion}
-mv jetty-runner install/jetty
+mv jetty-runner/* install/classes/ && rmdir jetty-runner

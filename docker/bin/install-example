@@ -1,33 +1,72 @@
 #!/bin/sh
 set -eux
-VERSION=$1
+version=$1
 
-# Determine the platform explicitly or via convention
-case ${VERSION} in
-  armeria|dropwizard|ratpack) PLATFORM=java;;
-  webflux5-sleuth) PLATFORM=boot;;
-  *) PLATFORM=$(echo "${VERSION}"|cut -d- -f2);;
+# Build the code and copy the results into the installation root
+cd ${version}
+/code/build-bin/maven/maven_build
+mkdir -p install/classes install/lib
+case ${version} in
+  *-jetty ) /code/docker/bin/install-example-jetty;;
+  * )
+   # copy compiled classes and dependencies
+   mvn -q --batch-mode -DoutputDirectory=install/lib dependency:copy-dependencies
+   cp -r target/classes/* install/classes/
+   ;;
 esac
 
-# Build the source
-cd ${VERSION}
-mvn -q --batch-mode -DskipTests package
-
-# Invoke the platform-specific install script
-/code/docker/bin/install-${PLATFORM}-example
-
-# Move the completed installation root
 mv install /install
 
-# Add scripts used at runtime
-cd /install/bin
-cp -p /code/docker/bin/start-example-header start-brave-example
-if [ "${VERSION}" = "ratpack" ]
-then
-  cat >> start-brave-example <<-'EOF'
-# Add property prefix "ratpack."
-EXAMPLE_OPTS=$(echo ${EXAMPLE_OPTS} |sed "s/-D/-Dratpack./g")
+mkdir /install/bin && cd /install/bin
+
+# Generate ENTRYPOINT scripts used in the Dockerfile
+cat > start-frontend <<-'EOF'
+#!/bin/sh
+BRAVE_SERVICE=frontend
+PORT=8081
 EOF
-fi
-cat /code/docker/bin/start-${PLATFORM}-example >> start-brave-example
+
+cat > start-backend <<-'EOF'
+#!/bin/sh
+BRAVE_SERVICE=backend
+PORT=9000
+EOF
+
+tee -a start-frontend start-backend <<-'EOF'
+IP="$(hostname -i || echo '127.0.0.1')"
+ZIPKIN_BASEURL=${ZIPKIN_BASEURL:-http://zipkin:9411/}
+BRAVE_SUPPORTS_JOIN=${BRAVE_SUPPORTS_JOIN:-true}
+BRAVE_TRACEID_128=${BRAVE_TRACEID_128:-false}
+EOF
+
+# Add common elements for web apps
+tee -a start-frontend start-backend <<-'EOF'
+JAVA_OPTS=${JAVA_OPTS:-"-Xms32m -Xmx32m -XX:+ExitOnOutOfMemoryError"}
+
+# write the docker-healthcheck url to a file
+echo http://${IP}:${PORT}/health > health_url
+
+exec java ${JAVA_OPTS} -cp 'classes:lib/*' \
+-Dbrave.localServiceName=${BRAVE_SERVICE} \
+-Dbrave.supportsJoin=${BRAVE_SUPPORTS_JOIN} \
+-Dbrave.traceId128Bit=${BRAVE_TRACEID_128} \
+-Dzipkin.baseUrl=${ZIPKIN_BASEURL} \
+EOF
+
+# Add the main class
+echo '-Dbackend.endpoint=http://backend:9000/api \
+brave.example.Frontend "$@"' >> start-frontend
+echo 'brave.example.Backend "$@"' >> start-backend
+
+# Add HEALTHCHECK script used in the Dockerfile
 cp -p /code/docker/bin/docker-healthcheck .
+
+# Make any platform-specific revisions
+case ${version} in
+  *-jetty ) /code/docker/bin/post-install-example-jetty;;
+  dropwizard ) /code/docker/bin/post-install-example-dropwizard;;
+  # Ratpack system properties must be prefixed with "ratpack."
+  ratpack ) sed -i 's/-D/-Dratpack./g' start-frontend start-backend;;
+esac
+
+chmod 755 *

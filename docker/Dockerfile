@@ -1,12 +1,8 @@
 # These examples are setup minimally. In order to reduce repetition, these do not setup
 # non-root users and such as they are not intended to run in production anyway.
 
-# java_version is the jre version tag appropriate for the example being built.
-#
-# Use latest version here: https://github.com/orgs/openzipkin/packages/container/package/java
-# This is defined in many places because Docker has no "env" script functionality unless you use
-# docker-compose: When updating, update everywhere.
-ARG java_version=15.0.1_p9-jre
+# The image binaries this example builds are installed over
+ARG docker_parent_image=ghcr.io/openzipkin/java:15.0.1_p9-jre
 
 # We copy files from the context into a scratch container first to avoid a problem where docker and
 # docker-compose don't share layer hashes https://github.com/docker/compose/issues/883 normally.
@@ -30,7 +26,7 @@ ARG version=armeria
 RUN /code/docker/bin/install-example $version
 
 # Make the final layer that the example will run in
-FROM ghcr.io/openzipkin/java:$java_version
+FROM $docker_parent_image
 
 # All content including binaries and logs write under WORKDIR
 ARG USER=brave-example
@@ -54,4 +50,4 @@ HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthche
 # Expose the default ports for the frontend and backend
 EXPOSE 8081 9000
 
-ENTRYPOINT ["start-brave-example"]
+ENTRYPOINT ["start-frontend"]

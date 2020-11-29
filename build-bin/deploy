@@ -5,7 +5,6 @@ set -ue
 # This script deploys an example version.
 #
 # See [README.md] for an explanation of this and how CI should use it.
-
 export VERSION=${1:-armeria}
 . $(dirname "$0")/docker_args
 

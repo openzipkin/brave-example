@@ -12,6 +12,8 @@ import ratpack.server.RatpackServer;
 import ratpack.server.ServerConfig;
 import ratpack.zipkin.ServerTracingModule;
 import ratpack.zipkin.Zipkin;
+import zipkin2.Span;
+import zipkin2.reporter.Reporter;
 
 public final class Frontend {
   final HttpClient client;
@@ -31,17 +33,17 @@ public final class Frontend {
         .props(ImmutableMap.of(
             "brave.localServiceName", "frontend",
             "backend.endpoint", "http://127.0.0.1:9000/api"))
-        .sysProps() // allows overrides like ratpack.brave.zipkin.baseUrl=...
+        .sysProps() // allows overrides like ratpack.zipkin.baseUrl=...
         .port(8081)
         .build();
 
+    Reporter<Span> spanReporter = serverConfig.get("/zipkin", ZipkinConfig.class).toSpanReporter();
     RatpackServer.start(server -> server.serverConfig(serverConfig)
         .registry(Guice.registry(bindings -> bindings
-            .moduleConfig(ServerTracingModule.class,
-                serverConfig.get("/brave", BraveConfig.class).toModuleConfig())
-            .binder(b ->
-                b.bind(String.class).annotatedWith(Names.named("backendEndpoint"))
-                    .toInstance(serverConfig.get("/backend/endpoint", String.class)))
+            .moduleConfig(ServerTracingModule.class, serverConfig.get("/brave", BraveConfig.class)
+                .setSpanReporter(spanReporter).toModuleConfig())
+            .binder(b -> b.bind(String.class).annotatedWith(Names.named("backendEndpoint"))
+                .toInstance(serverConfig.get("/backend/endpoint", String.class)))
             .bind(Frontend.class)
         ))
         .handlers(chain -> chain

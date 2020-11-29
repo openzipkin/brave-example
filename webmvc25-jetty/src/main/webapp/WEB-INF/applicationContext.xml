@@ -18,7 +18,7 @@
     </property>
     <property name="properties">
       <props>
-        <prop key="brave.zipkin.baseUrl">http://127.0.0.1:9411</prop>
+        <prop key="zipkin.baseUrl">http://127.0.0.1:9411</prop>
         <prop key="brave.supportsJoin">true</prop>
         <prop key="brave.traceId128Bit">false</prop>
       </props>
@@ -27,7 +27,7 @@
 
   <!-- Configuration for how to send spans to Zipkin -->
   <bean id="sender" class="zipkin2.reporter.beans.URLConnectionSenderFactoryBean">
-    <property name="endpoint" value="${brave.zipkin.baseUrl}/api/v2/spans"/>
+    <property name="endpoint" value="${zipkin.baseUrl}/api/v2/spans"/>
   </bean>
 
   <!-- Configuration for how to buffer spans into messages for Zipkin -->
