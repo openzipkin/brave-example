@@ -44,7 +44,7 @@ RUN mv bin/* /usr/local/bin/ && rm -rf bin
 # Switch to the runtime user
 USER ${USER}
 
-# We use start period of 30s to avoid marking the container unhealthy on slow or contended CI hosts
+# We use a 30s start period to avoid marking the container unhealthy on slow or contended CI hosts
 HEALTHCHECK --interval=1s --start-period=30s --timeout=5s CMD ["docker-healthcheck"]
 
 # Expose the default ports for the frontend and backend

@@ -1,6 +1,8 @@
 #!/bin/sh
 set -eux
 version=$1
+frontend_port=8081
+backend_port=9000
 
 # Build the code and copy the results into the installation root
 cd ${version}
@@ -20,46 +22,47 @@ mv install /install
 mkdir /install/bin && cd /install/bin
 
 # Generate ENTRYPOINT scripts used in the Dockerfile
-cat > start-frontend <<-'EOF'
-#!/bin/sh
-BRAVE_SERVICE=frontend
-PORT=8081
-EOF
-
-cat > start-backend <<-'EOF'
-#!/bin/sh
-BRAVE_SERVICE=backend
-PORT=9000
-EOF
-
 tee -a start-frontend start-backend <<-'EOF'
-IP="$(hostname -i || echo '127.0.0.1')"
-ZIPKIN_BASEURL=${ZIPKIN_BASEURL:-http://zipkin:9411/}
-BRAVE_SUPPORTS_JOIN=${BRAVE_SUPPORTS_JOIN:-true}
-BRAVE_TRACEID_128=${BRAVE_TRACEID_128:-false}
+#!/bin/sh
+# Export variables in case forked commands need to read them
+export IP="$(hostname -i || echo '127.0.0.1')"
 EOF
 
-# Add common elements for web apps
+cat >> start-frontend <<-EOF
+export PORT=${frontend_port}
+export EXAMPLE=${version}
+export EXAMPLE_SERVICE=frontend
+EOF
+
+cat >> start-backend <<-EOF
+export PORT=${backend_port}
+export EXAMPLE=${version}
+export EXAMPLE_SERVICE=backend
+EOF
+
+# Add common elements for Java applications
 tee -a start-frontend start-backend <<-'EOF'
+export HEALTHCHECK_IP=${IP}
+export HEALTHCHECK_PORT=${PORT}
+export HEALTHCHECK_KIND=http
+
 JAVA_OPTS=${JAVA_OPTS:-"-Xms32m -Xmx32m -XX:+ExitOnOutOfMemoryError"}
 
-# write the docker-healthcheck url to a file
-echo http://${IP}:${PORT}/health > health_url
-
 exec java ${JAVA_OPTS} -cp 'classes:lib/*' \
--Dbrave.localServiceName=${BRAVE_SERVICE} \
--Dbrave.supportsJoin=${BRAVE_SUPPORTS_JOIN} \
--Dbrave.traceId128Bit=${BRAVE_TRACEID_128} \
--Dzipkin.baseUrl=${ZIPKIN_BASEURL} \
+-Dbrave.localServiceName=${EXAMPLE_SERVICE} \
+-Dbrave.supportsJoin=${BRAVE_SUPPORTS_JOIN:-true} \
+-Dbrave.traceId128Bit=${BRAVE_TRACEID_128:-false} \
+-Dzipkin.baseUrl=${ZIPKIN_BASEURL:-http://zipkin:9411/} \
 EOF
 
+echo "-Dbackend.endpoint=http://backend:${backend_port}/api \\" >> start-frontend
+
 # Add the main class
-echo '-Dbackend.endpoint=http://backend:9000/api \
-brave.example.Frontend "$@"' >> start-frontend
+echo 'brave.example.Frontend "$@"' >> start-frontend
 echo 'brave.example.Backend "$@"' >> start-backend
 
 # Add HEALTHCHECK script used in the Dockerfile
-cp -p /code/docker/bin/docker-healthcheck .
+cp -p /code/build-bin/docker/docker-healthcheck .
 
 # Make any platform-specific revisions
 case ${version} in

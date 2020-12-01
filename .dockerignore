@@ -5,6 +5,9 @@
 !build-bin/maven/*
 !docker/bin/*
 
+# Use standard HEALTHCHECK script
+!build-bin/docker/docker-healthcheck
+
 # Allow on-demand "mvn package".
 !armeria/src/main/**
 !dropwizard/src/main/**
