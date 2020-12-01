@@ -13,10 +13,10 @@
 # the License.
 #
 
+# This builds common docker arguments used by docker_build and docker_push.
+
 # This script checks each variable value, so it isn't important to fail on unbound (set -u)
 set -e
-
-# This builds common docker arguments used by docker_build and docker_push.
 
 docker_file=${DOCKER_FILE:-docker/Dockerfile}
 if ! test -f ${docker_file}; then
