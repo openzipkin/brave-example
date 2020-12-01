@@ -28,7 +28,6 @@
     <!-- Use the cassandra-driver-core version bundled in cassandra to not conflict with Netty. -->
     <cassandra-driver-core.version>3.0.1</cassandra-driver-core.version>
 
-
     <!-- https://github.com/openzipkin/brave-cassandra -->
     <brave-cassandra.version>0.11.0</brave-cassandra.version>
   </properties>
