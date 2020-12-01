@@ -43,8 +43,13 @@ Here are the example projects you can try:
 
 * [dropwizard](dropwizard) `PROJECT=dropwizard docker-compose up`
   * Runtime: JaxRS 2, Jersey 2.31, Apache HttpClient 4.5, Jetty 9.4, SLF4J 1.7, JRE 15
-  * Trace Instrumentation: [Jersey Server](https://github.com/openzipkin/brave/tree/master/instrumentation/jersey-server), [JaxRS 2](https://github.com/openzipkin/brave/tree/master/instrumentation/jaxrs2), [Apache HttpClient](https://github.com/openzipkin/brave/tree/master/instrumentation/httpclient), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
+  * Trace Instrumentation: [Jersey Server](https://github.com/openzipkin/brave/tree/master/instrumentation/jersey-server), [Apache HttpClient](https://github.com/openzipkin/brave/tree/master/instrumentation/httpclient), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Dropwizard Zipkin](https://github.com/smoketurner/dropwizard-zipkin) [Java](dropwizard/src/main/java/brave/example/ExampleApplication.java) [Yaml](dropwizard/src/main/resources/server.yml)
+
+* [jersey2-cassandra3](jersey2-cassandra3) `PROJECT=jersey2-cassandra3 docker-compose up`
+  * Runtime: JaxRS 2, Jersey 2.32, DataStax Java Driver 3.0, Apache Cassandra 3.11, SLF4J 1.7, JRE 8
+  * Trace Instrumentation: [Jersey Server](https://github.com/openzipkin/brave/tree/master/instrumentation/jersey-server), [DataStax Java Driver](https://github.com/openzipkin/brave-cassandra/tree/master/cassandra-driver), [Apache Cassandra](https://github.com/openzipkin/brave-cassandra/tree/master/cassandra), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
+  * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [XML](jersey2-cassandra3/src/main/webapp/WEB-INF/tracing.xml)
 
 * [ratpack](ratpack) `PROJECT=ratpack docker-compose up`
   * Runtime: Ratpack 1.8, Guice 4, SLF4J 1.7, JRE 15

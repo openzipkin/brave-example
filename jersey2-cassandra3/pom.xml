@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.zipkin.brave.example</groupId>
+    <artifactId>brave-example-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../parent-pom.xml</relativePath>
+  </parent>
+
+  <artifactId>brave-example-jersey2-cassandra3</artifactId>
+  <packaging>jar</packaging>
+
+  <name>brave-example-jersey2-cassandra3</name>
+  <description>Tracing Example: Jersey 2/DataStax Java Driver 3.10/Apache Cassandra 3.11/JRE 8</description>
+
+  <properties>
+    <jre.version>8</jre.version>
+    <maven.compiler.release>8</maven.compiler.release>
+
+    <!-- Use a container that doesn't use Netty. -->
+    <jersey.version>2.32</jersey.version>
+    <spring.version>4.3.29.RELEASE</spring.version>
+
+    <cassandra.version>3.11.9</cassandra.version>
+    <!-- Use the cassandra-driver-core version bundled in cassandra to not conflict with Netty. -->
+    <cassandra-driver-core.version>3.0.1</cassandra-driver-core.version>
+
+
+    <!-- https://github.com/openzipkin/brave-cassandra -->
+    <brave-cassandra.version>0.11.0</brave-cassandra.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-jdk-http</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.inject</groupId>
+      <artifactId>jersey-hk2</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <!-- Instruments the underlying HTTP requests -->
+    <dependency>
+      <groupId>io.zipkin.brave</groupId>
+      <artifactId>brave-instrumentation-jersey-server</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.cassandra</groupId>
+      <artifactId>cassandra-all</artifactId>
+      <version>${cassandra.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- Instruments the underlying Cassandra server requests -->
+    <dependency>
+      <groupId>io.zipkin.brave.cassandra</groupId>
+      <artifactId>brave-instrumentation-cassandra</artifactId>
+      <version>${brave-cassandra.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.datastax.cassandra</groupId>
+      <artifactId>cassandra-driver-core</artifactId>
+      <version>${cassandra-driver-core.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- Instruments the underlying Cassandra client requests -->
+    <dependency>
+      <groupId>io.zipkin.brave.cassandra</groupId>
+      <artifactId>brave-instrumentation-cassandra-driver</artifactId>
+      <version>${brave-cassandra.version}</version>
+    </dependency>
+
+    <!-- Integrates so you can use log patterns like %X{traceId}/%X{spanId} -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.30</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.brave</groupId>
+      <artifactId>brave-context-slf4j</artifactId>
+    </dependency>
+
+    <!-- The below are needed to report traces to http://127.0.0.1:9411/api/v2/spans -->
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-reporter-brave</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-sender-urlconnection</artifactId>
+    </dependency>
+
+    <!-- Allows loading of trace configuration declaratively -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.brave</groupId>
+      <artifactId>brave-spring-beans</artifactId>
+    </dependency>
+  </dependencies>
+</project>
