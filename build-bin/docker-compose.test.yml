@@ -23,6 +23,8 @@ services:
     depends_on:
       frontend:
         condition: service_healthy
+      zipkin:
+        condition: service_healthy
   frontend:
     container_name: frontend
     image: ${DOCKER_IMAGE}
@@ -31,14 +33,14 @@ services:
       backend:
         condition: service_healthy
       zipkin:
-        condition: service_healthy
+        condition: service_started
   backend:
     container_name: backend
     image: ${DOCKER_IMAGE}
     entrypoint: start-backend
     depends_on:
       zipkin:
-        condition: service_healthy
+        condition: service_started
   zipkin:
     image: ghcr.io/openzipkin/zipkin-slim
     container_name: zipkin
