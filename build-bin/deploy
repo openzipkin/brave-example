@@ -12,5 +12,5 @@ export VERSION=${1:-armeria}
 export DOCKER_RELEASE_REPOS=ghcr.io
 
 # Don't make latest tag
-export DOCKER_TAGS=${version}
+export DOCKER_TAGS=${VERSION}
 build-bin/docker/docker_push openzipkin/brave-example ${VERSION}
