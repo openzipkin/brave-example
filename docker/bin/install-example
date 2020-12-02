@@ -70,6 +70,7 @@ case ${version} in
   dropwizard ) /code/docker/bin/post-install-example-dropwizard;;
   # Ratpack system properties must be prefixed with "ratpack."
   ratpack ) sed -i 's/-D/-Dratpack./g' start-frontend start-backend;;
+  *-cassandra3 ) /code/docker/bin/post-install-example-cassandra;;
 esac
 
 chmod 755 *

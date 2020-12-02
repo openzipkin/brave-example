@@ -19,7 +19,7 @@ services:
     image: ghcr.io/openzipkin/alpine:3.12.1
     entrypoint: /bin/sh
     # Pass a trace header with a constant trace ID, so that we know what to look for later
-    command: "-c \"wget -qO- --header 'b3: cafebabecafebabe-cafebabecafebabe-1' http://frontend:8081 >/dev/null\""
+    command: "-c \"wget -qO- --header 'b3: cafebabecafebabe-cafebabecafebabe-1' http://frontend:8081\""
     depends_on:
       frontend:
         condition: service_healthy
