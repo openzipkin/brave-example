@@ -28,7 +28,6 @@ public final class Backend {
     // The implementation can be extended to initialize from Spring or another config provider.
     System.setProperty("zipkin.http_endpoint",
         System.getProperty("zipkin.baseUrl", "http://127.0.0.1:9411") + "/api/v2/spans");
-    System.setProperty("zipkin.fail_fast", "true");
     System.setProperty("zipkin.service_name",
         System.getProperty("brave.localServiceName", "backend"));
     System.setProperty("cassandra.custom_tracing_class", Tracing.class.getName());
