@@ -36,47 +36,47 @@ There are some interesting details that apply to all examples:
 
 Here are the example projects you can try:
 
-* [armeria](armeria) `PROJECT=armeria docker-compose up`
+* [armeria](armeria) `BRAVE_EXAMPLE=armeria docker-compose up`
   * Runtime: Armeria, SLF4J 1.7, JRE 15
   * Trace Instrumentation: [Armeria](https://armeria.dev/), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](armeria/src/main/java/brave/example/HttpTracingFactory.java)
 
-* [dropwizard](dropwizard) `PROJECT=dropwizard docker-compose up`
+* [dropwizard](dropwizard) `BRAVE_EXAMPLE=dropwizard docker-compose up`
   * Runtime: JaxRS 2, Jersey 2.31, Apache HttpClient 4.5, Jetty 9.4, SLF4J 1.7, JRE 15
   * Trace Instrumentation: [Jersey Server](https://github.com/openzipkin/brave/tree/master/instrumentation/jersey-server), [Apache HttpClient](https://github.com/openzipkin/brave/tree/master/instrumentation/httpclient), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Dropwizard Zipkin](https://github.com/smoketurner/dropwizard-zipkin) [Java](dropwizard/src/main/java/brave/example/ExampleApplication.java) [Yaml](dropwizard/src/main/resources/server.yml)
 
-* [jersey2-cassandra3](jersey2-cassandra3) `PROJECT=jersey2-cassandra3 docker-compose up`
+* [jersey2-cassandra3](jersey2-cassandra3) `BRAVE_EXAMPLE=jersey2-cassandra3 docker-compose up`
   * Runtime: JaxRS 2, Jersey 2.32, DataStax Java Driver 3.0, Apache Cassandra 3.11, SLF4J 1.7, JRE 8
   * Trace Instrumentation: [Jersey Server](https://github.com/openzipkin/brave/tree/master/instrumentation/jersey-server), [DataStax Java Driver](https://github.com/openzipkin/brave-cassandra/tree/master/cassandra-driver), [Apache Cassandra](https://github.com/openzipkin/brave-cassandra/tree/master/cassandra), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [XML](jersey2-cassandra3/src/main/webapp/WEB-INF/tracing.xml)
 
-* [ratpack](ratpack) `PROJECT=ratpack docker-compose up`
+* [ratpack](ratpack) `BRAVE_EXAMPLE=ratpack docker-compose up`
   * Runtime: Ratpack 1.8, Guice 4, SLF4J 1.7, JRE 15
   * Trace Instrumentation: [Brave Ratpack](https://github.com/openzipkin-contrib/brave-ratpack)
   * Trace Configuration: [Brave Ratpack Guice](https://github.com/openzipkin-contrib/brave-ratpack) [Java](ratpack/src/main/java/brave/example/Backend.java)
 
-* [webflux5-sleuth](webflux5-sleuth) `PROJECT=webflux5-sleuth docker-compose up`
+* [webflux5-sleuth](webflux5-sleuth) `BRAVE_EXAMPLE=webflux5-sleuth docker-compose up`
   * Runtime: Spring 5.2, Reactor Netty 0.9, Spring Boot 2.3, Spring Cloud Sleuth 2.2, Log4J 2.13, JRE 15
   * Trace Instrumentation: [WebFlux Server](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/TraceWebFilter.java), [WebFlux Client](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/client/TraceWebClientBeanPostProcessor.java), [Reactor Context](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/reactor/ScopePassingSpanSubscriber.java), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Spring Cloud Sleuth](https://github.com/spring-cloud/spring-cloud-sleuth/tree/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/autoconfig) [Properties](webflux5-sleuth/src/main/resources/application.properties)
 
-* [webmvc25-jetty](webmvc25-jetty) `PROJECT=webmvc25-jetty docker-compose up`
+* [webmvc25-jetty](webmvc25-jetty) `BRAVE_EXAMPLE=webmvc25-jetty docker-compose up`
   * Runtime: Spring 2.5, Apache HttpClient 4.3, Servlet 2.5, Jetty 7.6, Log4J 1.2, JRE 6
   * Trace Instrumentation: [Servlet](https://github.com/openzipkin/brave/tree/master/instrumentation/servlet), [Spring MVC](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-webmvc), [Apache HttpClient](https://github.com/openzipkin/brave/tree/master/instrumentation/httpclient), [Log4J 1.2](https://github.com/openzipkin/brave/tree/master/context/log4j12)
   * Trace Configuration: [Brave Spring Beans](https://github.com/openzipkin/brave/tree/master/spring-beans#configuration) [XML](webmvc25-jetty/src/main/webapp/WEB-INF/applicationContext.xml)
 
-* [webmvc3-jetty](webmvc3-jetty) `PROJECT=webmvc3-jetty docker-compose up`
+* [webmvc3-jetty](webmvc3-jetty) `BRAVE_EXAMPLE=webmvc3-jetty docker-compose up`
   * Runtime: Spring 3.2, Apache HttpClient 4.3, Servlet 3.0, Jetty 8.1, Log4J 1.2, JRE 7
   * Trace Instrumentation: [Servlet](https://github.com/openzipkin/brave/tree/master/instrumentation/servlet), [Spring MVC](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-webmvc), [Spring Web](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-web), [Apache HttpClient](https://github.com/openzipkin/brave/tree/master/instrumentation/httpclient), [Log4J 1.2](https://github.com/openzipkin/brave/tree/master/context/log4j12)
   * Trace Configuration: [Brave Spring Beans](https://github.com/openzipkin/brave/tree/master/spring-beans#configuration) [XML](webmvc3-jetty/src/main/webapp/WEB-INF/applicationContext.xml)
 
-* [webmvc4-jetty](webmvc4-jetty) `PROJECT=webmvc4-jetty docker-compose up`
+* [webmvc4-jetty](webmvc4-jetty) `BRAVE_EXAMPLE=webmvc4-jetty docker-compose up`
   * Runtime: Spring 4.3, OkHttp 3.12, Jetty 9.2, Servlet 3.1, SLF4J 1.7, JRE 8
   * Trace Instrumentation: [Servlet](https://github.com/openzipkin/brave/tree/master/instrumentation/servlet), [Spring MVC](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-webmvc), [Spring Web](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-web), [OkHttp](https://github.com/openzipkin/brave/tree/master/instrumentation/okhttp3), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Spring Java Config](webmvc4-jetty/src/main/java/brave/example/TracingConfiguration.java)
 
-* [webmvc4-boot](webmvc4-boot) `PROJECT=webmvc4-boot docker-compose up`
+* [webmvc4-boot](webmvc4-boot) `BRAVE_EXAMPLE=webmvc4-boot docker-compose up`
   * Runtime: Spring 4.3, OkHttp 3.14, Spring Boot 1.5, Servlet 3.1, Jetty 9.4, SLF4J 1.7, JRE 8
   * Trace Instrumentation: [Servlet](https://github.com/openzipkin/brave/tree/master/instrumentation/servlet), [Spring MVC](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-webmvc), [Spring Web](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-web), [OkHttp](https://github.com/openzipkin/brave/tree/master/instrumentation/okhttp3), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Spring Boot AutoConfiguration](webmvc4-boot/src/main/java/brave/example/TracingAutoConfiguration.java)
