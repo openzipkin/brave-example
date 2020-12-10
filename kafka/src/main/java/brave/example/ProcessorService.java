@@ -2,6 +2,7 @@ package brave.example;
 
 import brave.kafka.streams.KafkaStreamsTracing;
 import brave.messaging.MessagingTracing;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -20,6 +21,7 @@ public final class ProcessorService {
     final Properties configs = new Properties();
     configs.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:19092");
     configs.put(StreamsConfig.APPLICATION_ID_CONFIG, "processor-service");
+    configs.put(StreamsConfig.consumerPrefix(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG), "earliest");
 
     final StreamsBuilder builder = new StreamsBuilder();
     builder.stream("input", Consumed.with(Serdes.String(), Serdes.String()))

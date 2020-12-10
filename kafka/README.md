@@ -1,7 +1,12 @@
-## Tracing Example: Armeria
+## Tracing Example: Kafka 
 
-Instead of servlet, this uses [Armeria](https://armeria.dev/) to serve HTTP
-requests. Both services run as a normal Java application.
+Instead of client/server, this example implements a producer->streams->consumer flow.
 
-*   brave.example.Frontend and Backend : HTTP controllers with a trace configuration hook
-*   brave.example.HttpTracingFactory : Configures the tracing subsystem
+*   brave.example.ProducerService, ProcessorService and ConsumerService : Kafka Clients and Streams applications.
+*   brave.example.MessagingTracingFactory : Configures the tracing subsystem
+
+### Docker Compose
+
+```shell
+docker-compose -f docker-compose.yml -f kafka/docker-compose.yml up -d
+```

@@ -21,6 +21,7 @@ public final class ConsumerService {
     final Properties configs = new Properties();
     configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:19092");
     configs.put(ConsumerConfig.GROUP_ID_CONFIG, "consumer-service");
+    configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
     final StringDeserializer keyDeserializer = new StringDeserializer();
     final StringDeserializer valueDeserializer = new StringDeserializer();
