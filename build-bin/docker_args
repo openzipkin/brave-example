@@ -1,5 +1,4 @@
-#!/bin/sh
-set -ue
+#!/bin/sh -ue
 
 POM="${VERSION}/pom.xml"
 if [ -f "${POM}" ]; then

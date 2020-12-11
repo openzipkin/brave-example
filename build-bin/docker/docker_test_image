@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright 2019-2020 The OpenZipkin Authors
+# Copyright 2013-2020 The OpenZipkin Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
 # in compliance with the License. You may obtain a copy of the License at
@@ -23,7 +23,7 @@ set -ue
 # export this variable so that docker-compose can use it
 export DOCKER_IMAGE=${1?full docker_tag is required. Ex openzipkin/zipkin:test}
 # The two options are to run a single container of the image, or docker-compose which includes it.
-docker_compose_file=${2:-build-bin/docker-compose-$(echo ${docker_image}| cut -f2 -d/).yml}
+docker_compose_file=${2:-build-bin/docker-compose-$(echo ${DOCKER_IMAGE}| sed 's~.*/\(.*\):.*~\1~g').yml}
 docker_container=${3:-sut}
 
 # First try to run the intended containers.
