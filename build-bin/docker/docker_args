@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright 2019-2020 The OpenZipkin Authors
+# Copyright 2013-2020 The OpenZipkin Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
 # in compliance with the License. You may obtain a copy of the License at
@@ -63,8 +63,16 @@ fi
 # When non-empty, becomes the build-arg java_version. Ex. "15.0.1_p9"
 # Used to align base layers from https://github.com/orgs/openzipkin/packages/container/package/java
 if [ -n "${JAVA_VERSION}" ]; then
-  docker_args="${docker_args} --build-arg java_major_version=$(echo ${JAVA_VERSION}| cut -f1 -d .)"
   docker_args="${docker_args} --build-arg java_version=${JAVA_VERSION}"
+
+  # Only set java_home build arg when we control or can verify it.
+  java_major_version=$(echo ${JAVA_VERSION}| cut -f1 -d .)
+  case ${java_major_version} in
+    8) java_home=/usr/lib/jvm/java-1.8-openjdk;;
+    1?) java_home=/usr/lib/jvm/java-${java_major_version}-openjdk;;
+  esac
+
+  if [ -n "${java_home}" ]; then docker_args="${docker_args} --build-arg java_home=${java_home}"; fi
 fi
 
 # When non-empty, becomes the build-arg maven_classifier. Ex. "module" or "exec"
