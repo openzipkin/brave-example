@@ -1,0 +1,8 @@
+#!/bin/sh -ue
+
+# This script ensures we download anything needed for the project's Docker build into m2repository.
+# We prime the Maven repository in CI, so that it can cache it between runs.
+export MAVEN_OPTS="-Dmaven.repo.local=${PWD}/m2repository"
+
+# We prime the Maven repository in CI, so that it can cache it between runs
+MAVEN_PROJECT_BASEDIR=${1:-armeria} build-bin/maven/maven_go_offline

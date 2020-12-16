@@ -45,6 +45,7 @@
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <!-- Use same version as https://github.com/openzipkin/docker-java -->
     <maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
+    <maven-help-plugin.version>3.2.0</maven-help-plugin.version>
     <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
     <maven-war-plugin.version>3.3.1</maven-war-plugin.version>
   </properties>
@@ -86,11 +87,6 @@
         </plugin>
 
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>${maven-dependency-plugin.version}</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${maven-compiler-plugin.version}</version>
           <configuration>
@@ -99,6 +95,7 @@
             <showWarnings>true</showWarnings>
           </configuration>
         </plugin>
+
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>${maven-jar-plugin.version}</version>
@@ -109,11 +106,13 @@
             </archive>
           </configuration>
         </plugin>
+
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <version>${exec-maven-plugin.version}</version>
         </plugin>
+
         <plugin>
           <artifactId>maven-war-plugin</artifactId>
           <version>${maven-war-plugin.version}</version>
@@ -125,5 +124,17 @@
         </plugin>
       </plugins>
     </pluginManagement>
+
+    <plugins>
+      <!-- Ensure common utility commands use coherent versions (avoid lazy downloads) -->
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${maven-dependency-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-help-plugin</artifactId>
+        <version>${maven-help-plugin.version}</version>
+      </plugin>
+    </plugins>
   </build>
 </project>

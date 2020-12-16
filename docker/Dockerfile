@@ -26,7 +26,7 @@ ARG version=armeria
 RUN \
 # If we've seeded m2repository, copy it into the repository of our install image.
 # This prevents uncacheable downloads that occur during Docker build.
-test -d /code/m2repository && export MAVEN_OPTS=-Dmaven.repo.local=/code/m2repository; \
+test -d /code/m2repository && export MAVEN_OPTS="-Dmaven.repo.local=/code/m2repository"; \
 /code/docker/bin/install-example $version
 
 # Make the final layer that the example will run in
