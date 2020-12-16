@@ -102,6 +102,29 @@
           <artifactId>jetty-maven-plugin</artifactId>
           <version>${jetty.version}</version>
         </plugin>
+        <plugin>
+          <groupId>de.qaware.maven</groupId>
+          <artifactId>go-offline-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>resolve-dependencies</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <!-- Add dependencies used in the Docker build -->
+            <dynamicDependencies>
+              <DynamicDependency>
+                <groupId>${jetty.groupId}</groupId>
+                <artifactId>jetty-runner</artifactId>
+                <version>${jetty.version}</version>
+                <repositoryType>MAIN</repositoryType>
+              </DynamicDependency>
+            </dynamicDependencies>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
 

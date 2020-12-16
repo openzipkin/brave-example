@@ -14,6 +14,12 @@ versions, as documented [here](https://docs.github.com/en/free-pro-team@latest/a
 This is implemented by [../.github/workflows/versions-as-json], which dynamically builds the version
 list by looking for `pom.xml` files.
 
+`configure_test` and `configure_deploy` vary from other projects because they go offline into
+`./m2repository` instead of `${HOME}/.m2/repository`. When the Maven local repository is in the
+project root, it can be added to the Docker context (via `.dockerignore`). This is more efficient
+during builds as copying from the context is significantly faster than re-downloading inside Docker.
+CI setup of the `./m2repository` cache is still per-version as that allows parallel Docker builds.
+
 Finally, as this is an example project, there are no release tags in git, and it only pushes to
 `ghcr.io`, not `docker.io`, registries.
 

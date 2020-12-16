@@ -36,15 +36,11 @@ jobs:
       - name: Cache local Maven repository
         uses: actions/cache@v2
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-${{ matrix.version }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.project }}-maven-
-      - name: Cache Docker
-        uses: actions/cache@v2
-        with:
-          path: ~/.docker
-          key: ${{ runner.os }}-${{ matrix.version }}-docker-${{ hashFiles('**/Dockerfile') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.project }}-docker
+          path: ./m2repository  # Shared with the Docker build context via .dockerignore
+          key: ${{ runner.os }}-${{ matrix.version }}-maven-${{ hashFiles('parent-pom.xml', format('{0}/pom.xml', matrix.version)) }}
+          restore-keys: ${{ runner.os }}-${{ matrix.version }}-maven-
+      # We can't cache Docker without using buildx because GH actions restricts /var/lib/docker
+      # That's ok because DOCKER_PARENT_IMAGE is always ghcr.io and local anyway.
       - name: Deploy ${{ matrix.version }}
         env:
           # GH_USER=<user that created GH_TOKEN>
@@ -54,4 +50,6 @@ jobs:
           #   - create via https://github.com/settings/tokens
           #   - needs repo:status, public_repo, write:packages, delete:packages
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: build-bin/configure_deploy && build-bin/deploy ${{ matrix.version }}
+        run: |
+          build-bin/configure_deploy ${{ matrix.version }} &&
+          build-bin/deploy ${{ matrix.version }}

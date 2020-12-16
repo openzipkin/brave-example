@@ -4,3 +4,4 @@
 #
 # See [README.md] for an explanation of this and how CI should use it.
 build-bin/docker/configure_docker_push
+build-bin/maven_go_offline ${1:-armeria}

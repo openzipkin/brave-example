@@ -20,10 +20,14 @@ COPY --from=scratch /code .
 # version of the project, matching /code/$version/pom.xml. ex armeria or ratpack
 ARG version=armeria
 
-# This results in:
+# Build the project. This results in:
 # * /install - the version home
 # * /install/bin - scripts that should be copied into the search path
-RUN /code/docker/bin/install-example $version
+RUN \
+# If we've seeded m2repository, copy it into the repository of our install image.
+# This prevents uncacheable downloads that occur during Docker build.
+test -d /code/m2repository && export MAVEN_OPTS="-Dmaven.repo.local=/code/m2repository"; \
+/code/docker/bin/install-example $version
 
 # Make the final layer that the example will run in
 FROM $docker_parent_image
