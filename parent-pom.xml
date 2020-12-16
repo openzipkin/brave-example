@@ -41,6 +41,7 @@
     <maven.compiler.release>${jre.version}</maven.compiler.release>
 
     <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
+    <go-offline-maven-plugin.version>1.2.7</go-offline-maven-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <!-- Use same version as https://github.com/openzipkin/docker-java -->
     <maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
@@ -67,6 +68,23 @@
   <build>
     <pluginManagement>
       <plugins>
+        <!-- mvn -N io.takari:maven:wrapper generates the ./mvnw script -->
+        <plugin>
+          <groupId>io.takari</groupId>
+          <artifactId>maven</artifactId>
+          <version>0.7.7</version>
+          <configuration>
+            <maven>3.6.3</maven>
+          </configuration>
+        </plugin>
+
+        <!-- mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies -->
+        <plugin>
+          <groupId>de.qaware.maven</groupId>
+          <artifactId>go-offline-maven-plugin</artifactId>
+          <version>${go-offline-maven-plugin.version}</version>
+        </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>

@@ -60,6 +60,8 @@ elif [ -n "${MAVEN_PROJECT_BASEDIR:-}" ]; then
 fi
 
 if ! test -f ${artifact_id}.jar && [ ${is_release} = "true" ]; then
+  if [ -x ./mvnw ]; then alias mvn=${PWD}/mvnw; fi
+
   mvn_get="mvn -q --batch-mode -Denforcer.fail=false \
   org.apache.maven.plugins:maven-dependency-plugin:3.1.2:get \
   -Dtransitive=false -DgroupId=${group_id} -DartifactId=${artifact_id} -Dversion=${version}"

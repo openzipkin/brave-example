@@ -5,3 +5,6 @@
 #
 # See [README.md] for an explanation of this and how CI should use it.
 build-bin/docker/configure_docker
+
+# We prime the Maven repository in CI, so that it can cache it between runs
+MAVEN_PROJECT_BASEDIR=${1:-armeria} build-bin/maven/maven_go_offline -Dmaven.repo.local=${PWD}/m2repository
