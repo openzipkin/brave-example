@@ -14,12 +14,12 @@ DOCKER_PLATFORMS="linux/amd64,linux/arm64"
 
 case "${JRE_VERSION}" in
   6 )
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:6u119-6.22.0.3
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:1.6.0-119
     # single arch image
     DOCKER_PLATFORMS=linux/amd64
     ;;
   7 )
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:7u282-7.42.0.13
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:1.7.0_285
     # single arch image
     DOCKER_PLATFORMS=linux/amd64
     ;;
