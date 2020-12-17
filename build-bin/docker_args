@@ -9,19 +9,19 @@ else
 fi
 
 JAVA_VERSION=${JAVA_VERSION:-15.0.1_p9}
-# DOCKER_PLATFORMS to eventually push to the registry
-DOCKER_PLATFORMS="linux/amd64,linux/arm64"
+# DOCKER_ARCHS to eventually push to the registry
+DOCKER_ARCHS="amd64 arm64"
 
 case "${JRE_VERSION}" in
   6 )
     DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:1.6.0-119
     # single arch image
-    DOCKER_PLATFORMS=linux/amd64
+    DOCKER_ARCHS=amd64
     ;;
   7 )
     DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:1.7.0_285
     # single arch image
-    DOCKER_PLATFORMS=linux/amd64
+    DOCKER_ARCHS=amd64
     ;;
   8 )
     DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:8.272.10-jre
@@ -37,4 +37,4 @@ case "${JRE_VERSION}" in
     exit 1
 esac
 
-export DOCKER_PARENT_IMAGE DOCKER_PLATFORMS
+export DOCKER_PARENT_IMAGE DOCKER_ARCHS
