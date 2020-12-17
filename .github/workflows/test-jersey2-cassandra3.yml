@@ -1,0 +1,36 @@
+# yamllint --format github .github/workflows/test.yml
+---
+name: test jersey2-cassandra3
+
+on:
+  # We deploy non-tagged pushes to master relevant for this project. We can't opt out of
+  # documentation-only commits because GH actions does not permit paths and paths-ignore.
+  pull_request:
+    branches: master
+    paths:
+      - "build-bin/**"
+      - "docker/**"
+      - "jersey2-cassandra3/**"
+      - ".github/workflows/test-jersey2-cassandra3.yaml"
+      - "parent-pom.xml"
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04  # newest available distribution, aka focal
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ./m2repository  # Shared with the Docker build context via .dockerignore
+          key: ${{ runner.os }}-jersey2-cassandra3-maven-${{ hashFiles('parent-pom.xml', 'jersey2-cassandra3/pom.xml') }}
+          restore-keys: ${{ runner.os }}-jersey2-cassandra3-maven-
+      # We can't cache Docker without using buildx because GH actions restricts /var/lib/docker
+      # That's ok because DOCKER_PARENT_IMAGE is always ghcr.io and local anyway.
+      - name: Test jersey2-cassandra3
+        run: |
+          build-bin/configure_test jersey2-cassandra3 &&
+          build-bin/test jersey2-cassandra3

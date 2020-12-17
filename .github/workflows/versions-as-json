@@ -1,6 +1,0 @@
-#!/bin/sh
-
-set -ue
-
-# Make a string like: [{"version":"armeria"},{"version":"dropwizard"}]
-ls */pom.xml|sed 's~\(.*\)/pom.xml~{"version":"\1"}~g'|tr '\n' ','|sed 's/\(.*\),$/[\1]/'
