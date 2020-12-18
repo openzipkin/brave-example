@@ -1,0 +1,11 @@
+#!/bin/sh -ue
+
+# Variant of https://dev.to/stackdumper/setting-up-ci-for-microservices-in-monorepo-using-github-actions-5do2
+#
+# This performs static templating because GH actions disables YML anchors and only has file change
+# detection at top-level scope.
+for workflow in test deploy; do
+  for version in $(ls */pom.xml | sed 's~\(.*\)/pom.xml~\1~g'); do
+    sed "s/{{VERSION}}/${version}/g" .github/${workflow}-template.yml >.github/workflows/${workflow}-${version}.yml
+  done
+done

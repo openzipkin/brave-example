@@ -10,9 +10,8 @@ version tag of the resulting Docker image.
 Ex. "armeria" becomes the Docker image `ghcr.io/openzipkin/brave-example:armeria` 
 
 Another thing interesting about brave-example is that continuous integration does a matrix of all
-versions, as documented [here](https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategymatrix).
-This is implemented by [../.github/workflows/versions-as-json], which dynamically builds the version
-list by looking for `pom.xml` files.
+versions, but it is statically generated. What this implies is when adding a version, you should
+execute [generate_workflows](../.github/generate_workflows) and commit the new files to git.
 
 `configure_test` and `configure_deploy` vary from other projects because they go offline into
 `./m2repository` instead of `${HOME}/.m2/repository`. When the Maven local repository is in the
