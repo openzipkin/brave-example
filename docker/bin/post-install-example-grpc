@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eux
+
+# Communication isn't HTTP
+sed -i 's~endpoint=http://\(.*\)/api~target=\1~' start-frontend
+sed -i 's/HEALTHCHECK_KIND=http/HEALTHCHECK_KIND=tcp/g' start-backend
