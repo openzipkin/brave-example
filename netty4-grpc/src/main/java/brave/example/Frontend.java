@@ -111,8 +111,7 @@ public final class Frontend extends ChannelInboundHandlerAdapter {
     b.group(bossGroup, workerGroup)
         .channel(NioServerSocketChannel.class)
         .childHandler(new ChannelInitializer<Channel>() {
-          @Override
-          protected void initChannel(final Channel ch) throws Exception {
+          @Override protected void initChannel(Channel ch) {
             ChannelPipeline p = ch.pipeline();
             p.addLast(new HttpServerCodec());
             p.addLast(tracing.serverHandler());
