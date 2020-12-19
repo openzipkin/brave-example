@@ -22,7 +22,6 @@
 
     <grpc.version>1.31.1</grpc.version>
     <protobuf.version>3.12.0</protobuf.version>
-    <spring.version>4.3.29.RELEASE</spring.version>
 
     <os-maven-plugin.version>1.6.2</os-maven-plugin.version>
     <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
@@ -75,17 +74,6 @@
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
       <artifactId>zipkin-sender-urlconnection</artifactId>
-    </dependency>
-
-    <!-- Allows loading of trace configuration declaratively -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>${spring.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.zipkin.brave</groupId>
-      <artifactId>brave-spring-beans</artifactId>
     </dependency>
   </dependencies>
 

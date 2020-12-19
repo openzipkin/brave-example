@@ -54,7 +54,7 @@ Here are the example projects you can try:
 * [netty4-grpc](netty4-grpc) `BRAVE_EXAMPLE=netty4-grpc docker-compose up`
   * Runtime: Netty 4.1, Google gRPC 1.31, SLF4J 1.7, JRE 15
   * Trace Instrumentation: [Netty Codec HTTP](https://github.com/openzipkin/brave/tree/master/instrumentation/netty-codec-http), [Google gRPC](https://github.com/openzipkin/brave/tree/master/instrumentation/grpc), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
-  * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [XML](netty4-grpc/src/main/webapp/WEB-INF/tracing.xml)
+  * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](netty4-grpc/src/main/java/brave/example/TracingConfiguration.java)
 
 * [ratpack](ratpack) `BRAVE_EXAMPLE=ratpack docker-compose up`
   * Runtime: Ratpack 1.8, Guice 4, SLF4J 1.7, JRE 15
