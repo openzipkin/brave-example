@@ -1,4 +1,4 @@
-## Tracing Example: Armeria
+## Tracing Example: SArmeria
 
 Instead of servlet, this uses [Armeria](https://armeria.dev/) to serve HTTP
 requests. Both services run as a normal Java application.
