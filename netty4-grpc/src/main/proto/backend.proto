@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "brave.example";
+option java_outer_classname = "BackendProto";
+
+package brave.example;
+
+service Backend {
+  rpc PrintDate (Empty) returns (Reply);
+}
+
+message Empty { // avoids dependency on google's empty
+}
+
+message Reply {
+  string message = 1;
+}
+
