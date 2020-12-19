@@ -8,9 +8,6 @@ keep alives, it is less dependencies to worry about. Also, it serves as an
 example of how to use Brave's Netty instrumentation.
 
 ## Why Spring XML?
-Jersey requires HK2 or CDI injection. We don't currently have CDI integration
-with Brave, else we would use that.
-
-There are some external ways to use integrate Spring with Jersey, but it is
-confusing. Instead, we hide Spring inside `TracingConfiguration`. Internally,
-this uses XML as it is declarative, but we could have easily used Java Config.
+We are only using Spring XML to hide tracing configuration code. The Spring
+code is hidden inside `TracingConfiguration`, so could be changed to explicit
+code or another configuration option later.
