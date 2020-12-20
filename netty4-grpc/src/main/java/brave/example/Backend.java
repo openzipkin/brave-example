@@ -1,5 +1,8 @@
 package brave.example;
 
+import brave.example.generated.BackendGrpc;
+import brave.example.generated.BackendProto.Empty;
+import brave.example.generated.BackendProto.Reply;
 import io.grpc.Context;
 import io.grpc.Context.Key;
 import io.grpc.Contexts;

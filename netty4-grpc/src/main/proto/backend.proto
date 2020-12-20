@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-option java_multiple_files = true;
-option java_package = "brave.example";
+option java_multiple_files = false;
+option java_package = "brave.example.generated";
 option java_outer_classname = "BackendProto";
 
 package brave.example;

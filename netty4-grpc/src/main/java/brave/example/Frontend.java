@@ -1,6 +1,8 @@
 package brave.example;
 
-import brave.example.BackendGrpc.BackendBlockingStub;
+import brave.example.generated.BackendGrpc;
+import brave.example.generated.BackendGrpc.BackendBlockingStub;
+import brave.example.generated.BackendProto.Empty;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.netty.bootstrap.ServerBootstrap;
