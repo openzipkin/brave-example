@@ -1,6 +1,6 @@
 package brave.example;
 
-import brave.example.generated.BackendGrpc;
+import brave.example.generated.BackendGrpc.BackendImplBase;
 import brave.example.generated.BackendProto.Empty;
 import brave.example.generated.BackendProto.Reply;
 import io.grpc.Context;
@@ -18,7 +18,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import static io.grpc.Metadata.ASCII_STRING_MARSHALLER;
 
-public final class Backend extends BackendGrpc.BackendImplBase {
+public final class Backend extends BackendImplBase {
   /** This key is set when the header of the same name is via {@link CopyHeaderToGrpcContext}. */
   static final Key<String> USER_NAME_KEY = Context.key("user_name");
 
