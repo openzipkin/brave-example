@@ -12,11 +12,11 @@ on:
       - "build-bin/**"
       - "docker/**"
       - "webmvc3-jetty/**"
-      - ".github/workflows/test-webmvc3-jetty.yaml"
+      - ".github/workflows/deploy-webmvc3-jetty.yaml"
       - "parent-pom.xml"
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-20.04  # newest available distribution, aka focal
     steps:
       - name: Checkout Repository

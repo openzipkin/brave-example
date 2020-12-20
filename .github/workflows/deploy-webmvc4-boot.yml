@@ -12,11 +12,11 @@ on:
       - "build-bin/**"
       - "docker/**"
       - "webmvc4-boot/**"
-      - ".github/workflows/test-webmvc4-boot.yaml"
+      - ".github/workflows/deploy-webmvc4-boot.yaml"
       - "parent-pom.xml"
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-20.04  # newest available distribution, aka focal
     steps:
       - name: Checkout Repository

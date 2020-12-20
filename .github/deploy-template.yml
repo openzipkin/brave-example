@@ -12,11 +12,11 @@ on:
       - "build-bin/**"
       - "docker/**"
       - "{{VERSION}}/**"
-      - ".github/workflows/test-{{VERSION}}.yaml"
+      - ".github/workflows/deploy-{{VERSION}}.yaml"
       - "parent-pom.xml"
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-20.04  # newest available distribution, aka focal
     steps:
       - name: Checkout Repository

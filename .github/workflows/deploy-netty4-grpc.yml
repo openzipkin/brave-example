@@ -12,11 +12,11 @@ on:
       - "build-bin/**"
       - "docker/**"
       - "netty4-grpc/**"
-      - ".github/workflows/test-netty4-grpc.yaml"
+      - ".github/workflows/deploy-netty4-grpc.yaml"
       - "parent-pom.xml"
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-20.04  # newest available distribution, aka focal
     steps:
       - name: Checkout Repository

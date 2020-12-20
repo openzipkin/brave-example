@@ -12,11 +12,11 @@ on:
       - "build-bin/**"
       - "docker/**"
       - "webflux5-sleuth/**"
-      - ".github/workflows/test-webflux5-sleuth.yaml"
+      - ".github/workflows/deploy-webflux5-sleuth.yaml"
       - "parent-pom.xml"
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-20.04  # newest available distribution, aka focal
     steps:
       - name: Checkout Repository

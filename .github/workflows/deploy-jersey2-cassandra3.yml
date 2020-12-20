@@ -12,11 +12,11 @@ on:
       - "build-bin/**"
       - "docker/**"
       - "jersey2-cassandra3/**"
-      - ".github/workflows/test-jersey2-cassandra3.yaml"
+      - ".github/workflows/deploy-jersey2-cassandra3.yaml"
       - "parent-pom.xml"
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-20.04  # newest available distribution, aka focal
     steps:
       - name: Checkout Repository

@@ -12,11 +12,11 @@ on:
       - "build-bin/**"
       - "docker/**"
       - "armeria/**"
-      - ".github/workflows/test-armeria.yaml"
+      - ".github/workflows/deploy-armeria.yaml"
       - "parent-pom.xml"
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-20.04  # newest available distribution, aka focal
     steps:
       - name: Checkout Repository
