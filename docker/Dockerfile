@@ -20,11 +20,6 @@ COPY --from=scratch /code .
 # version of the project, matching /code/$version/pom.xml. ex armeria or ratpack
 ARG version=armeria
 
-# Guard in case we are using protoc. See https://github.com/xolstice/protobuf-maven-plugin/issues/23
-ADD https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
-ADD https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.32-r0/glibc-2.32-r0.apk /tmp/
-RUN apk del libc6-compat && apk add --no-cache /tmp/glibc-2.32-r0.apk
-
 # Build the project. This results in:
 # * /install - the version home
 # * /install/bin - scripts that should be copied into the search path
