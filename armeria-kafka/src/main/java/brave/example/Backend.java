@@ -1,5 +1,6 @@
 package brave.example;
 
+import brave.Tracing;
 import brave.kafka.clients.KafkaTracing;
 import brave.kafka.streams.KafkaStreamsTracing;
 import brave.messaging.MessagingTracing;
@@ -30,7 +31,9 @@ public final class Backend {
   public static void main(String[] args) {
     String kafkaBootstrapServers = System.getProperty("kafka.bootstrap-servers", "localhost:19092");
 
-    final MessagingTracing msgTracing = TracingFactory.createMessaging("backend");
+    final Tracing tracing =
+        TracingFactory.tracing(System.getProperty("brave.localServiceName", "backend"), false);
+    final MessagingTracing msgTracing = TracingFactory.createMessaging(tracing);
     final KafkaTracing kafkaTracing = KafkaTracing.newBuilder(msgTracing).build();
     final KafkaStreamsTracing kafkaStreamsTracing = KafkaStreamsTracing.newBuilder(msgTracing)
         .build();

@@ -12,6 +12,7 @@ import brave.propagation.B3Propagation;
 import brave.propagation.CurrentTraceContext;
 import brave.propagation.CurrentTraceContext.ScopeDecorator;
 import brave.propagation.Propagation;
+import brave.propagation.StrictCurrentTraceContext;
 import com.linecorp.armeria.common.brave.RequestContextCurrentTraceContext;
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -22,24 +23,24 @@ import zipkin2.reporter.urlconnection.URLConnectionSender;
 final class TracingFactory {
   static final BaggageField USER_NAME = BaggageField.create("userName");
 
+
   /** Decides how to name and tag spans. By default they are named the same as the http method. */
-  static MessagingTracing createMessaging(String serviceName) {
-    return MessagingTracing.create(tracing((System.getProperty("brave.localServiceName", serviceName))));
+  static MessagingTracing createMessaging(Tracing tracing) {
+    return MessagingTracing.create(tracing);
   }
 
   /** Decides how to name and tag spans. By default they are named the same as the http method. */
-  static HttpTracing createHttp(String serviceName) {
-    return HttpTracing.create(tracing((System.getProperty("brave.localServiceName", serviceName))));
+  static HttpTracing createHttp(Tracing tracing) {
+    return HttpTracing.create(tracing);
   }
 
   /** Controls aspects of tracing such as the service name that shows up in the UI */
-  static Tracing tracing(String serviceName) {
+  static Tracing tracing(String serviceName, boolean armeria) {
     return Tracing.newBuilder()
         .localServiceName(serviceName)
-        .supportsJoin(Boolean.parseBoolean(System.getProperty("brave.supportsJoin", "true")))
         .supportsJoin(Boolean.parseBoolean(System.getProperty("brave.traceId128Bit", "false")))
         .propagationFactory(propagationFactory())
-        .currentTraceContext(currentTraceContext(correlationScopeDecorator()))
+        .currentTraceContext(currentTraceContext(armeria, correlationScopeDecorator()))
         .addSpanHandler(spanHandler(sender()))
         .build();
   }
@@ -51,10 +52,12 @@ final class TracingFactory {
   }
 
   /** Propagates trace context between threads. */
-  static CurrentTraceContext currentTraceContext(ScopeDecorator correlationScopeDecorator) {
-    return RequestContextCurrentTraceContext.builder()
+  static CurrentTraceContext currentTraceContext(boolean armeria,
+      ScopeDecorator correlationScopeDecorator) {
+    return armeria ? RequestContextCurrentTraceContext.builder()
         .addScopeDecorator(correlationScopeDecorator)
-        .build();
+        .build()
+        : StrictCurrentTraceContext.create();
   }
 
   /** Configures propagation for {@link #USER_NAME}, using the remote header "user_name" */

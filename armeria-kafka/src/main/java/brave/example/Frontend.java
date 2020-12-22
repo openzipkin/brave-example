@@ -1,5 +1,6 @@
 package brave.example;
 
+import brave.Tracing;
 import brave.http.HttpTracing;
 import brave.kafka.clients.KafkaTracing;
 import brave.messaging.MessagingTracing;
@@ -20,7 +21,9 @@ public final class Frontend {
   public static void main(String[] args) {
     String kafkaBootstrapServers = System.getProperty("kafka.bootstrap-servers", "localhost:19092");
 
-    final MessagingTracing messagingTracing = TracingFactory.createMessaging("producer-service");
+    final Tracing tracing =
+        TracingFactory.tracing(System.getProperty("brave.localServiceName", "frontend"), true);
+    final MessagingTracing messagingTracing = TracingFactory.createMessaging(tracing);
     final KafkaTracing kafkaTracing = KafkaTracing.newBuilder(messagingTracing).build();
 
     final Properties configs = new Properties();
@@ -28,9 +31,10 @@ public final class Frontend {
 
     final StringSerializer keySerializer = new StringSerializer();
     final StringSerializer valueSerializer = new StringSerializer();
-    final Producer<String, String> producer = kafkaTracing.producer(new KafkaProducer<>(configs, keySerializer, valueSerializer));
+    final Producer<String, String> producer =
+        kafkaTracing.producer(new KafkaProducer<>(configs, keySerializer, valueSerializer));
 
-    final HttpTracing httpTracing = TracingFactory.createHttp("frontend");
+    final HttpTracing httpTracing = TracingFactory.createHttp(tracing);
 
     final Server server =
         Server.builder()
