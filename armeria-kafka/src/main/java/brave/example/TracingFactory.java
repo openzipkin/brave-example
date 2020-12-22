@@ -6,24 +6,30 @@ import brave.baggage.BaggagePropagation;
 import brave.baggage.BaggagePropagationConfig;
 import brave.baggage.CorrelationScopeConfig;
 import brave.context.slf4j.MDCScopeDecorator;
+import brave.http.HttpTracing;
 import brave.messaging.MessagingTracing;
 import brave.propagation.B3Propagation;
 import brave.propagation.CurrentTraceContext;
 import brave.propagation.CurrentTraceContext.ScopeDecorator;
 import brave.propagation.Propagation;
+import com.linecorp.armeria.common.brave.RequestContextCurrentTraceContext;
+import java.io.IOException;
+import java.util.logging.Logger;
 import zipkin2.reporter.Sender;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 import zipkin2.reporter.urlconnection.URLConnectionSender;
 
-import java.io.IOException;
-import java.util.logging.Logger;
-
-final class MessagingTracingFactory {
+final class TracingFactory {
   static final BaggageField USER_NAME = BaggageField.create("userName");
 
   /** Decides how to name and tag spans. By default they are named the same as the http method. */
-  static MessagingTracing create(String serviceName) {
+  static MessagingTracing createMessaging(String serviceName) {
     return MessagingTracing.create(tracing((System.getProperty("brave.localServiceName", serviceName))));
+  }
+
+  /** Decides how to name and tag spans. By default they are named the same as the http method. */
+  static HttpTracing createHttp(String serviceName) {
+    return HttpTracing.create(tracing((System.getProperty("brave.localServiceName", serviceName))));
   }
 
   /** Controls aspects of tracing such as the service name that shows up in the UI */
@@ -46,7 +52,7 @@ final class MessagingTracingFactory {
 
   /** Propagates trace context between threads. */
   static CurrentTraceContext currentTraceContext(ScopeDecorator correlationScopeDecorator) {
-    return CurrentTraceContext.Default.newBuilder()
+    return RequestContextCurrentTraceContext.builder()
         .addScopeDecorator(correlationScopeDecorator)
         .build();
   }
@@ -82,6 +88,6 @@ final class MessagingTracingFactory {
     return spanHandler;
   }
 
-  private MessagingTracingFactory() {
+  private TracingFactory() {
   }
 }
