@@ -1,9 +1,5 @@
 package brave.example;
 
-import brave.Tracing;
-import brave.kafka.clients.KafkaTracing;
-import brave.kafka.streams.KafkaStreamsTracing;
-import brave.messaging.MessagingTracing;
 import com.linecorp.armeria.server.Server;
 import com.linecorp.armeria.server.healthcheck.HealthCheckService;
 import com.linecorp.armeria.server.logging.LoggingService;
@@ -29,56 +25,48 @@ import org.apache.kafka.streams.kstream.Produced;
 public final class Backend {
 
   public static void main(String[] args) {
+    TracingConfiguration tracing = TracingConfiguration.create("backend", false);
+
+    Properties streamsConfig = new Properties();
     String kafkaBootstrapServers = System.getProperty("kafka.bootstrap-servers", "localhost:19092");
-
-    final Tracing tracing =
-        TracingFactory.tracing(System.getProperty("brave.localServiceName", "backend"), false);
-    final MessagingTracing msgTracing = TracingFactory.createMessaging(tracing);
-    final KafkaTracing kafkaTracing = KafkaTracing.newBuilder(msgTracing).build();
-    final KafkaStreamsTracing kafkaStreamsTracing = KafkaStreamsTracing.newBuilder(msgTracing)
-        .build();
-
-    final Properties streamsConfig = new Properties();
     streamsConfig.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
     streamsConfig.put(StreamsConfig.APPLICATION_ID_CONFIG, "processor-service");
-    streamsConfig
-        .put(StreamsConfig.consumerPrefix(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG), "earliest");
+    streamsConfig.put(StreamsConfig.consumerPrefix(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG),
+        "earliest");
 
-    final StreamsBuilder builder = new StreamsBuilder();
+    StreamsBuilder builder = new StreamsBuilder();
     builder.stream("input", Consumed.with(Serdes.String(), Serdes.String()))
-        .transformValues(kafkaStreamsTracing.mapValues("mapping", s -> s + ". Thanks!"))
+        .transformValues(tracing.kafkaStreamsTracing.mapValues("mapping", s -> s + ". Thanks!"))
         .to("output", Produced.with(Serdes.String(), Serdes.String()));
 
-    final KafkaStreams kafkaStreams = kafkaStreamsTracing
-        .kafkaStreams(builder.build(), streamsConfig);
+    KafkaStreams kafkaStreams =
+        tracing.kafkaStreamsTracing.kafkaStreams(builder.build(), streamsConfig);
 
     kafkaStreams.start();
 
-    final Properties consumerConfigs = new Properties();
+    Properties consumerConfigs = new Properties();
     consumerConfigs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
     consumerConfigs.put(ConsumerConfig.GROUP_ID_CONFIG, "consumer-service");
     consumerConfigs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-    final StringDeserializer keyDeserializer = new StringDeserializer();
-    final StringDeserializer valueDeserializer = new StringDeserializer();
-    final Consumer<String, String> consumer = kafkaTracing
+    StringDeserializer keyDeserializer = new StringDeserializer();
+    StringDeserializer valueDeserializer = new StringDeserializer();
+    Consumer<String, String> consumer = tracing.kafkaTracing
         .consumer(new KafkaConsumer<>(consumerConfigs, keyDeserializer, valueDeserializer));
 
-    final ExecutorService executorService = Executors.newFixedThreadPool(1);
+    ExecutorService executorService = Executors.newFixedThreadPool(1);
     executorService.submit(new ConsumerLoop(consumer, Collections.singleton("output")));
 
-    final Server server =
-        Server.builder()
-            .http(9000)
-            .service("/health", HealthCheckService.builder().build())
-            .decorator(LoggingService.newDecorator())
-            .build();
+    Server server = Server.builder()
+        .http(9000)
+        .service("/health", HealthCheckService.builder().build())
+        .decorator(LoggingService.newDecorator())
+        .build();
 
     server.start().join();
   }
 
-  static class ConsumerLoop implements Runnable {
-
+  static final class ConsumerLoop implements Runnable {
     final Consumer<String, String> consumer;
     final Collection<String> topics;
 
@@ -87,8 +75,7 @@ public final class Backend {
       this.topics = topics;
     }
 
-    @Override
-    public void run() {
+    @Override public void run() {
       try {
         consumer.subscribe(topics);
         while (!Thread.interrupted()) {

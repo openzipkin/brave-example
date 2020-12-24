@@ -72,6 +72,7 @@ case ${version} in
   ratpack ) sed -i 's/-D/-Dratpack./g' start-frontend start-backend;;
   *-cassandra3 ) /code/docker/bin/post-install-example-cassandra;;
   *-grpc ) /code/docker/bin/post-install-example-grpc;;
+  *-kafka ) /code/docker/bin/post-install-example-kafka;;
 esac
 
 chmod 755 *

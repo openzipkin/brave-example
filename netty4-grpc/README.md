@@ -4,8 +4,8 @@ Instead of servlet, the frontend is a Netty HTTP handler. The backend is Google 
 Both services run as a normal Java application.
 
 * [brave.example.Frontend](src/main/java/brave/example/Frontend.java) - HTTP controller and Google gRPC client
-  * [tracing.xml](src/main/resources/tracing.xml) configures basic tracing functions. 
 * [brave.example.Backend](src/main/java/brave/example/Backend.java) - Google gRPC server
+* [brave.example.TracingConfiguration](src/main/java/brave/example/TracingConfiguration.java) - Configures trace instrumentation
 
 Here's an example screen shot:
 ![screen shot](https://user-images.githubusercontent.com/64215/102683005-a2986500-4208-11eb-8258-92cc02f9310b.png)

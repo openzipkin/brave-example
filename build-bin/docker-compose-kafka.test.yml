@@ -1,10 +1,11 @@
 # permit depends_on/condition: service_healthy
 version: "2.4"
 
+# this duplicates a lot of service definitions because services with depends_on cannot be extended
 services:
   sut:
     container_name: sut
-    image: ghcr.io/openzipkin/alpine:3.12.1
+    image: ghcr.io/openzipkin/alpine:3.12.3
     entrypoint: /bin/sh
     # Keep the container running until HEALTHCHECK passes
     command: "-c \"sleep 5m\""
@@ -14,9 +15,10 @@ services:
     depends_on:
       get_frontend:
         condition: service_started
+
   get_frontend:
     container_name: get_frontend
-    image: ghcr.io/openzipkin/alpine:3.12.1
+    image: ghcr.io/openzipkin/alpine:3.12.3
     entrypoint: /bin/sh
     # Pass a trace header with a constant trace ID, so that we know what to look for later
     command: "-c \"wget -qO- --header 'b3: cafebabecafebabe-cafebabecafebabe-1' http://frontend:8081\""
@@ -25,26 +27,10 @@ services:
         condition: service_healthy
       zipkin:
         condition: service_healthy
-  frontend:
-    container_name: frontend
-    image: ${DOCKER_IMAGE}
-    entrypoint: start-frontend
-    depends_on:
-      backend:
-        condition: service_healthy
-      zipkin:
-        condition: service_started
-  backend:
-    container_name: backend
-    image: ${DOCKER_IMAGE}
-    entrypoint: start-backend
-    depends_on:
-      zipkin:
-        condition: service_started
 
-  kafka-zookeeper:
-    image: ghcr.io/openzipkin/zipkin-kafka:${TAG:-latest}
-    container_name: kafka-zookeeper
+  kafka:
+    image: ghcr.io/openzipkin/zipkin-kafka:latest
+    container_name: kafka
       # If using docker machine, uncomment the below and set your bootstrap
       # server list to 192.168.99.100:19092
       # environment:
@@ -53,13 +39,27 @@ services:
       # Processes on the Docker host can set bootstrap server list to localhost:19092
       - 19092:19092
 
+  frontend:
+    container_name: frontend
+    image: ${DOCKER_IMAGE}
+    entrypoint: start-frontend
+    depends_on:
+      kafka:
+        condition: service_healthy
+      zipkin:
+        condition: service_started
+
+  backend:
+    container_name: backend
+    image: ${DOCKER_IMAGE}
+    entrypoint: start-backend
+    depends_on:
+      kafka:
+        condition: service_healthy
+      zipkin:
+        condition: service_started
+
   zipkin:
     extends:
       file: docker-compose.test.yml
       service: zipkin
-    # slim doesn't include Kafka support, so switch to the larger image
-    image: ghcr.io/openzipkin/zipkin:${TAG:-latest}
-    environment:
-      - KAFKA_BOOTSTRAP_SERVERS=kafka-zookeeper:9092
-    depends_on:
-      - kafka-zookeeper

@@ -44,3 +44,5 @@ services:
   zipkin:
     image: ghcr.io/openzipkin/zipkin-slim
     container_name: zipkin
+    ports:
+     - 9411:9411
