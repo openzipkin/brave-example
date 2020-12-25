@@ -54,12 +54,12 @@ public final class Backend {
     Consumer<String, String> consumer = tracing.kafkaTracing
         .consumer(new KafkaConsumer<>(consumerConfigs, keyDeserializer, valueDeserializer));
 
-    ExecutorService executorService = Executors.newFixedThreadPool(1);
+    ExecutorService executorService = Executors.newSingleThreadExecutor(1);
     executorService.submit(new ConsumerLoop(consumer, Collections.singleton("output")));
 
     Server server = Server.builder()
         .http(9000)
-        .service("/health", HealthCheckService.builder().build())
+        .service("/health", HealthCheckService.of())
         .decorator(LoggingService.newDecorator())
         .build();
 
