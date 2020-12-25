@@ -54,7 +54,7 @@ public final class Backend {
     Consumer<String, String> consumer = tracing.kafkaTracing
         .consumer(new KafkaConsumer<>(consumerConfigs, keyDeserializer, valueDeserializer));
 
-    ExecutorService executorService = Executors.newSingleThreadExecutor(1);
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
     executorService.submit(new ConsumerLoop(consumer, Collections.singleton("output")));
 
     Server server = Server.builder()
