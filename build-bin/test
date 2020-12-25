@@ -12,5 +12,16 @@ docker_image=openzipkin/brave-example:${VERSION}-test
 echo "Building Docker image..."
 build-bin/docker/docker_build ${docker_image} ${VERSION}
 
+docker_compose_file=build-bin/docker-compose.test.yml
+
+case ${VERSION} in
+  armeria-kafka* )
+    docker_compose_file=build-bin/docker-compose-kafka.test.yml
+    ;;
+  * )
+    docker_compose_file=build-bin/docker-compose.test.yml
+    ;;
+esac
+
 echo "Verifying Docker image..."
-build-bin/docker/docker_test_image ${docker_image} build-bin/docker-compose.test.yml
+build-bin/docker/docker_test_image ${docker_image} ${docker_compose_file}

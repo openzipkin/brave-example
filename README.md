@@ -41,6 +41,11 @@ Here are the example projects you can try:
   * Trace Instrumentation: [Armeria](https://armeria.dev/), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](armeria/src/main/java/brave/example/HttpTracingFactory.java)
 
+* [armeria-kafka](armeria-kafka) `BRAVE_EXAMPLE=armeria-kafka docker-compose -f docker-compose.yml -f docker-compose-kafka.yml up`
+  * Runtime: Armeria, Kafka Clients and Streams 2.6, SLF4J 1.7, JRE 15
+  * Trace Instrumentation: [Armeria](https://armeria.dev/), [Kafka Clients](https://github.com/openzipkin/brave/tree/master/instrumentation/kafka-clients), [Kafka Streams](https://github.com/openzipkin/brave/tree/master/instrumentation/kafka-streams), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
+  * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](armeria/src/main/java/brave/example/HttpTracingFactory.java)
+
 * [dropwizard](dropwizard) `BRAVE_EXAMPLE=dropwizard docker-compose up`
   * Runtime: JaxRS 2, Jersey 2.31, Apache HttpClient 4.5, Jetty 9.4, SLF4J 1.7, JRE 15
   * Trace Instrumentation: [Jersey Server](https://github.com/openzipkin/brave/tree/master/instrumentation/jersey-server), [Apache HttpClient](https://github.com/openzipkin/brave/tree/master/instrumentation/httpclient), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)

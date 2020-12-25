@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eux
+
+# Communication isn't HTTP
+sed -i '/endpoint=http:/d' start-frontend
+# Assign Kafka Bootstrap Servers from a variable
+sed -i '/-Dbrave.localServiceName/a-Dkafka.bootstrap-servers=${KAFKA_BOOTSTRAP_SERVERS:-kafka:9092} \\' start-frontend start-backend
