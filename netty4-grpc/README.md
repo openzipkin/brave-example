@@ -1,4 +1,4 @@
-## Tracing Example: Netty 4.1/Google gRPC 1.31/JRE 15
+## Tracing Example: Netty 4.1/Google gRPC 1.34/JRE 15
 
 Instead of servlet, the frontend is a Netty HTTP handler. The backend is Google gRPC 1.31.
 Both services run as a normal Java application.

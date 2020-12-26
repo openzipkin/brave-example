@@ -33,7 +33,7 @@
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <brave.version>5.13.2</brave.version>
+    <brave.version>5.13.3</brave.version>
 
     <!-- The JRE used in Docker images can be higher than ${maven.compiler.release}. -->
     <jre.version>SET MANUALLY IN PROJECTS</jre.version>
@@ -41,7 +41,7 @@
     <maven.compiler.release>${jre.version}</maven.compiler.release>
 
     <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
-    <go-offline-maven-plugin.version>1.2.7</go-offline-maven-plugin.version>
+    <go-offline-maven-plugin.version>1.2.8</go-offline-maven-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <!-- Use same version as https://github.com/openzipkin/docker-java -->
     <maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
