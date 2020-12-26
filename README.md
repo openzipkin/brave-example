@@ -42,7 +42,7 @@ Here are the example projects you can try:
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](armeria/src/main/java/brave/example/HttpTracingFactory.java)
 
 * [armeria-kafka](armeria-kafka) `BRAVE_EXAMPLE=armeria-kafka docker-compose -f docker-compose.yml -f docker-compose-kafka.yml up`
-  * Runtime: Armeria, Kafka Clients and Streams 2.6, SLF4J 1.7, JRE 15
+  * Runtime: Armeria, Kafka Clients and Streams 2.7, SLF4J 1.7, JRE 15
   * Trace Instrumentation: [Armeria](https://armeria.dev/), [Kafka Clients](https://github.com/openzipkin/brave/tree/master/instrumentation/kafka-clients), [Kafka Streams](https://github.com/openzipkin/brave/tree/master/instrumentation/kafka-streams), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](armeria/src/main/java/brave/example/HttpTracingFactory.java)
 
@@ -57,7 +57,7 @@ Here are the example projects you can try:
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [XML](jersey2-cassandra3/src/main/webapp/WEB-INF/tracing.xml)
 
 * [netty4-grpc](netty4-grpc) `BRAVE_EXAMPLE=netty4-grpc docker-compose up`
-  * Runtime: Netty 4.1, Google gRPC 1.31, SLF4J 1.7, JRE 15
+  * Runtime: Netty 4.1, Google gRPC 1.34  , SLF4J 1.7, JRE 15
   * Trace Instrumentation: [Netty Codec HTTP](https://github.com/openzipkin/brave/tree/master/instrumentation/netty-codec-http), [Google gRPC](https://github.com/openzipkin/brave/tree/master/instrumentation/grpc), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](netty4-grpc/src/main/java/brave/example/TracingConfiguration.java)
 
