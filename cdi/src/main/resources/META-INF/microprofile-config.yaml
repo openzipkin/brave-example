@@ -1,0 +1,5 @@
+tracing:
+  name: "cdi-client"
+  enabled: true
+  reporter:
+    url: "http://localhost"
