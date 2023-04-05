@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.zipkin.brave.example</groupId>
+    <artifactId>brave-example-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../parent-pom.xml</relativePath>
+  </parent>
+
+  <artifactId>brave-example-httpclient5</artifactId>
+  <packaging>jar</packaging>
+
+  <name>brave-example-httpclient5</name>
+  <description>Tracing Example: Armeria and Apache Http Client 5/ Java 15</description>
+
+  <properties>
+    <jre.version>15</jre.version>
+    <maven.compiler.release>8</maven.compiler.release>
+
+    <armeria.version>1.6.0</armeria.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>5.2.1</version>
+    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.httpcomponents.client5</groupId>-->
+<!--      <artifactId>httpclient5-cache</artifactId>-->
+<!--      <version>5.2.1</version>-->
+<!--    </dependency>-->
+    <!-- Instruments the underlying Armeria requests -->
+    <dependency>
+      <groupId>com.linecorp.armeria</groupId>
+      <artifactId>armeria-brave</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.brave</groupId>
+      <artifactId>brave-instrumentation-httpclient5</artifactId>
+      <version>5.15.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.brave</groupId>
+      <artifactId>brave-instrumentation-http</artifactId>
+      <version>5.15.0</version>
+    </dependency>
+
+    <!-- Integrates so you can use log patterns like %X{traceId}/%X{spanId} -->
+    <dependency>
+      <groupId>com.linecorp.armeria</groupId>
+      <artifactId>armeria-logback</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.brave</groupId>
+      <artifactId>brave-context-slf4j</artifactId>
+    </dependency>
+
+    <!-- The below are needed to report traces to http://127.0.0.1:9411/api/v2/spans -->
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-reporter-brave</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-sender-urlconnection</artifactId>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.linecorp.armeria</groupId>
+        <artifactId>armeria-bom</artifactId>
+        <version>${armeria.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>
