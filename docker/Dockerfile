@@ -2,7 +2,7 @@
 # non-root users and such as they are not intended to run in production anyway.
 
 # The image binaries this example builds are installed over
-ARG docker_parent_image=ghcr.io/openzipkin/java:15.0.1_p9-jre
+ARG docker_parent_image=ghcr.io/openzipkin/java:17.0.9_p8-jre
 
 # We copy files from the context into a scratch container first to avoid a problem where docker and
 # docker-compose don't share layer hashes https://github.com/docker/compose/issues/883 normally.
@@ -12,7 +12,7 @@ FROM scratch as scratch
 COPY . /code/
 
 ## Use JDK 11 to build projects, as that can still compile Java 6
-FROM ghcr.io/openzipkin/java:11.0.9_p11 as install
+FROM ghcr.io/openzipkin/java:11.0.21_p9 as install
 
 WORKDIR /code
 COPY --from=scratch /code .

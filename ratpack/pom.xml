@@ -14,13 +14,13 @@
   <packaging>jar</packaging>
 
   <name>brave-example-ratpack</name>
-  <description>Tracing Example: Ratpack/ Java 15</description>
+  <description>Tracing Example: Ratpack/ Java 17</description>
 
   <properties>
-    <jre.version>15</jre.version>
+    <jre.version>17</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
-    <ratpack.version>1.8.0</ratpack.version>
+    <ratpack.version>1.9.0</ratpack.version>
     <brave-ratpack.version>2.6.5</brave-ratpack.version>
   </properties>
 
@@ -29,6 +29,18 @@
       <groupId>io.ratpack</groupId>
       <artifactId>ratpack-guice</artifactId>
       <version>${ratpack.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.inject</groupId>
+          <artifactId>guice</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- Override for JRE 17 -->
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <version>5.1.0</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
