@@ -1,4 +1,4 @@
-## Tracing Example: Armeria/Kafka Clients and Streams/Java 15
+## Tracing Example: Armeria/Kafka Clients and Streams/Java 17
 
 Instead of client/server, this example implements a http->producer->streams->consumer flow.
 

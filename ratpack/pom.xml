@@ -14,10 +14,10 @@
   <packaging>jar</packaging>
 
   <name>brave-example-ratpack</name>
-  <description>Tracing Example: Ratpack/ Java 15</description>
+  <description>Tracing Example: Ratpack/ Java 17</description>
 
   <properties>
-    <jre.version>15</jre.version>
+    <jre.version>17</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
     <ratpack.version>1.8.0</ratpack.version>
