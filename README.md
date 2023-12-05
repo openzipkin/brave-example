@@ -21,7 +21,7 @@ this using Java commands or Docker.
 Once the services start, open http://localhost:8081/
 * This calls the backend (http://127.0.0.1:9000/api) and shows its result: a formatted date.
 
-Afterwards, you can view traces that went through the backend via http://127.0.0.1:9411/zipkin?serviceName=backend
+Afterward, you can view traces that went through the backend via http://127.0.0.1:9411/zipkin?serviceName=backend
 * This is a locally run zipkin service which keeps traces in memory
 
 ## Tips
