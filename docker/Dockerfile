@@ -2,7 +2,7 @@
 # non-root users and such as they are not intended to run in production anyway.
 
 # The image binaries this example builds are installed over
-ARG docker_parent_image=ghcr.io/openzipkin/java:17.0.9_p8-jre
+ARG docker_parent_image=ghcr.io/openzipkin/java:21.0.1_p12
 
 # We copy files from the context into a scratch container first to avoid a problem where docker and
 # docker-compose don't share layer hashes https://github.com/docker/compose/issues/883 normally.

@@ -14,10 +14,10 @@
   <packaging>jar</packaging>
 
   <name>brave-example-dropwizard</name>
-  <description>Tracing Example: Dropwizard/ Java 17</description>
+  <description>Tracing Example: Dropwizard/ Java 21</description>
 
   <properties>
-    <jre.version>17</jre.version>
+    <jre.version>21</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
     <!-- You don't have to add a dependency on Dropwizard because dropwizard-zipkin manages it -->

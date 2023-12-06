@@ -37,17 +37,17 @@ There are some interesting details that apply to all examples:
 Here are the example projects you can try:
 
 * [armeria](armeria) `BRAVE_EXAMPLE=armeria docker-compose up`
-  * Runtime: Armeria, SLF4J 1.7, JRE 17
+  * Runtime: Armeria, SLF4J 1.7, JRE 21
   * Trace Instrumentation: [Armeria](https://armeria.dev/), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](armeria/src/main/java/brave/example/HttpTracingFactory.java)
 
 * [armeria-kafka](armeria-kafka) `BRAVE_EXAMPLE=armeria-kafka docker-compose -f docker-compose.yml -f docker-compose-kafka.yml up`
-  * Runtime: Armeria, Kafka Clients and Streams 2.7, SLF4J 1.7, JRE 17
+  * Runtime: Armeria, Kafka Clients and Streams 2.7, SLF4J 1.7, JRE 21
   * Trace Instrumentation: [Armeria](https://armeria.dev/), [Kafka Clients](https://github.com/openzipkin/brave/tree/master/instrumentation/kafka-clients), [Kafka Streams](https://github.com/openzipkin/brave/tree/master/instrumentation/kafka-streams), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](armeria/src/main/java/brave/example/HttpTracingFactory.java)
 
 * [dropwizard](dropwizard) `BRAVE_EXAMPLE=dropwizard docker-compose up`
-  * Runtime: JaxRS 2, Jersey 2.31, Apache HttpClient 4.5, Jetty 9.4, SLF4J 1.7, JRE 17
+  * Runtime: JaxRS 2, Jersey 2.31, Apache HttpClient 4.5, Jetty 9.4, SLF4J 1.7, JRE 21
   * Trace Instrumentation: [Jersey Server](https://github.com/openzipkin/brave/tree/master/instrumentation/jersey-server), [Apache HttpClient](https://github.com/openzipkin/brave/tree/master/instrumentation/httpclient), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Dropwizard Zipkin](https://github.com/smoketurner/dropwizard-zipkin) [Java](dropwizard/src/main/java/brave/example/ExampleApplication.java) [Yaml](dropwizard/src/main/resources/server.yml)
 
@@ -57,17 +57,17 @@ Here are the example projects you can try:
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [XML](jersey2-cassandra3/src/main/webapp/WEB-INF/tracing.xml)
 
 * [netty4-grpc](netty4-grpc) `BRAVE_EXAMPLE=netty4-grpc docker-compose up`
-  * Runtime: Netty 4.1, Google gRPC 1.34  , SLF4J 1.7, JRE 17
+  * Runtime: Netty 4.1, Google gRPC 1.34  , SLF4J 1.7, JRE 21
   * Trace Instrumentation: [Netty Codec HTTP](https://github.com/openzipkin/brave/tree/master/instrumentation/netty-codec-http), [Google gRPC](https://github.com/openzipkin/brave/tree/master/instrumentation/grpc), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](netty4-grpc/src/main/java/brave/example/TracingConfiguration.java)
 
 * [ratpack](ratpack) `BRAVE_EXAMPLE=ratpack docker-compose up`
-  * Runtime: Ratpack 1.8, Guice 4, SLF4J 1.7, JRE 17
+  * Runtime: Ratpack 1.8, Guice 4, SLF4J 1.7, JRE 21
   * Trace Instrumentation: [Brave Ratpack](https://github.com/openzipkin-contrib/brave-ratpack)
   * Trace Configuration: [Brave Ratpack Guice](https://github.com/openzipkin-contrib/brave-ratpack) [Java](ratpack/src/main/java/brave/example/Backend.java)
 
 * [webflux5-sleuth](webflux5-sleuth) `BRAVE_EXAMPLE=webflux5-sleuth docker-compose up`
-  * Runtime: Spring 5.2, Reactor Netty 0.9, Spring Boot 2.3, Spring Cloud Sleuth 2.2, Log4J 2.13, JRE 17
+  * Runtime: Spring 5.2, Reactor Netty 0.9, Spring Boot 2.3, Spring Cloud Sleuth 2.2, Log4J 2.13, JRE 21
   * Trace Instrumentation: [WebFlux Server](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/TraceWebFilter.java), [WebFlux Client](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/client/TraceWebClientBeanPostProcessor.java), [Reactor Context](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/reactor/ScopePassingSpanSubscriber.java), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Spring Cloud Sleuth](https://github.com/spring-cloud/spring-cloud-sleuth/tree/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/autoconfig) [Properties](webflux5-sleuth/src/main/resources/application.properties)
 

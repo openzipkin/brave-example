@@ -14,10 +14,10 @@
   <packaging>jar</packaging>
 
   <name>brave-example-ratpack</name>
-  <description>Tracing Example: Ratpack/ Java 17</description>
+  <description>Tracing Example: Ratpack/ Java 21</description>
 
   <properties>
-    <jre.version>17</jre.version>
+    <jre.version>21</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
     <ratpack.version>1.9.0</ratpack.version>
@@ -36,7 +36,7 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- Override for JRE 17 -->
+    <!-- Override for JRE 21 -->
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>

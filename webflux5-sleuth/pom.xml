@@ -13,10 +13,10 @@
   <packaging>jar</packaging>
 
   <name>brave-example-webflux5-sleuth</name>
-  <description>Tracing Example: Spring 5.2, Reactor Netty 0.9, Spring Boot 2.3, Spring Cloud Sleuth 2.2, Log4J 2.13, JRE 17</description>
+  <description>Tracing Example: Spring 5.2, Reactor Netty 0.9, Spring Boot 2.3, Spring Cloud Sleuth 2.2, Log4J 2.13, JRE 21</description>
 
   <properties>
-    <jre.version>17</jre.version>
+    <jre.version>21</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
     <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
