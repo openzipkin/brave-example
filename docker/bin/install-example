@@ -67,7 +67,6 @@ cp -p /code/build-bin/docker/docker-healthcheck .
 # Make any platform-specific revisions
 case ${version} in
   *-jetty ) /code/docker/bin/post-install-example-jetty;;
-  dropwizard ) /code/docker/bin/post-install-example-dropwizard;;
   # Ratpack system properties must be prefixed with "ratpack."
   ratpack ) sed -i 's/-D/-Dratpack./g' start-frontend start-backend;;
   *-cassandra3 ) /code/docker/bin/post-install-example-cassandra;;
