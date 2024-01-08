@@ -53,6 +53,13 @@
       <artifactId>spring-cloud-starter-zipkin</artifactId>
       <version>${sleuth.version}</version>
     </dependency>
+
+    <!-- Needed for ZipkinRestTemplateSenderConfiguration: BytesMessageEncoder
+         See https://github.com/spring-cloud/spring-cloud-sleuth/pull/2335/files -->
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-reporter</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
