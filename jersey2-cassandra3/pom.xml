@@ -21,15 +21,14 @@
     <maven.compiler.release>8</maven.compiler.release>
 
     <!-- Use a container that doesn't use Netty. -->
-    <jersey.version>2.33</jersey.version>
-    <spring.version>4.3.29.RELEASE</spring.version>
+    <jersey.version>2.41</jersey.version>
+    <spring.version>4.3.30.RELEASE</spring.version>
 
-    <cassandra.version>3.11.9</cassandra.version>
-    <!-- Use the cassandra-driver-core version bundled in cassandra to not conflict with Netty. -->
-    <cassandra-driver-core.version>3.0.1</cassandra-driver-core.version>
+    <cassandra.version>4.1.3</cassandra.version>
+    <cassandra-driver-core.version>3.11.2</cassandra-driver-core.version>
 
     <!-- https://github.com/openzipkin/brave-cassandra -->
-    <brave-cassandra.version>0.11.1</brave-cassandra.version>
+    <brave-cassandra.version>0.13.0</brave-cassandra.version>
   </properties>
 
   <dependencies>

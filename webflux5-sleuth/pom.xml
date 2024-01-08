@@ -21,6 +21,7 @@
 
     <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
     <sleuth.version>2.2.6.RELEASE</sleuth.version>
+    <zipkin-reporter.version>${old-zipkin-reporter.version}</zipkin-reporter.version>
   </properties>
 
   <dependencyManagement>
@@ -52,6 +53,13 @@
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-zipkin</artifactId>
       <version>${sleuth.version}</version>
+    </dependency>
+
+    <!-- Needed for ZipkinRestTemplateSenderConfiguration: BytesMessageEncoder
+         See https://github.com/spring-cloud/spring-cloud-sleuth/pull/2335/files -->
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-reporter</artifactId>
     </dependency>
   </dependencies>
 

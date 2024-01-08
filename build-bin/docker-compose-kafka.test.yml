@@ -5,7 +5,7 @@ version: "2.4"
 services:
   sut:
     container_name: sut
-    image: ghcr.io/openzipkin/alpine:3.18.5
+    image: ghcr.io/openzipkin/alpine:3.19.0
     entrypoint: /bin/sh
     # Keep the container running until HEALTHCHECK passes
     command: "-c \"sleep 5m\""
@@ -18,7 +18,7 @@ services:
 
   get_frontend:
     container_name: get_frontend
-    image: ghcr.io/openzipkin/alpine:3.18.5
+    image: ghcr.io/openzipkin/alpine:3.19.0
     entrypoint: /bin/sh
     # Pass a trace header with a constant trace ID, so that we know what to look for later
     command: "-c \"wget -qO- --header 'b3: cafebabecafebabe-cafebabecafebabe-1' http://frontend:8081\""

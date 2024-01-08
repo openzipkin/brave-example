@@ -53,7 +53,7 @@ public final class Frontend {
     String contactPointString = System.getProperty("backend.contactPoint", "127.0.0.1:9042");
     HostAndPort parsed = HostAndPort.fromString(contactPointString).withDefaultPort(9042);
     Cluster cluster = Cluster.builder()
-        .addContactPointsWithPorts(new InetSocketAddress(parsed.getHostText(), parsed.getPort()))
+        .addContactPointsWithPorts(new InetSocketAddress(parsed.getHost(), parsed.getPort()))
         .build();
     Runtime.getRuntime().addShutdownHook(new Thread(cluster::close));
 
