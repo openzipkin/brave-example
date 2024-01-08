@@ -21,6 +21,7 @@
 
     <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
     <sleuth.version>2.2.6.RELEASE</sleuth.version>
+    <zipkin-reporter.version>${old-zipkin-reporter.version}</zipkin-reporter.version>
   </properties>
 
   <dependencyManagement>

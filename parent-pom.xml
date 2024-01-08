@@ -34,6 +34,8 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <brave.version>5.18.0</brave.version>
+    <old-zipkin-reporter.version>2.17.2</old-zipkin-reporter.version>
+    <zipkin-reporter.version>3.0.0</zipkin-reporter.version>
 
     <!-- The JRE used in Docker images can be higher than ${maven.compiler.release}. -->
     <jre.version>SET MANUALLY IN PROJECTS</jre.version>
@@ -54,16 +56,18 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>io.zipkin.brave</groupId>
-        <artifactId>brave-bom</artifactId>
-        <version>${brave.version}</version>
+        <groupId>io.zipkin.reporter2</groupId>
+        <artifactId>zipkin-reporter-bom</artifactId>
+        <version>${zipkin-reporter.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>io.zipkin.brave</groupId>
-        <artifactId>brave</artifactId>
+        <artifactId>brave-bom</artifactId>
         <version>${brave.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
