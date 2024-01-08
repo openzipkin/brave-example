@@ -56,11 +56,6 @@ Here are the example projects you can try:
   * Trace Instrumentation: [Netty Codec HTTP](https://github.com/openzipkin/brave/tree/master/instrumentation/netty-codec-http), [Google gRPC](https://github.com/openzipkin/brave/tree/master/instrumentation/grpc), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](netty4-grpc/src/main/java/brave/example/TracingConfiguration.java)
 
-* [ratpack](ratpack) `BRAVE_EXAMPLE=ratpack docker-compose up`
-  * Runtime: Ratpack 1.8, Guice 4, SLF4J 1.7, JRE 21
-  * Trace Instrumentation: [Brave Ratpack](https://github.com/openzipkin-contrib/brave-ratpack)
-  * Trace Configuration: [Brave Ratpack Guice](https://github.com/openzipkin-contrib/brave-ratpack) [Java](ratpack/src/main/java/brave/example/Backend.java)
-
 * [webflux5-sleuth](webflux5-sleuth) `BRAVE_EXAMPLE=webflux5-sleuth docker-compose up`
   * Runtime: Spring 5.2, Reactor Netty 0.9, Spring Boot 2.3, Spring Cloud Sleuth 2.2, Log4J 2.13, JRE 21
   * Trace Instrumentation: [WebFlux Server](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/TraceWebFilter.java), [WebFlux Client](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/client/TraceWebClientBeanPostProcessor.java), [Reactor Context](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/reactor/ScopePassingSpanSubscriber.java), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
