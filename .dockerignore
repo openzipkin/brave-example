@@ -11,7 +11,6 @@
 # Allow on-demand "mvn package".
 !armeria/src/main/**
 !armeria-kafka/src/main/**
-!dropwizard/src/main/**
 !jersey2-cassandra3/src/main/**
 !netty4-grpc/src/main/**
 !ratpack/src/main/**
