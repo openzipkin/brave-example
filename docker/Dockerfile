@@ -17,7 +17,7 @@ FROM ghcr.io/openzipkin/java:11.0.21_p9 as install
 WORKDIR /code
 COPY --from=scratch /code .
 
-# version of the project, matching /code/$version/pom.xml. ex armeria or ratpack
+# version of the project, matching /code/$version/pom.xml. ex armeria or netty4-grpc
 ARG version=armeria
 
 # Build the project. This results in:
