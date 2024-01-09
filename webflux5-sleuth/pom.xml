@@ -24,9 +24,6 @@
     <!-- Sleuth does not yet implement PropagationFactory.get()
          https://github.com/spring-cloud/spring-cloud-sleuth/pull/2335 -->
     <brave.version>5.17.1</brave.version>
-    <!-- Sleuth defines and exports zipkin reporter 2 types, so is rev-locked.
-         https://github.com/spring-cloud/spring-cloud-sleuth/pull/2335 -->
-    <zipkin-reporter.version>2.17.2</zipkin-reporter.version>
   </properties>
 
   <dependencyManagement>
