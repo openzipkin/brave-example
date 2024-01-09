@@ -20,7 +20,6 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.Produced;
 
 public final class Backend {
 
@@ -36,8 +35,8 @@ public final class Backend {
 
     StreamsBuilder builder = new StreamsBuilder();
     builder.stream("input", Consumed.with(Serdes.String(), Serdes.String()))
-        .transformValues(tracing.kafkaStreamsTracing.mapValues("mapping", s -> s + ". Thanks!"))
-        .to("output", Produced.with(Serdes.String(), Serdes.String()));
+        .processValues(tracing.kafkaStreamsTracing.processValues("mapping",
+            () -> r -> r.withValue(r.value() + ". Thanks!")));
 
     KafkaStreams kafkaStreams =
         tracing.kafkaStreamsTracing.kafkaStreams(builder.build(), streamsConfig);
