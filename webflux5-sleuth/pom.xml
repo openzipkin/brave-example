@@ -13,15 +13,20 @@
   <packaging>jar</packaging>
 
   <name>brave-example-webflux5-sleuth</name>
-  <description>Tracing Example: Spring 5.2, Reactor Netty 0.9, Spring Boot 2.3, Spring Cloud Sleuth 2.2, Log4J 2.13, JRE 21</description>
+  <description>Tracing Example: Spring 5.2, Reactor Netty 1.0, Spring Boot 2.6, Spring Cloud Sleuth 3.1, Log4J 2.17, JRE 21</description>
 
   <properties>
     <jre.version>21</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
-    <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
-    <sleuth.version>2.2.6.RELEASE</sleuth.version>
-    <zipkin-reporter.version>${old-zipkin-reporter.version}</zipkin-reporter.version>
+    <spring-boot.version>2.6.15</spring-boot.version>
+    <sleuth.version>3.1.10</sleuth.version>
+    <!-- Sleuth does not yet implement PropagationFactory.get()
+         https://github.com/spring-cloud/spring-cloud-sleuth/pull/2335 -->
+    <brave.version>5.17.1</brave.version>
+    <!-- Sleuth defines and exports zipkin reporter 2 types, so is rev-locked.
+         https://github.com/spring-cloud/spring-cloud-sleuth/pull/2335 -->
+    <zipkin-reporter.version>2.17.2</zipkin-reporter.version>
   </properties>
 
   <dependencyManagement>
@@ -46,17 +51,23 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
+      <version>${spring-boot.version}</version>
     </dependency>
 
     <!-- spring-cloud-starter-zipkin configures instrumentation including what's in Brave and their own. -->
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-zipkin</artifactId>
+      <artifactId>spring-cloud-starter-sleuth</artifactId>
+      <version>${sleuth.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-sleuth-zipkin</artifactId>
       <version>${sleuth.version}</version>
     </dependency>
 
     <!-- Needed for ZipkinRestTemplateSenderConfiguration: BytesMessageEncoder
-         See https://github.com/spring-cloud/spring-cloud-sleuth/pull/2335/files -->
+         See https://github.com/spring-cloud/spring-cloud-sleuth/pull/2335 -->
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
       <artifactId>zipkin-reporter</artifactId>
