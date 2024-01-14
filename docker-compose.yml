@@ -1,6 +1,5 @@
-# Format version 2.1 was introduced with Docker Compose v1.9
-# We need Docker Compose v1.9+ for unset variable interpolation
-version: "2.1"
+# permit depends_on/condition: service_healthy
+version: "2.4"
 
 # BRAVE_EXAMPLE choices are listed here https://github.com/openzipkin/brave-example#example-projects
 
@@ -16,7 +15,7 @@ services:
       backend:
         condition: service_healthy
       zipkin:
-        condition: service_started
+        condition: service_healthy
   # Serves the /api endpoint the frontend uses
   backend:
     container_name: backend
@@ -24,7 +23,7 @@ services:
     entrypoint: start-backend
     depends_on:
       zipkin:
-        condition: service_started
+        condition: service_healthy
   # View traces at http://127.0.0.1:9411/zipkin
   zipkin:
     image: ghcr.io/openzipkin/zipkin-slim
