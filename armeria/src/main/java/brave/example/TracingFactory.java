@@ -1,5 +1,7 @@
 package brave.example;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import brave.Tracing;
 import brave.baggage.BaggageField;
 import brave.baggage.BaggagePropagation;
@@ -11,17 +13,20 @@ import brave.propagation.B3Propagation;
 import brave.propagation.CurrentTraceContext;
 import brave.propagation.CurrentTraceContext.ScopeDecorator;
 import brave.propagation.Propagation;
+import com.linecorp.armeria.client.WebClient;
+import com.linecorp.armeria.client.eureka.EurekaEndpointGroup;
+import com.linecorp.armeria.common.SessionProtocol;
 import com.linecorp.armeria.common.brave.RequestContextCurrentTraceContext;
+import com.linecorp.armeria.common.logging.RequestLogLevelMapper;
 import java.io.IOException;
-import java.util.logging.Logger;
-import zipkin2.reporter.Sender;
+import zipkin2.reporter.BytesMessageSender;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
-import zipkin2.reporter.urlconnection.URLConnectionSender;
 
 final class HttpTracingFactory {
+  static final Logger LOGGER = LoggerFactory.getLogger(HttpTracingFactory.class);
   static final BaggageField USER_NAME = BaggageField.create("userName");
 
-  /** Decides how to name and tag spans. By default they are named the same as the http method. */
+  /** Decides how to name and tag spans. By default, they are named the same as the http method. */
   static HttpTracing create(String serviceName) {
     return HttpTracing.create(tracing((System.getProperty("brave.localServiceName", serviceName))));
   }
@@ -61,13 +66,24 @@ final class HttpTracingFactory {
   }
 
   /** Configuration for how to send spans to Zipkin */
-  static Sender sender() {
-    return URLConnectionSender.create(
-        System.getProperty("zipkin.baseUrl", "http://127.0.0.1:9411") + "/api/v2/spans");
+  static BytesMessageSender sender() {
+    String postPath = "/api/v2/spans";
+    String eurekaUri = System.getenv("EUREKA_SERVICE_URL");
+    if (eurekaUri != null && !eurekaUri.isEmpty()) {
+      EurekaEndpointGroup zipkin =
+          EurekaEndpointGroup.builder(eurekaUri).appName("zipkin").build();
+      LOGGER.info("Using eureka to discover zipkin: {}", eurekaUri);
+      Runtime.getRuntime().addShutdownHook(new Thread(zipkin::close));
+      return new WebClientSender(WebClient.of(SessionProtocol.H2C, zipkin, postPath));
+    }
+    String zipkinUri =
+        System.getProperty("zipkin.baseUrl", "http://127.0.0.1:9411") + postPath;
+    LOGGER.info("Using zipkin URI: {}", zipkinUri);
+    return new WebClientSender(WebClient.of(zipkinUri));
   }
 
   /** Configuration for how to buffer spans into messages for Zipkin */
-  static AsyncZipkinSpanHandler spanHandler(Sender sender) {
+  static AsyncZipkinSpanHandler spanHandler(BytesMessageSender sender) {
     final AsyncZipkinSpanHandler spanHandler = AsyncZipkinSpanHandler.create(sender);
 
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -75,7 +91,7 @@ final class HttpTracingFactory {
       try {
         sender.close(); // Release any network resources used to send spans
       } catch (IOException e) {
-        Logger.getAnonymousLogger().warning("error closing trace sender: " + e.getMessage());
+        LOGGER.warn("error closing trace sender: " + e.getMessage());
       }
     }));
 

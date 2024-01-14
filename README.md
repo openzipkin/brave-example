@@ -40,6 +40,8 @@ Here are the example projects you can try:
   * Runtime: Armeria, SLF4J 1.7, JRE 21
   * Trace Instrumentation: [Armeria](https://armeria.dev/), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](armeria/src/main/java/brave/example/HttpTracingFactory.java)
+  * You can also use Eureka discovery like this:
+    * `BRAVE_EXAMPLE=armeria docker-compose -f docker-compose.yml -f docker-compose-eureka.yml up`
 
 * [armeria-kafka](armeria-kafka) `BRAVE_EXAMPLE=armeria-kafka docker-compose -f docker-compose.yml -f docker-compose-kafka.yml up`
   * Runtime: Armeria, Kafka Clients and Streams 2.7, SLF4J 1.7, JRE 21
