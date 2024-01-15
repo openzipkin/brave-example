@@ -20,7 +20,7 @@ import io.grpc.ServerInterceptor;
 import io.netty.channel.ChannelHandler;
 import java.io.IOException;
 import java.util.logging.Logger;
-import zipkin2.reporter.Sender;
+import zipkin2.reporter.BytesMessageSender;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 import zipkin2.reporter.urlconnection.URLConnectionSender;
 
@@ -94,13 +94,13 @@ final class TracingConfiguration {
     }
 
     /** Configuration for how to send spans to Zipkin */
-    static Sender sender() {
+    static BytesMessageSender sender() {
       return URLConnectionSender.create(
           System.getProperty("zipkin.baseUrl", "http://127.0.0.1:9411") + "/api/v2/spans");
     }
 
     /** Configuration for how to buffer spans into messages for Zipkin */
-    static AsyncZipkinSpanHandler spanHandler(Sender sender) {
+    static AsyncZipkinSpanHandler spanHandler(BytesMessageSender sender) {
       final AsyncZipkinSpanHandler spanHandler = AsyncZipkinSpanHandler.create(sender);
 
       Runtime.getRuntime().addShutdownHook(new Thread(() -> {

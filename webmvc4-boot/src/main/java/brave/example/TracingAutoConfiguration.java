@@ -28,7 +28,7 @@ import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import zipkin2.reporter.Sender;
+import zipkin2.reporter.BytesMessageSender;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 
@@ -60,13 +60,13 @@ public class TracingAutoConfiguration {
   }
 
   /** Configuration for how to send spans to Zipkin */
-  @Bean Sender sender(
+  @Bean BytesMessageSender sender(
       @Value("${zipkin.baseUrl:http://127.0.0.1:9411}/api/v2/spans") String zipkinEndpoint) {
     return OkHttpSender.create(zipkinEndpoint);
   }
 
   /** Configuration for how to buffer spans into messages for Zipkin */
-  @Bean AsyncZipkinSpanHandler zipkinSpanHandler(Sender sender) {
+  @Bean AsyncZipkinSpanHandler zipkinSpanHandler(BytesMessageSender sender) {
     return AsyncZipkinSpanHandler.create(sender);
   }
 
