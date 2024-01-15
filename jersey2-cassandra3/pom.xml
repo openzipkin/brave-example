@@ -14,7 +14,7 @@
   <packaging>jar</packaging>
 
   <name>brave-example-jersey2-cassandra3</name>
-  <description>Tracing Example: Jersey 2/DataStax Java Driver 3.10/Apache Cassandra 3.11/JRE 8</description>
+  <description>Tracing Example: Jersey 2/DataStax Java Driver 3/Apache Cassandra 4/JRE 8</description>
 
   <properties>
     <jre.version>8</jre.version>
@@ -22,13 +22,13 @@
 
     <!-- Use a container that doesn't use Netty. -->
     <jersey.version>2.41</jersey.version>
-    <spring.version>4.3.30.RELEASE</spring.version>
+    <spring.version>5.3.31</spring.version>
 
     <cassandra.version>4.1.3</cassandra.version>
     <cassandra-driver-core.version>3.11.2</cassandra-driver-core.version>
 
     <!-- https://github.com/openzipkin/brave-cassandra -->
-    <brave-cassandra.version>0.13.0</brave-cassandra.version>
+    <brave-cassandra.version>0.13.1</brave-cassandra.version>
   </properties>
 
   <dependencies>

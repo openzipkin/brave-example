@@ -6,7 +6,7 @@ import org.apache.cassandra.service.CassandraDaemon;
 
 /**
  * We construct arguments to {@link CassandraDaemon} in the typically named entrypoint class for a
- * couple reasons. One is to keep examples decoupled from implementation details. Another is that
+ * couple of reasons. One is to keep examples decoupled from implementation details. Another is that
  * this allows someone to run this in their IDE easily, without needing to know special knowledge
  * about Cassandra. For example set a debugger break point in {@link Tracing}, if they want to see
  * what's going on.
