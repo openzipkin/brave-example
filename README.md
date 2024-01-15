@@ -49,7 +49,7 @@ Here are the example projects you can try:
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](armeria/src/main/java/brave/example/HttpTracingFactory.java)
 
 * [jersey2-cassandra3](jersey2-cassandra3) `BRAVE_EXAMPLE=jersey2-cassandra3 docker-compose up`
-  * Runtime: JaxRS 2, Jersey 2.32, DataStax Java Driver 3.0, Apache Cassandra 3.11, SLF4J 1.7, JRE 8
+  * Runtime: JaxRS 2, Jersey 2, DataStax Java Driver 3, Apache Cassandra 4, SLF4J 1, JRE 8
   * Trace Instrumentation: [Jersey Server](https://github.com/openzipkin/brave/tree/master/instrumentation/jersey-server), [DataStax Java Driver](https://github.com/openzipkin/brave-cassandra/tree/master/cassandra-driver), [Apache Cassandra](https://github.com/openzipkin/brave-cassandra/tree/master/cassandra), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [XML](jersey2-cassandra3/src/main/webapp/WEB-INF/tracing.xml)
 
