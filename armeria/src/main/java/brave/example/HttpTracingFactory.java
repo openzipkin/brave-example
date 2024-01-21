@@ -1,7 +1,5 @@
 package brave.example;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import brave.Tracing;
 import brave.baggage.BaggageField;
 import brave.baggage.BaggagePropagation;
@@ -15,10 +13,15 @@ import brave.propagation.CurrentTraceContext.ScopeDecorator;
 import brave.propagation.Propagation;
 import com.linecorp.armeria.client.WebClient;
 import com.linecorp.armeria.client.eureka.EurekaEndpointGroup;
+import com.linecorp.armeria.client.eureka.EurekaEndpointGroupBuilder;
 import com.linecorp.armeria.common.SessionProtocol;
+import com.linecorp.armeria.common.auth.BasicToken;
 import com.linecorp.armeria.common.brave.RequestContextCurrentTraceContext;
-import com.linecorp.armeria.common.logging.RequestLogLevelMapper;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import zipkin2.reporter.BytesMessageSender;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 
@@ -67,19 +70,41 @@ final class HttpTracingFactory {
 
   /** Configuration for how to send spans to Zipkin */
   static BytesMessageSender sender() {
-    String postPath = "/api/v2/spans";
+    String postZipkinSpans = "/api/v2/spans";
     String eurekaUri = System.getenv("EUREKA_SERVICE_URL");
     if (eurekaUri != null && !eurekaUri.isEmpty()) {
-      EurekaEndpointGroup zipkin =
-          EurekaEndpointGroup.builder(eurekaUri).appName("zipkin").build();
-      LOGGER.info("Using eureka to discover zipkin: {}", eurekaUri);
+      URI serviceUrl = URI.create(eurekaUri);
+      BasicToken auth = null;
+      if (serviceUrl.getUserInfo() != null) {
+        LOGGER.info("Using eureka authentication");
+        String[] ui = serviceUrl.getUserInfo().split(":");
+        if (ui.length == 2) {
+          auth = BasicToken.ofBasic(ui[0], ui[1]);
+        }
+        serviceUrl = stripBaseUrl(serviceUrl);
+      }
+
+      EurekaEndpointGroupBuilder eb = EurekaEndpointGroup.builder(serviceUrl).appName("zipkin");
+      if (auth != null) eb.auth(auth);
+      EurekaEndpointGroup zipkin = eb.build();
+      LOGGER.info("Using eureka to discover zipkin: {}", serviceUrl);
       Runtime.getRuntime().addShutdownHook(new Thread(zipkin::close));
-      return new WebClientSender(WebClient.of(SessionProtocol.H2C, zipkin, postPath));
+      return new WebClientSender(WebClient.of(SessionProtocol.H2C, zipkin, postZipkinSpans));
     }
     String zipkinUri =
-        System.getProperty("zipkin.baseUrl", "http://127.0.0.1:9411") + postPath;
+        System.getProperty("zipkin.baseUrl", "http://127.0.0.1:9411") + postZipkinSpans;
     LOGGER.info("Using zipkin URI: {}", zipkinUri);
     return new WebClientSender(WebClient.of(zipkinUri));
+  }
+
+  // Strip the credentials and any invalid query or fragment from the URI
+  static URI stripBaseUrl(URI baseUrl) {
+    try {
+      return new URI(baseUrl.getScheme(), null, baseUrl.getHost(), baseUrl.getPort(),
+          baseUrl.getPath(), null, null);
+    } catch (URISyntaxException e) {
+      throw new IllegalArgumentException(e);
+    }
   }
 
   /** Configuration for how to buffer spans into messages for Zipkin */
