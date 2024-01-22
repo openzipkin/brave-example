@@ -97,7 +97,9 @@ final class HttpTracingFactory {
     return new WebClientSender(WebClient.of(zipkinUri));
   }
 
-  // Strip the credentials and any invalid query or fragment from the URI
+  // Strip the credentials and any invalid query or fragment from the URI:
+  // The Eureka API doesn't define any global query params or fragment.
+  // See https://github.com/Netflix/eureka/wiki/Eureka-REST-operations
   static URI stripBaseUrl(URI baseUrl) {
     try {
       return new URI(baseUrl.getScheme(), null, baseUrl.getHost(), baseUrl.getPort(),
