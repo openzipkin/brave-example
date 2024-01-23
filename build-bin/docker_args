@@ -8,7 +8,7 @@ else
   exit 1
 fi
 
-JAVA_VERSION=${JAVA_VERSION:-21.0.1_p12}
+JAVA_VERSION=${JAVA_VERSION:-21.0.2_p13}
 # DOCKER_ARCHS to eventually push to the registry
 DOCKER_ARCHS="amd64 arm64"
 
@@ -27,13 +27,13 @@ case "${JRE_VERSION}" in
     DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:8.392.08-jre
     ;;
   11 )
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:11.0.21_p9-jre
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:11.0.22_p7-jre
     ;;
   17 )
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:17.0.9_p8-jre
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:17.0.10_p7-jre
     ;;
   21 )
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:21.0.1_p12-jre
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:21.0.2_p13-jre
     ;;
   * )
     echo "Invalid JRE_VERSION: ${JRE_VERSION}"
