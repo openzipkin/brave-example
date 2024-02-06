@@ -1,0 +1,37 @@
+# yamllint --format github .github/workflows/test.yml
+---
+name: test webflux6-micrometer
+
+on:
+  # We deploy non-tagged pushes to master relevant for this project. We can't opt out of
+  # documentation-only commits because GH actions does not permit paths and paths-ignore.
+  pull_request:
+    branches: master
+    paths:
+      - "build-bin/**"
+      - "docker/**"
+      - "webflux6-micrometer/**"
+      - ".github/workflows/test-webflux6-micrometer.yaml"
+      - "parent-pom.xml"
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04  # newest available distribution, aka jellyfish
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ./m2repository  # Shared with the Docker build context via .dockerignore
+          key: ${{ runner.os }}-webflux6-micrometer-maven-${{ hashFiles('parent-pom.xml', 'webflux6-micrometer/pom.xml') }}
+          restore-keys: ${{ runner.os }}-webflux6-micrometer-maven-
+      # Don't attempt to cache Docker. Sensitive information can be stolen
+      # via forks, and login session ends up in ~/.docker. This is ok because
+      # we publish DOCKER_PARENT_IMAGE to ghcr.io, hence local to the runner.
+      - name: Test webflux6-micrometer
+        run: |
+          build-bin/configure_test webflux6-micrometer &&
+          build-bin/test webflux6-micrometer

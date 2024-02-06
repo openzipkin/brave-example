@@ -45,6 +45,14 @@ if [ -n "${DOCKER_TARGET}" ]; then
   docker_args="${docker_args} --target ${DOCKER_TARGET}"
 fi
 
+# When non-empty, becomes the layer that builds the maven projects.
+# e.g. ghcr.io/openzipkin/java:11.0.22_p7
+#
+# This must include maven and a full JDK.
+if [ -n "${DOCKER_BUILD_IMAGE}" ]; then
+  docker_args="${docker_args} --build-arg docker_build_image=${DOCKER_BUILD_IMAGE}"
+fi
+
 # When non-empty, becomes the base layer including tag appropriate for the image being built.
 # e.g. ghcr.io/openzipkin/java:21.0.2_p13-jre
 #
