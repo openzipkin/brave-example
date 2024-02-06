@@ -1,0 +1,42 @@
+management:
+  # only expose /health from actuator
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: ''
+      path-mapping:
+        health: /health
+  endpoint:
+    health:
+      enabled: true
+
+  tracing:
+    brave:
+      # Note: There is no property to bind ${brave.traceId128Bit:false}
+      span-joining-supported: ${brave.supportsJoin:true}
+    sampling:
+      # There doesn't seem to be a way to skip tracing /health by property
+      probability: 1.0
+    # Propagates a field named 'user_name' downstream
+    # Note: In Spring Boot 3 it is not yet possible to map 'user_name' to the
+    # correlation field 'userName'.
+    baggage:
+      remote-fields:
+        - user_name
+      correlation:
+        fields:
+          - user_name
+    propagation:
+      # Use b3 to mix with other examples without adding brave-propagation-w3c
+      type: b3_multi
+  zipkin:
+    tracing:
+      # Note: There is no property to bind ${brave.localServiceName:${spring.application.name}}
+      endpoint: ${zipkin.baseUrl:http://127.0.0.1:9411}/api/v2/spans
+
+logging:
+  level:
+    root: INFO
+  pattern:
+    # Note: Logs don't appear to have any correlation fields assigned.
+    level: "[%X{user_name}] [%X{traceId}/%X{spanId}] %-5p [%t] %C{2} - %m%n"

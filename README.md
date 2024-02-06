@@ -63,6 +63,10 @@ Here are the example projects you can try:
   * Trace Instrumentation: [WebFlux Server](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/TraceWebFilter.java), [WebFlux Client](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/client/TraceWebClientBeanPostProcessor.java), [Reactor Context](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/reactor/ScopePassingSpanSubscriber.java), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Spring Cloud Sleuth](https://github.com/spring-cloud/spring-cloud-sleuth/tree/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/autoconfig) [Properties](webflux5-sleuth/src/main/resources/application.properties)
 
+* [webflux6-micrometer](webflux6-micrometer) `BRAVE_EXAMPLE=webflux6-micrometer docker-compose up`
+  * Runtime: Spring 6, Reactor Netty, Spring Boot 3, Micrometer, Log4J 2, JRE 21
+  * Trace Configuration: [Spring Boot Actuator](https://github.com/spring-projects/spring-boot/blob/3.2.x/spring-boot-project/spring-boot-actuator-autoconfigure/src/main/java/org/springframework/boot/actuate/autoconfigure/tracing/TracingProperties.java)
+
 * [webmvc25-jetty](webmvc25-jetty) `BRAVE_EXAMPLE=webmvc25-jetty docker-compose up`
   * Runtime: Spring 2.5, Apache HttpClient 4.3, Servlet 2.5, Jetty 7.6, Log4J 1.2, JRE 6
   * Trace Instrumentation: [Servlet](https://github.com/openzipkin/brave/tree/master/instrumentation/servlet), [Spring MVC](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-webmvc), [Apache HttpClient](https://github.com/openzipkin/brave/tree/master/instrumentation/httpclient), [Log4J 1.2](https://github.com/openzipkin/brave/tree/master/context/log4j12)

@@ -1,0 +1,91 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.zipkin.brave.example</groupId>
+    <artifactId>brave-example-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../parent-pom.xml</relativePath>
+  </parent>
+
+  <artifactId>brave-example-webflux6-micrometer</artifactId>
+  <packaging>jar</packaging>
+
+  <name>brave-example-webflux6-micrometer</name>
+  <description>Tracing Example: Spring 6, Reactor Netty, Spring Boot 3, Micrometer, Log4J 2, JRE 21</description>
+
+  <properties>
+    <jre.version>21</jre.version>
+    <maven.compiler.release>17</maven.compiler.release>
+
+    <spring-boot.version>3.2.2</spring-boot.version>
+    <micrometer.version>1.2.2</micrometer.version>
+
+    <!-- pinned to old brave until this commit is released
+         https://github.com/micrometer-metrics/tracing/commit/d11d8039c73d901e44197b87103e66c392b6d7a8 -->
+    <brave.version>5.17.1</brave.version>
+    <zipkin-reporter.version>2.17.2</zipkin-reporter.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Configures Spring Boot with WebFlux SLF4J logging -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
+    <!-- Adds /actuator/health endpoint we re-map to /health used by our Docker HEALTHCHECK -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+      <version>${spring-boot.version}</version>
+    </dependency>
+
+    <!-- micrometer-tracing-bridge-brave configures instrumentation including what's in Brave and their own. -->
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-tracing-bridge-brave</artifactId>
+      <version>${micrometer.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-reporter-brave</artifactId>
+      <version>${zipkin-reporter.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring-boot.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- This can be overridden to brave.example.Frontend also -->
+          <mainClass>brave.example.Backend</mainClass>
+          <classifier>exec</classifier>
+          <executable>true</executable>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
