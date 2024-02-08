@@ -20,7 +20,7 @@
     <jre.version>21</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
-    <armeria.version>1.27.0</armeria.version>
+    <armeria.version>1.27.1</armeria.version>
     <kafka.version>3.6.1</kafka.version>
   </properties>
 
@@ -38,7 +38,7 @@
     <!-- Instruments the underlying Armeria requests -->
     <dependency>
       <groupId>com.linecorp.armeria</groupId>
-      <artifactId>armeria-brave</artifactId>
+      <artifactId>armeria-brave6</artifactId>
     </dependency>
     <!-- Instruments the underlying Kafka APIs -->
     <dependency>

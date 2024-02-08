@@ -20,7 +20,7 @@
     <jre.version>21</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
-    <armeria.version>1.27.0</armeria.version>
+    <armeria.version>1.27.1</armeria.version>
   </properties>
 
   <dependencies>
@@ -75,7 +75,7 @@
     <!-- Instruments the underlying Armeria requests -->
     <dependency>
       <groupId>com.linecorp.armeria</groupId>
-      <artifactId>armeria-brave</artifactId>
+      <artifactId>armeria-brave6</artifactId>
     </dependency>
     <!-- Optionally look up Zipkin with Eureka -->
     <dependency>
