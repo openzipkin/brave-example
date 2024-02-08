@@ -5,9 +5,8 @@ services:
   eureka:
     image: ghcr.io/openzipkin/zipkin-eureka
     container_name: eureka
-    # Uncomment to expose the eureka port for testing
-    #    ports:
-    #      - 8761:8761
+    ports:
+      - 8761:8761
 
   zipkin:
     extends:

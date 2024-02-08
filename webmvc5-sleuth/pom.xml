@@ -9,18 +9,22 @@
     <relativePath>../parent-pom.xml</relativePath>
   </parent>
 
-  <artifactId>brave-example-webflux5-sleuth</artifactId>
+  <artifactId>brave-example-webmvc5-sleuth</artifactId>
   <packaging>jar</packaging>
 
-  <name>brave-example-webflux5-sleuth</name>
-  <description>Tracing Example: Spring 5.2, Reactor Netty 1.0, Spring Boot 2.6, Spring Cloud Sleuth 3.1, Log4J 2.17, JRE 21</description>
+  <name>brave-example-webmvc5-sleuth</name>
+  <description>Tracing Example: Spring 5, Spring Boot 2, Spring Cloud Sleuth 3, SLF4J 1.7, JDK 8</description>
 
   <properties>
-    <jre.version>21</jre.version>
+    <!-- Choose JRE 8 to avoid module issues with Eureka, which needs org.ietf.jgss.GSSException -->
+    <jre.version>8</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
+    <!-- All versions should be the latest for Spring Boot 2.x -->
     <spring-boot.version>2.6.15</spring-boot.version>
     <sleuth.version>3.1.10</sleuth.version>
+    <spring-cloud-netflix.version>3.1.8</spring-cloud-netflix.version>
+
     <!-- Sleuth does not yet implement PropagationFactory.get()
          https://github.com/spring-cloud/spring-cloud-sleuth/pull/2335 -->
     <brave.version>5.17.1</brave.version>
@@ -32,6 +36,20 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>io.zipkin.reporter2</groupId>
+        <artifactId>zipkin-reporter-bom</artifactId>
+        <version>${zipkin-reporter.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.zipkin.brave</groupId>
+        <artifactId>brave-bom</artifactId>
+        <version>${brave.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring-boot.version}</version>
@@ -42,10 +60,10 @@
   </dependencyManagement>
 
   <dependencies>
-    <!-- Configures Spring Boot with WebFlux SLF4J logging -->
+    <!-- Configures Spring Boot with WebMvc and SLF4J logging -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-webflux</artifactId>
+      <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <!-- Adds /actuator/health endpoint we re-map to /health used by our Docker HEALTHCHECK -->
     <dependency>
@@ -66,11 +84,12 @@
       <version>${sleuth.version}</version>
     </dependency>
 
-    <!-- Needed for ZipkinRestTemplateSenderConfiguration: BytesMessageEncoder
-         See https://github.com/spring-cloud/spring-cloud-sleuth/pull/2335 -->
+    <!-- Note: Sleuth does not support zipkin discovery if the app is reactive.
+         See https://github.com/spring-cloud/spring-cloud-sleuth/issues/2339 -->
     <dependency>
-      <groupId>io.zipkin.reporter2</groupId>
-      <artifactId>zipkin-reporter</artifactId>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+      <version>${spring-cloud-netflix.version}</version>
     </dependency>
   </dependencies>
 
