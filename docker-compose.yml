@@ -7,7 +7,7 @@ services:
   # Generate traffic by hitting http://localhost:8081
   frontend:
     container_name: frontend
-    image: openzipkin/brave-example:${BRAVE_EXAMPLE:-armeria}
+    image: ghcr.io/openzipkin/brave-example:${BRAVE_EXAMPLE:-armeria}
     entrypoint: start-frontend
     ports:
       - 8081:8081
@@ -19,7 +19,7 @@ services:
   # Serves the /api endpoint the frontend uses
   backend:
     container_name: backend
-    image: openzipkin/brave-example:${BRAVE_EXAMPLE:-armeria}
+    image: ghcr.io/openzipkin/brave-example:${BRAVE_EXAMPLE:-armeria}
     entrypoint: start-backend
     depends_on:
       zipkin:
