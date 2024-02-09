@@ -13,7 +13,7 @@
 !armeria-kafka/src/main/**
 !jersey2-cassandra3/src/main/**
 !netty4-grpc/src/main/**
-!webflux5-sleuth/src/main/**
+!webmvc5-sleuth/src/main/**
 !webflux6-micrometer/src/main/**
 !webmvc3-jetty/src/main/**
 !webmvc4-boot/src/main/**
