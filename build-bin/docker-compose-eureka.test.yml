@@ -1,6 +1,8 @@
 # permit depends_on/condition: service_healthy
 version: '2.4'
 
+# This configures examples so that they use Eureka to discover the Zipkin
+# endpoint.
 services:
   sut:
     extends:
@@ -22,6 +24,8 @@ services:
     extends:
       file: docker-compose.base.yml
       service: frontend
+    environment:
+      - EUREKA_SERVICE_URL=http://testuser:testpass@eureka:8761/eureka/v2
     depends_on:
       backend:
         condition: service_healthy
@@ -30,13 +34,29 @@ services:
     extends:
       file: docker-compose.base.yml
       service: backend
+    environment:
+      - EUREKA_SERVICE_URL=http://testuser:testpass@eureka:8761/eureka/v2
     depends_on:
       zipkin:
+        condition: service_healthy
+      eureka:
         condition: service_healthy
 
   zipkin:
     extends:
       file: docker-compose.base.yml
       service: zipkin
+    environment:
+      - EUREKA_SERVICE_URL=http://testuser:testpass@eureka:8761/eureka/v2
+      - EUREKA_HOSTNAME=zipkin
+    depends_on:
+      eureka:
+        condition: service_healthy
 
+  eureka:
+    image: ghcr.io/openzipkin/zipkin-eureka
+    container_name: eureka
+    environment:
+      - EUREKA_USERNAME=testuser
+      - EUREKA_PASSWORD=testpass
 

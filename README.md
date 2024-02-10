@@ -58,6 +58,11 @@ Here are the example projects you can try:
   * Trace Instrumentation: [Netty Codec HTTP](https://github.com/openzipkin/brave/tree/master/instrumentation/netty-codec-http), [Google gRPC](https://github.com/openzipkin/brave/tree/master/instrumentation/grpc), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](netty4-grpc/src/main/java/brave/example/TracingConfiguration.java)
 
+* [webflux5-sleuth](webflux5-sleuth) `BRAVE_EXAMPLE=webflux5-sleuth docker-compose up`
+  * Runtime: Spring 5, Reactor Netty 0.9, Spring Boot 2.3, Spring Cloud Sleuth 2.2, Log4J 2.13, JRE 21
+  * Trace Instrumentation: [WebFlux Server](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/TraceWebFilter.java), [WebFlux Client](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/client/TraceWebClientBeanPostProcessor.java), [Reactor Context](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/reactor/ScopePassingSpanSubscriber.java), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
+  * Trace Configuration: [Spring Cloud Sleuth](https://github.com/spring-cloud/spring-cloud-sleuth/tree/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/autoconfig) [Properties](webflux5-sleuth/src/main/resources/application.properties)
+
 * [webflux6-micrometer](webflux6-micrometer) `BRAVE_EXAMPLE=webflux6-micrometer docker-compose up`
   * Runtime: Spring 6, Reactor Netty, Spring Boot 3, Micrometer, Log4J 2, JRE 21
   * Trace Configuration: [Spring Boot Actuator](https://github.com/spring-projects/spring-boot/blob/3.2.x/spring-boot-project/spring-boot-actuator-autoconfigure/src/main/java/org/springframework/boot/actuate/autoconfigure/tracing/TracingProperties.java)

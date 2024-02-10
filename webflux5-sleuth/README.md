@@ -1,7 +1,7 @@
 ## Tracing Example: Spring 5/Spring Boot 2/Spring Cloud Sleuth 3/SLF4J 1.7/JDK 8
 
 Instead of servlet, this uses Spring Boot 2 to create a self-contained
-application that runs Spring WebMvc 5 controllers.
+application that runs Spring WebFlux 5 controllers.
 
 * brave.example.Frontend and Backend: Rest controllers
 * brave.example.AppAutoConfiguration: Sets up the RestTemplate used in the Frontend.
@@ -15,7 +15,7 @@ instrumentation. This allowed end users to use properties for configuration
 instead of Java Config.
 
 In some cases, Sleuth has custom code that used Brave APIs. This example uses
-Sleuth-specific logic for instrumenting WebMVC and reporting spans to Zipkin. 
+Sleuth-specific logic for instrumenting WebFlux and reporting spans to Zipkin.
 
 ### Zipkin Reporter 2.x
 
