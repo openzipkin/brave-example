@@ -9,10 +9,10 @@
     <relativePath>../parent-pom.xml</relativePath>
   </parent>
 
-  <artifactId>brave-example-webmvc5-sleuth</artifactId>
+  <artifactId>brave-example-webflux5-sleuth</artifactId>
   <packaging>jar</packaging>
 
-  <name>brave-example-webmvc5-sleuth</name>
+  <name>brave-example-webflux5-sleuth</name>
   <description>Tracing Example: Spring 5, Spring Boot 2, Spring Cloud Sleuth 3, SLF4J 1.7, JDK 8</description>
 
   <properties>
@@ -26,7 +26,7 @@
     <spring-cloud-netflix.version>3.1.8</spring-cloud-netflix.version>
 
     <!-- Sleuth 3.x has its own reporters which pin zipkin-reporter 2.x types.
-         e.g. org.springframework.cloud.sleuth.zipkin2.RestTemplateSender -->
+         e.g. org.springframework.cloud.sleuth.zipkin2.WebClientSender -->
     <zipkin-reporter.version>2.17.2</zipkin-reporter.version>
   </properties>
 
@@ -43,10 +43,10 @@
   </dependencyManagement>
 
   <dependencies>
-    <!-- Configures Spring Boot with WebMvc and SLF4J logging -->
+    <!-- Configures Spring Boot with WebFlux and SLF4J logging -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
     </dependency>
     <!-- Adds /actuator/health endpoint we re-map to /health used by our Docker HEALTHCHECK -->
     <dependency>

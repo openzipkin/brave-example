@@ -1,0 +1,33 @@
+# permit depends_on/condition: service_healthy
+version: "2.4"
+
+# This is a base configuration *without depends-on* because docker-compose
+# officially doesn't support extending with depends-on even if some tools
+# allow it. See https://github.com/docker/compose/issues/7916
+services:
+  sut:
+    container_name: sut
+    image: ghcr.io/openzipkin/alpine:3.19.1
+    entrypoint: /bin/sh
+    # Keep the container running until HEALTHCHECK passes
+    command: "-c \"sleep 5m\""
+    healthcheck:
+      # Return 0 when we can read back our trace ID
+      test: wget -qO- --spider http://zipkin:9411/api/v2/trace/cafebabecafebabe
+  get_frontend:
+    container_name: get_frontend
+    image: ghcr.io/openzipkin/alpine:3.19.1
+    entrypoint: /bin/sh
+    # Pass a trace header with a constant trace ID, so that we know what to look for later
+    command: "-c \"wget -qO- --header 'b3: cafebabecafebabe-cafebabecafebabe-1' http://frontend:8081\""
+  frontend:
+    container_name: frontend
+    image: ${DOCKER_IMAGE}
+    entrypoint: start-frontend
+  backend:
+    container_name: backend
+    image: ${DOCKER_IMAGE}
+    entrypoint: start-backend
+  zipkin:
+    image: ghcr.io/openzipkin/zipkin-slim
+    container_name: zipkin
