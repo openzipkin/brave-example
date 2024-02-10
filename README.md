@@ -62,6 +62,8 @@ Here are the example projects you can try:
   * Runtime: Spring 5, Reactor Netty 0.9, Spring Boot 2.3, Spring Cloud Sleuth 2.2, Log4J 2.13, JRE 21
   * Trace Instrumentation: [WebFlux Server](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/TraceWebFilter.java), [WebFlux Client](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/web/client/TraceWebClientBeanPostProcessor.java), [Reactor Context](https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/instrument/reactor/ScopePassingSpanSubscriber.java), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Spring Cloud Sleuth](https://github.com/spring-cloud/spring-cloud-sleuth/tree/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/autoconfig) [Properties](webflux5-sleuth/src/main/resources/application.properties)
+  * You can also use Eureka discovery like this:
+    * `BRAVE_EXAMPLE=webflux5-sleuth docker-compose -f docker-compose.yml -f docker-compose-eureka.yml up`
 
 * [webflux6-micrometer](webflux6-micrometer) `BRAVE_EXAMPLE=webflux6-micrometer docker-compose up`
   * Runtime: Spring 6, Reactor Netty, Spring Boot 3, Micrometer, Log4J 2, JRE 21
