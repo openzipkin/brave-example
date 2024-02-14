@@ -15,7 +15,7 @@ build-bin/docker/docker_build ${docker_image} ${VERSION}
 docker_compose_file=build-bin/docker-compose.test.yml
 
 case ${VERSION} in
-  armeria|*sleuth* )
+  armeria|*sleuth*|*micrometer* )
     docker_compose_file=build-bin/docker-compose-eureka.test.yml
     ;;
   armeria-kafka )

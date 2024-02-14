@@ -1,6 +1,5 @@
 package brave.example;
 
-import brave.http.HttpTracing;
 import io.micrometer.observation.ObservationPredicate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +20,7 @@ public class CustomObservationConfiguration {
    * spring.sleuth.web.additional-skip-pattern=/health
    * </pre>
    *
-   * <p>Brave uses {@link HttpTracing#serverRequestSampler()} for server request sampling policy.
+   * <p>Brave uses {@code HttpTracing#serverRequestSampler()} for server request sampling policy.
    * Micrometer tracing bridges to Brave's core API, so it doesn't see or use the HTTP, Messaging or
    * RPC policies. Instead, it relies on its own type, {@link ObservationPredicate}, which applies
    * both to metrics and tracing.
