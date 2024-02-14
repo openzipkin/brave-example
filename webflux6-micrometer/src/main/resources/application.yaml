@@ -33,6 +33,14 @@ management:
     tracing:
       # Note: There is no property to bind ${brave.localServiceName:${spring.application.name}}
       endpoint: ${zipkin.baseUrl:http://127.0.0.1:9411}/api/v2/spans
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+spring:
+  cloud:
+    compatibilityVerifier:
+      enabled: false
 
 logging:
   level:
