@@ -9,14 +9,19 @@ import brave.context.slf4j.MDCScopeDecorator;
 import brave.http.HttpTracing;
 import brave.propagation.B3Propagation;
 import brave.propagation.CurrentTraceContext;
+import brave.propagation.CurrentTraceContext.Scope;
 import brave.propagation.CurrentTraceContext.ScopeDecorator;
 import brave.propagation.Propagation;
+import brave.propagation.TraceContext;
 import com.linecorp.armeria.client.WebClient;
 import com.linecorp.armeria.client.eureka.EurekaEndpointGroup;
 import com.linecorp.armeria.client.eureka.EurekaEndpointGroupBuilder;
 import com.linecorp.armeria.common.SessionProtocol;
 import com.linecorp.armeria.common.auth.BasicToken;
 import com.linecorp.armeria.common.brave.RequestContextCurrentTraceContext;
+import com.linecorp.armeria.internal.common.brave.TraceContextUtil;
+import com.linecorp.armeria.server.logging.AccessLogWriter;
+import com.linecorp.armeria.server.logging.LoggingService;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,6 +55,23 @@ final class HttpTracingFactory {
   static ScopeDecorator correlationScopeDecorator() {
     return MDCScopeDecorator.newBuilder()
         .add(CorrelationScopeConfig.SingleCorrelationField.create(USER_NAME)).build();
+  }
+
+  /**
+   * Unlike {@link LoggingService#newDecorator}, the trace context isn't yet integrated for
+   * {@link AccessLogWriter}. Put it into scope manually until this is done in Armeria.
+   */
+  static AccessLogWriter accessLogWriter(HttpTracing httpTracing, AccessLogWriter delegate) {
+    CurrentTraceContext current = httpTracing.tracing().currentTraceContext();
+    // Adrian isn't sure if this is really the best way, but you have to make the thread
+    // "context aware" to avoid log warnings.
+    return log -> log.context().makeContextAware(() -> {
+      TraceContext ctx = TraceContextUtil.traceContext(log.context());
+      try (Scope scope = current.maybeScope(ctx)) {
+        delegate.log(log);
+      }
+    }
+    ).run();
   }
 
   /** Propagates trace context between threads. */
