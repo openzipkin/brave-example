@@ -5,6 +5,7 @@ import com.linecorp.armeria.common.HttpResponse;
 import com.linecorp.armeria.server.Server;
 import com.linecorp.armeria.server.brave.BraveService;
 import com.linecorp.armeria.server.healthcheck.HealthCheckService;
+import com.linecorp.armeria.server.logging.AccessLogWriter;
 import com.linecorp.armeria.server.logging.LoggingService;
 import java.util.Date;
 
@@ -13,8 +14,12 @@ public final class Backend {
   public static void main(String[] args) {
     final HttpTracing httpTracing = HttpTracingFactory.create("backend");
 
+    final AccessLogWriter accessLogWriter =
+        HttpTracingFactory.accessLogWriter(httpTracing, AccessLogWriter.common());
+
     final Server server = Server.builder()
         .http(9000)
+        .accessLogWriter(accessLogWriter, true)
         .service("/health", HealthCheckService.builder().build())
         .service("/api", (ctx, req) -> {
           String response = new Date().toString();

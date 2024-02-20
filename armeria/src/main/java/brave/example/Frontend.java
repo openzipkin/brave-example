@@ -6,6 +6,7 @@ import com.linecorp.armeria.client.brave.BraveClient;
 import com.linecorp.armeria.server.Server;
 import com.linecorp.armeria.server.brave.BraveService;
 import com.linecorp.armeria.server.healthcheck.HealthCheckService;
+import com.linecorp.armeria.server.logging.AccessLogWriter;
 import com.linecorp.armeria.server.logging.LoggingService;
 
 public final class Frontend {
@@ -18,9 +19,13 @@ public final class Frontend {
             .decorator(BraveClient.newDecorator(httpTracing.clientOf("backend")))
             .build();
 
+    final AccessLogWriter accessLogWriter =
+        HttpTracingFactory.accessLogWriter(httpTracing, AccessLogWriter.common());
+
     final Server server =
         Server.builder()
             .http(8081)
+            .accessLogWriter(accessLogWriter, true)
             .service("/health", HealthCheckService.builder().build())
             .service("/", (ctx, req) -> backendClient.get(""))
             .decorator(BraveService.newDecorator(httpTracing))

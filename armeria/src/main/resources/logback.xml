@@ -8,7 +8,18 @@
     </encoder>
   </appender>
 
-  <logger name="com.linecorp.armeria" level="info"/>
+  <appender name="ACCESS" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>[%X{traceId}/%X{spanId}] %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="com.linecorp.armeria.logging.access" level="info" additivity="false">
+    <appender-ref ref="ACCESS"/>
+  </logger>
+
+  <logger name="com.linecorp.armeria" level="warn"/>
+  <logger name="com.linecorp.armeria.server.Server" level="info"/>
 
   <root level="info">
     <appender-ref ref="STDOUT" />
