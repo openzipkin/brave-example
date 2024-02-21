@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class Frontend {
-  static final Logger LOGGER = LoggerFactory.getLogger(HttpTracingFactory.class);
+  static final Logger LOGGER = LoggerFactory.getLogger(Frontend.class);
 
   public static void main(String[] args) {
     final HttpTracing httpTracing = HttpTracingFactory.create("frontend");

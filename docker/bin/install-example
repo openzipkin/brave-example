@@ -28,19 +28,18 @@ tee -a start-frontend start-backend <<-'EOF'
 export IP="$(hostname -i || echo '127.0.0.1')"
 EOF
 
-# Declare variables that expand variables set in this shell script/
-# These don't need to be exported as they are converted to java properties.
+# Declare variables that expand variables set in this shell script.
 cat >> start-frontend <<-EOF
-PORT=${frontend_port}
-EXAMPLE=${version}
-EXAMPLE_SERVICE=frontend
+export PORT=${frontend_port}
+export EXAMPLE=${version}
+export EXAMPLE_SERVICE=frontend
 DEFAULT_BACKEND_ENDPOINT=http://backend:${backend_port}/api
 EOF
 
 cat >> start-backend <<-EOF
-PORT=${backend_port}
-EXAMPLE=${version}
-EXAMPLE_SERVICE=backend
+export PORT=${backend_port}
+export EXAMPLE=${version}
+export EXAMPLE_SERVICE=backend
 EOF
 
 # Add common elements for Java applications.
