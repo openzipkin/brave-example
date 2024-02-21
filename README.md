@@ -89,12 +89,6 @@ Here are the example projects you can try:
   * Trace Instrumentation: [Servlet](https://github.com/openzipkin/brave/tree/master/instrumentation/servlet), [Spring MVC](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-webmvc), [Spring Web](https://github.com/openzipkin/brave/tree/master/instrumentation/spring-web), [OkHttp](https://github.com/openzipkin/brave/tree/master/instrumentation/okhttp3), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Spring Boot AutoConfiguration](webmvc4-boot/src/main/java/brave/example/TracingAutoConfiguration.java)
 
-* [webmvc5-sleuth](webmvc5-sleuth) `BRAVE_EXAMPLE=webmvc5-sleuth docker-compose up`
-  * Runtime: Spring 5, Spring Boot 2, Spring Cloud Sleuth 3, SLF4J 1.7, JDK 8
-  * Trace Configuration: [Spring Cloud Sleuth](https://github.com/spring-cloud/spring-cloud-sleuth/tree/3.1.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/autoconfig) [Properties](webmvc5-sleuth/src/main/resources/application.properties)
-  * You can also use Eureka discovery like this:
-    * `BRAVE_EXAMPLE=webmvc5-sleuth docker-compose -f docker-compose.yml -f docker-compose-eureka.yml up`
-
 ## Starting the services with Docker
 
 [Docker Compose](https://docs.docker.com/compose/) is the easiest way to start.
