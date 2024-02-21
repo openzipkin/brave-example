@@ -5,7 +5,7 @@ set -eux
 sed -i 's~JAVA_OPTS=~sed -i "s/127.0.0.1/$IP/g" classes/cassandra.yaml\n\nJAVA_OPTS=~' start-backend
 
 # Communication isn't HTTP
-sed -i 's~endpoint=http://\(.*\)/api~contactPoint=\1~' start-frontend
+sed -i 's~DEFAULT_BACKEND_ENDPOINT=http://\(.*\)/api~DEFAULT_BACKEND_ENDPOINT=\1~' start-frontend
 sed -i 's/HEALTHCHECK_KIND=http/HEALTHCHECK_KIND=tcp/g' start-backend
 
 # Cassandra needs more than 32m memory

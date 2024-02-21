@@ -50,7 +50,7 @@ public final class Frontend {
   }
 
   public static void main(String[] args) throws Exception {
-    String contactPointString = System.getProperty("backend.contactPoint", "127.0.0.1:9042");
+    String contactPointString = System.getProperty("backend.endpoint", "127.0.0.1:9042");
     HostAndPort parsed = HostAndPort.fromString(contactPointString).withDefaultPort(9042);
     Cluster cluster = Cluster.builder()
         .addContactPointsWithPorts(new InetSocketAddress(parsed.getHost(), parsed.getPort()))
