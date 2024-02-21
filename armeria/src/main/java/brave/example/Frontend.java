@@ -8,14 +8,21 @@ import com.linecorp.armeria.server.brave.BraveService;
 import com.linecorp.armeria.server.healthcheck.HealthCheckService;
 import com.linecorp.armeria.server.logging.AccessLogWriter;
 import com.linecorp.armeria.server.logging.LoggingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class Frontend {
+  static final Logger LOGGER = LoggerFactory.getLogger(HttpTracingFactory.class);
 
   public static void main(String[] args) {
     final HttpTracing httpTracing = HttpTracingFactory.create("frontend");
 
+    final String backendEndpoint =
+        System.getProperty("backend.endpoint", "http://127.0.0.1:9000/api");
+    LOGGER.info("Using backend endpoint: {}", backendEndpoint);
+
     final WebClient backendClient =
-        WebClient.builder(System.getProperty("backend.endpoint", "http://127.0.0.1:9000/api"))
+        WebClient.builder(backendEndpoint)
             .decorator(BraveClient.newDecorator(httpTracing.clientOf("backend")))
             .build();
 

@@ -28,19 +28,23 @@ tee -a start-frontend start-backend <<-'EOF'
 export IP="$(hostname -i || echo '127.0.0.1')"
 EOF
 
+# Declare variables that expand variables set in this shell script/
+# These don't need to be exported as they are converted to java properties.
 cat >> start-frontend <<-EOF
-export PORT=${frontend_port}
-export EXAMPLE=${version}
-export EXAMPLE_SERVICE=frontend
+PORT=${frontend_port}
+EXAMPLE=${version}
+EXAMPLE_SERVICE=frontend
+DEFAULT_BACKEND_ENDPOINT=http://backend:${backend_port}/api
 EOF
 
 cat >> start-backend <<-EOF
-export PORT=${backend_port}
-export EXAMPLE=${version}
-export EXAMPLE_SERVICE=backend
+PORT=${backend_port}
+EXAMPLE=${version}
+EXAMPLE_SERVICE=backend
 EOF
 
-# Add common elements for Java applications
+# Add common elements for Java applications.
+# HEALTHCHECK variables need to be exported as they are read via proc info.
 tee -a start-frontend start-backend <<-'EOF'
 export HEALTHCHECK_IP=${IP}
 export HEALTHCHECK_PORT=${PORT}
@@ -55,7 +59,8 @@ exec java ${JAVA_OPTS} -cp 'classes:lib/*' \
 -Dzipkin.baseUrl=${ZIPKIN_BASEURL:-http://zipkin:9411/} \
 EOF
 
-echo "-Dbackend.endpoint=http://backend:${backend_port}/api \\" >> start-frontend
+# Allow override of the backend endpoint, for a multi-container pod.
+echo '-Dbackend.endpoint=${BACKEND_ENDPOINT:-${DEFAULT_BACKEND_ENDPOINT}} \' >> start-frontend
 
 # Add the main class
 echo 'brave.example.Frontend "$@"' >> start-frontend
