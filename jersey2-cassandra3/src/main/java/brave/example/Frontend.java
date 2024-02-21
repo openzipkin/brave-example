@@ -15,10 +15,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.ext.RuntimeDelegate;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class Frontend {
+  static final Logger LOGGER = LoggerFactory.getLogger(Frontend.class);
+
   @Path("")
   public static class Resource {
     final Session session;
@@ -50,8 +54,10 @@ public final class Frontend {
   }
 
   public static void main(String[] args) throws Exception {
-    String contactPointString = System.getProperty("backend.contactPoint", "127.0.0.1:9042");
+    String contactPointString = System.getProperty("backend.endpoint", "127.0.0.1:9042");
     HostAndPort parsed = HostAndPort.fromString(contactPointString).withDefaultPort(9042);
+    LOGGER.info("Using contact point: {}", parsed);
+
     Cluster cluster = Cluster.builder()
         .addContactPointsWithPorts(new InetSocketAddress(parsed.getHost(), parsed.getPort()))
         .build();
