@@ -35,7 +35,7 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- temporary until netty includes https://github.com/netty/netty/pull/13724 -->
+    <!-- temporary until netty-4.1.108.Final -->
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
