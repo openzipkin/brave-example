@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 @EnableAutoConfiguration
 @RestController
+@Import(ObservationConfiguration.class)
 public class Backend {
 
   @GetMapping("/api")

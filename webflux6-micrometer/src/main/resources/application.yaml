@@ -15,7 +15,8 @@ management:
       # Note: There is no property to bind ${brave.traceId128Bit:false}
       span-joining-supported: ${brave.supportsJoin:true}
     sampling:
-      # There doesn't seem to be a way to skip tracing /health by property
+      # There doesn't seem to be a way to skip tracing /health by property,
+      # so we skip this manually via ObservationConfiguration.
       probability: 1.0
     # Propagates a field named 'user_name' downstream
     # Note: In Spring Boot 3 it is not yet possible to map 'user_name' to the
