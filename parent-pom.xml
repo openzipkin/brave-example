@@ -33,7 +33,7 @@
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <brave.version>6.0.0</brave.version>
+    <brave.version>6.0.2</brave.version>
     <zipkin-reporter.version>3.3.0</zipkin-reporter.version>
 
     <!-- The JRE used in Docker images can be higher than ${maven.compiler.release}. -->
