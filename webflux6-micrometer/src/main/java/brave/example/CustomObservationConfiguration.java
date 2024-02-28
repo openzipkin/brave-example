@@ -11,7 +11,7 @@ import org.springframework.http.server.reactive.observation.ServerRequestObserva
 // This type makes support easier as forks can make a diff off a working type */
 @Configuration
 // Not autoconfiguration as for some reason this doesn't apply when added to spring.factories
-public class ObservationConfiguration {
+public class CustomObservationConfiguration {
 
   /**
    * Sleuth used to have a property to skip HTTP patterns, but this hasn't been ported to the Spring

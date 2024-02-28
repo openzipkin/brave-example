@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 
 @EnableAutoConfiguration
 @RestController
-@Import(ObservationConfiguration.class)
+@Import(CustomObservationConfiguration.class)
 public class Frontend {
   final WebClient webClient;
 
