@@ -19,8 +19,8 @@
     <jre.version>21</jre.version>
     <maven.compiler.release>17</maven.compiler.release>
 
-    <spring-boot.version>3.3.0-M2</spring-boot.version>
-    <micrometer.version>1.3.0-M1</micrometer.version>
+    <spring-boot.version>3.3.0-RC1</spring-boot.version>
+    <micrometer.version>1.3.0</micrometer.version>
   </properties>
 
   <!-- Temporary until Spring boot 3.3.0 -->

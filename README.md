@@ -2,7 +2,7 @@
 This is an example app where two Java services collaborate on a request.
 
 Notably, these services send data to [Zipkin](https://zipkin.io/), a
-distributed tracing system. Zipkin allows you to see the how long the operation
+distributed tracing system. Zipkin allows you to see how long the operation
 took, as well how much time was spent in each service.
 
 Here's an example of what it looks like:
@@ -15,7 +15,7 @@ to send tracing data to a third service [Zipkin](https://zipkin.io/). [Brave](ht
 performs this function.
 
 # Running the example
-To setup the demo, you need to start Frontend, Backend and Zipkin. You can do
+To set up the demo, you need to start Frontend, Backend and Zipkin. You can do
 this using Java commands or Docker.
 
 Once the services start, open http://localhost:8081/
@@ -54,7 +54,7 @@ Here are the example projects you can try:
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [XML](jersey2-cassandra3/src/main/webapp/WEB-INF/tracing.xml)
 
 * [netty4-grpc](netty4-grpc) `BRAVE_EXAMPLE=netty4-grpc docker-compose up`
-  * Runtime: Netty 4.1, Google gRPC 1.34  , SLF4J 1.7, JRE 21
+  * Runtime: Netty 4.1, Google gRPC 1.63, SLF4J 1.7, JRE 21
   * Trace Instrumentation: [Netty Codec HTTP](https://github.com/openzipkin/brave/tree/master/instrumentation/netty-codec-http), [Google gRPC](https://github.com/openzipkin/brave/tree/master/instrumentation/grpc), [SLF4J](https://github.com/openzipkin/brave/tree/master/context/slf4j)
   * Trace Configuration: [Brave API](https://github.com/openzipkin/brave/tree/master/brave#setup) [Java](netty4-grpc/src/main/java/brave/example/TracingConfiguration.java)
 

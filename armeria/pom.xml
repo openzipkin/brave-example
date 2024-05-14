@@ -20,56 +20,13 @@
     <jre.version>21</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
-    <armeria.version>1.27.2</armeria.version>
+    <armeria.version>1.28.4</armeria.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.linecorp.armeria</groupId>
       <artifactId>armeria</artifactId>
-      <exclusions>
-        <!-- temporary until netty includes https://github.com/netty/netty/pull/13724 -->
-        <exclusion>
-          <groupId>io.netty</groupId>
-          <artifactId>netty-tcnative-boringssl-static</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <!-- temporary until netty-4.1.108.Final -->
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>2.0.63.Final</version>
-      <classifier>linux-x86_64</classifier>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>2.0.63.Final</version>
-      <classifier>linux-aarch_64</classifier>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>2.0.63.Final</version>
-      <classifier>osx-x86_64</classifier>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>2.0.63.Final</version>
-      <classifier>osx-aarch_64</classifier>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>2.0.63.Final</version>
-      <classifier>windows-x86_64</classifier>
-      <scope>runtime</scope>
     </dependency>
 
     <!-- Instruments the underlying Armeria requests -->

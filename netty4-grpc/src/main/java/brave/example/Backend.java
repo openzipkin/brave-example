@@ -49,7 +49,7 @@ public final class Backend extends BackendImplBase {
 
   /**
    * Google's gRPC impl disallows reading headers inside a server handler. This copies a header into
-   * the context so we can see if it was propagated or not.
+   * the context, so we can see if it was propagated or not.
    */
   static final class CopyHeaderToGrpcContext implements ServerInterceptor {
     final Key<String> contextKey;
