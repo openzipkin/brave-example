@@ -1,4 +1,4 @@
-## Tracing Example: Netty 4.1/Google gRPC 1.34/JRE 21
+## Tracing Example: Netty 4.1/Google gRPC 1.63/JRE 21
 
 Instead of servlet, the frontend is a Netty HTTP handler. The backend is Google gRPC 1.31.
 Both services run as a normal Java application.
@@ -7,7 +7,7 @@ Both services run as a normal Java application.
 * [brave.example.Backend](src/main/java/brave/example/Backend.java) - Google gRPC server
 * [brave.example.TracingConfiguration](src/main/java/brave/example/TracingConfiguration.java) - Configures trace instrumentation
 
-Here's an example screen shot:
+Here's an example screenshot:
 ![screen shot](https://user-images.githubusercontent.com/64215/102683005-a2986500-4208-11eb-8258-92cc02f9310b.png)
 
 This example also shows Brave's `BaggagePropagation`. If you make a request to the frontend with

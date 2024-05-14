@@ -5,7 +5,7 @@ import brave.baggage.BaggageField;
 import brave.baggage.BaggagePropagation;
 import brave.baggage.BaggagePropagationConfig;
 import brave.baggage.CorrelationScopeConfig;
-import brave.context.slf4j.MDCScopeDecorator;
+import brave.context.log4j12.MDCScopeDecorator;
 import brave.grpc.GrpcTracing;
 import brave.http.HttpTracing;
 import brave.netty.http.NettyHttpTracing;

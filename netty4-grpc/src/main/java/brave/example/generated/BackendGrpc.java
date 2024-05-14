@@ -1,30 +1,18 @@
 package brave.example.generated;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
-import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncUnaryCall;
-import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
-import static io.grpc.stub.ClientCalls.blockingUnaryCall;
-import static io.grpc.stub.ClientCalls.futureUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 /**
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.31.1)",
+    value = "by gRPC proto compiler (version 1.63.0)",
     comments = "Source: backend.proto")
+@io.grpc.stub.annotations.GrpcGenerated
 public final class BackendGrpc {
 
   private BackendGrpc() {}
 
-  public static final String SERVICE_NAME = "brave.example.Backend";
+  public static final java.lang.String SERVICE_NAME = "brave.example.Backend";
 
   // Static method descriptors that strictly reflect the proto.
   private static volatile io.grpc.MethodDescriptor<brave.example.generated.BackendProto.Empty,
@@ -104,31 +92,32 @@ public final class BackendGrpc {
 
   /**
    */
-  public static abstract class BackendImplBase implements io.grpc.BindableService {
+  public interface AsyncService {
 
     /**
      */
-    public void printDate(brave.example.generated.BackendProto.Empty request,
+    default void printDate(brave.example.generated.BackendProto.Empty request,
         io.grpc.stub.StreamObserver<brave.example.generated.BackendProto.Reply> responseObserver) {
-      asyncUnimplementedUnaryCall(getPrintDateMethod(), responseObserver);
-    }
-
-    @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
-      return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
-          .addMethod(
-            getPrintDateMethod(),
-            asyncUnaryCall(
-              new MethodHandlers<
-                brave.example.generated.BackendProto.Empty,
-                brave.example.generated.BackendProto.Reply>(
-                  this, METHODID_PRINT_DATE)))
-          .build();
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPrintDateMethod(), responseObserver);
     }
   }
 
   /**
+   * Base class for the server implementation of the service Backend.
    */
-  public static final class BackendStub extends io.grpc.stub.AbstractAsyncStub<BackendStub> {
+  public static abstract class BackendImplBase
+      implements io.grpc.BindableService, AsyncService {
+
+    @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
+      return BackendGrpc.bindService(this);
+    }
+  }
+
+  /**
+   * A stub to allow clients to do asynchronous rpc calls to service Backend.
+   */
+  public static final class BackendStub
+      extends io.grpc.stub.AbstractAsyncStub<BackendStub> {
     private BackendStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -144,14 +133,16 @@ public final class BackendGrpc {
      */
     public void printDate(brave.example.generated.BackendProto.Empty request,
         io.grpc.stub.StreamObserver<brave.example.generated.BackendProto.Reply> responseObserver) {
-      asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getPrintDateMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
   /**
+   * A stub to allow clients to do synchronous rpc calls to service Backend.
    */
-  public static final class BackendBlockingStub extends io.grpc.stub.AbstractBlockingStub<BackendBlockingStub> {
+  public static final class BackendBlockingStub
+      extends io.grpc.stub.AbstractBlockingStub<BackendBlockingStub> {
     private BackendBlockingStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -166,14 +157,16 @@ public final class BackendGrpc {
     /**
      */
     public brave.example.generated.BackendProto.Reply printDate(brave.example.generated.BackendProto.Empty request) {
-      return blockingUnaryCall(
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getPrintDateMethod(), getCallOptions(), request);
     }
   }
 
   /**
+   * A stub to allow clients to do ListenableFuture-style rpc calls to service Backend.
    */
-  public static final class BackendFutureStub extends io.grpc.stub.AbstractFutureStub<BackendFutureStub> {
+  public static final class BackendFutureStub
+      extends io.grpc.stub.AbstractFutureStub<BackendFutureStub> {
     private BackendFutureStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -189,7 +182,7 @@ public final class BackendGrpc {
      */
     public com.google.common.util.concurrent.ListenableFuture<brave.example.generated.BackendProto.Reply> printDate(
         brave.example.generated.BackendProto.Empty request) {
-      return futureUnaryCall(
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getPrintDateMethod(), getCallOptions()), request);
     }
   }
@@ -201,10 +194,10 @@ public final class BackendGrpc {
       io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
-    private final BackendImplBase serviceImpl;
+    private final AsyncService serviceImpl;
     private final int methodId;
 
-    MethodHandlers(BackendImplBase serviceImpl, int methodId) {
+    MethodHandlers(AsyncService serviceImpl, int methodId) {
       this.serviceImpl = serviceImpl;
       this.methodId = methodId;
     }
@@ -233,6 +226,18 @@ public final class BackendGrpc {
     }
   }
 
+  public static final io.grpc.ServerServiceDefinition bindService(AsyncService service) {
+    return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
+        .addMethod(
+          getPrintDateMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              brave.example.generated.BackendProto.Empty,
+              brave.example.generated.BackendProto.Reply>(
+                service, METHODID_PRINT_DATE)))
+        .build();
+  }
+
   private static abstract class BackendBaseDescriptorSupplier
       implements io.grpc.protobuf.ProtoFileDescriptorSupplier, io.grpc.protobuf.ProtoServiceDescriptorSupplier {
     BackendBaseDescriptorSupplier() {}
@@ -256,9 +261,9 @@ public final class BackendGrpc {
   private static final class BackendMethodDescriptorSupplier
       extends BackendBaseDescriptorSupplier
       implements io.grpc.protobuf.ProtoMethodDescriptorSupplier {
-    private final String methodName;
+    private final java.lang.String methodName;
 
-    BackendMethodDescriptorSupplier(String methodName) {
+    BackendMethodDescriptorSupplier(java.lang.String methodName) {
       this.methodName = methodName;
     }
 
