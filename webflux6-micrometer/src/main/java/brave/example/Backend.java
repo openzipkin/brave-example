@@ -1,9 +1,13 @@
 package brave.example;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -12,7 +16,10 @@ import reactor.core.publisher.Mono;
 
 @EnableAutoConfiguration
 @RestController
-@Import(CustomObservationConfiguration.class)
+@Import(value = {
+    CustomObservationConfiguration.class,
+    ZipkinDiscoveryConfiguration.class
+})
 public class Backend {
 
   @GetMapping("/api")
@@ -24,9 +31,8 @@ public class Backend {
   }
 
   public static void main(String[] args) {
-    SpringApplication.run(Backend.class,
-        "--spring.application.name=backend",
-        "--server.port=9000"
-    );
+    new SpringApplicationBuilder(Backend.class)
+        .properties(ZipkinDiscoveryConfiguration.discoveryProperties())
+        .run("--spring.application.name=backend", "--server.port=9000");
   }
 }
