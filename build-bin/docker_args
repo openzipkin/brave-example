@@ -8,38 +8,38 @@ else
   exit 1
 fi
 
-JAVA_VERSION=${JAVA_VERSION:-21.0.3_p9}
+JAVA_VERSION=${JAVA_VERSION:-21.0.4_p7}
 # DOCKER_ARCHS to eventually push to the registry
 DOCKER_ARCHS="amd64 arm64"
 
 case "${JRE_VERSION}" in
   6 )
-    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.23_p9
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.24_p8
     DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:1.6.0-119
     # single arch image
     DOCKER_ARCHS=amd64
     ;;
   7 )
-    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.23_p9
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:1.7.0_285
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.24_p8
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:1.7.0_352
     # single arch image
     DOCKER_ARCHS=amd64
     ;;
   8 )
-    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.23_p9
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:8.392.08-jre
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.24_p8
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:8.402.06-jre
     ;;
   11 )
-    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.23_p9
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:11.0.23_p9-jre
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.24_p8
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:11.0.24_p8-jre
     ;;
   17 )
-    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:21.0.3_p9
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:17.0.11_p9-jre
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:21.0.4_p7
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:17.0.12_p7-jre
     ;;
   21 )
-    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:21.0.3_p9
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:21.0.3_p9-jre
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:21.0.4_p7
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:21.0.4_p7-jre
     ;;
   * )
     echo "Invalid JRE_VERSION: ${JRE_VERSION}"
