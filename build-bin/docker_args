@@ -27,7 +27,7 @@ case "${JRE_VERSION}" in
     ;;
   8 )
     DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.26_p4
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:8.422.05-jre
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:8.442.06-jre
     ;;
   11 )
     DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.26_p4
