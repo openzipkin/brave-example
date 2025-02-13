@@ -37,7 +37,7 @@ if [ -n "${DOCKER_TARGET}" ]; then
 fi
 
 # When non-empty, becomes the layer that builds the maven projects.
-# e.g. ghcr.io/openzipkin/java:11.0.25_p9
+# e.g. ghcr.io/openzipkin/java:11.0.26_p4
 #
 # This must include maven and a full JDK.
 if [ -n "${DOCKER_BUILD_IMAGE}" ]; then
@@ -45,9 +45,9 @@ if [ -n "${DOCKER_BUILD_IMAGE}" ]; then
 fi
 
 # When non-empty, becomes the base layer including tag appropriate for the image being built.
-# e.g. ghcr.io/openzipkin/java:21.0.5_p11-jre
+# e.g. ghcr.io/openzipkin/java:21.0.6_p7-jre
 #
-# This is not required to be a base (FROM scratch) image like ghcr.io/openzipkin/alpine:3.12.3
+# This is not required to be a base (FROM scratch) image like ghcr.io/openzipkin/alpine:3.21.2
 # See https://docs.docker.com/glossary/#parent-image
 if [ -n "${DOCKER_PARENT_IMAGE}" ]; then
   docker_args="${docker_args} --build-arg docker_parent_image=${DOCKER_PARENT_IMAGE}"
@@ -59,7 +59,7 @@ if [ -n "${ALPINE_VERSION}" ]; then
   docker_args="${docker_args} --build-arg alpine_version=${ALPINE_VERSION}"
 fi
 
-# When non-empty, becomes the build-arg java_version. e.g. "21.0.5_p11"
+# When non-empty, becomes the build-arg java_version. e.g. "21.0.6_p7"
 # Used to align base layers from https://github.com/orgs/openzipkin/packages/container/package/java
 if [ -n "${JAVA_VERSION}" ]; then
   docker_args="${docker_args} --build-arg java_version=${JAVA_VERSION}"
