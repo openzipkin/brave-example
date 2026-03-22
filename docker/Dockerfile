@@ -2,24 +2,21 @@
 # non-root users and such as they are not intended to run in production anyway.
 
 # The image binaries this example builds are installed over
-ARG docker_parent_image=ghcr.io/openzipkin/java:21.0.6_p7
+ARG docker_parent_image=ghcr.io/openzipkin/java:21.0.10_p7
 ## Use JDK 11 to build projects, as that can still compile Java 6
-ARG docker_build_image=ghcr.io/openzipkin/java:11.0.26_p4
+ARG docker_build_image=ghcr.io/openzipkin/java:11.0.30_p7
 
-# We copy files from the context into a scratch container first to avoid a problem where docker and
-# docker compose don't share layer hashes https://github.com/docker/compose/issues/883 normally.
-# COPY --from= works around the issue.
-FROM scratch as scratch
-
-COPY . /code/
-
-FROM $docker_build_image as install
+FROM $docker_build_image AS install
 
 WORKDIR /code
-COPY --from=scratch /code .
-
 # version of the project, matching /code/$version/pom.xml. ex armeria or netty4-grpc
 ARG version=armeria
+COPY ${version}/pom.xml ${version}/
+COPY ${version}/src/main/ ${version}/src/main/
+COPY parent-pom.xml m2repository/ ./
+COPY build-bin/maven/maven_build build-bin/maven/maven_opts build-bin/maven/maven_unjar build-bin/maven/
+COPY build-bin/docker/docker-healthcheck build-bin/docker/
+COPY docker/bin/* docker/bin/
 
 # Build the project. This results in:
 # * /install - the version home
@@ -27,7 +24,7 @@ ARG version=armeria
 RUN \
 # If we've seeded m2repository, copy it into the repository of our install image.
 # This prevents uncacheable downloads that occur during Docker build.
-test -d /code/m2repository && export MAVEN_OPTS="-Dmaven.repo.local=/code/m2repository"; \
+test -d /code/m2repository/de && export MAVEN_OPTS="-Dmaven.repo.local=/code/m2repository"; \
 /code/docker/bin/install-example $version
 
 # Make the final layer that the example will run in

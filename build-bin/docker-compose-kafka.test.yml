@@ -1,6 +1,3 @@
-# permit depends_on/condition: service_healthy
-version: '2.4'
-
 # This configures examples so that they use Kafka to communicate.
 services:
   sut:

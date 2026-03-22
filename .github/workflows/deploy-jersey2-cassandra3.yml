@@ -6,7 +6,8 @@ on:
   # We deploy non-tagged pushes to master relevant for this project. We can't opt out of
   # documentation-only commits because GH actions does not permit paths and paths-ignore.
   push:
-    tags: ''
+    tags-ignore:
+      - '*'
     branches: master
     paths:
       - "build-bin/**"

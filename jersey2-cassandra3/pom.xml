@@ -14,21 +14,26 @@
   <packaging>jar</packaging>
 
   <name>brave-example-jersey2-cassandra3</name>
-  <description>Tracing Example: Jersey 2/DataStax Java Driver 3/Apache Cassandra 4/JRE 8</description>
+  <description>Tracing Example: Jersey 2/DataStax Java Driver 3/Apache Cassandra 4/JRE 21</description>
 
   <properties>
-    <jre.version>8</jre.version>
+    <jre.version>21-jdk</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
     <!-- Use a container that doesn't use Netty. -->
     <jersey.version>2.43</jersey.version>
     <spring.version>5.3.34</spring.version>
 
-    <cassandra.version>4.1.4</cassandra.version>
+    <cassandra.version>4.1.10</cassandra.version>
     <cassandra-driver-core.version>3.11.5</cassandra-driver-core.version>
 
     <!-- https://github.com/openzipkin/brave-cassandra -->
     <brave-cassandra.version>0.13.1</brave-cassandra.version>
+    <!-- Override cassandra-all deps that crash on aarch64/alpine or are
+         incompatible with JRE 21 (CASSANDRA-18329) -->
+    <jna.version>5.18.1</jna.version>
+    <jffi.version>1.3.14</jffi.version>
+    <jamm.version>0.4.0</jamm.version>
   </properties>
 
   <dependencies>
@@ -54,10 +59,40 @@
     </dependency>
 
     <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>${jna.version}</version>
+    </dependency>
+    <!-- Use latest to work with JRE 21 per CASSANDRA-18329 -->
+    <dependency>
+      <groupId>com.github.jbellis</groupId>
+      <artifactId>jamm</artifactId>
+      <version>${jamm.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.jnr</groupId>
+      <artifactId>jffi</artifactId>
+      <version>${jffi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.jnr</groupId>
+      <artifactId>jffi</artifactId>
+      <version>${jffi.version}</version>
+      <classifier>native</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.apache.cassandra</groupId>
       <artifactId>cassandra-all</artifactId>
       <version>${cassandra.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>net.java.dev.jna</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.jbellis</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>*</artifactId>

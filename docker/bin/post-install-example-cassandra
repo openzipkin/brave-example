@@ -10,3 +10,32 @@ sed -i 's/HEALTHCHECK_KIND=http/HEALTHCHECK_KIND=tcp/g' start-backend
 
 # Cassandra needs more than 32m memory
 sed -i 's/32m/128m/g' start-backend
+
+# Cassandra 4.1 needs --add-opens/--add-exports on JRE 17+ and security manager on JRE 21
+# https://github.com/apache/cassandra/blob/cassandra-4.1.10/conf/jvm11-server.options
+# https://github.com/apache/cassandra/blob/cassandra-5.0.3/conf/jvm17-server.options
+CASSANDRA_JVM_OPTS="-Djava.security.manager=allow \
+-Djdk.attach.allowAttachSelf=true \
+-Dio.netty.tryReflectionSetAccessible=true \
+--add-exports java.base/jdk.internal.misc=ALL-UNNAMED \
+--add-exports java.base/jdk.internal.ref=ALL-UNNAMED \
+--add-exports java.base/sun.nio.ch=ALL-UNNAMED \
+--add-exports java.sql/java.sql=ALL-UNNAMED \
+--add-exports java.base/java.lang.ref=ALL-UNNAMED \
+--add-exports jdk.unsupported/sun.misc=ALL-UNNAMED \
+--add-opens java.base/java.lang.module=ALL-UNNAMED \
+--add-opens java.base/jdk.internal.loader=ALL-UNNAMED \
+--add-opens java.base/jdk.internal.ref=ALL-UNNAMED \
+--add-opens java.base/jdk.internal.reflect=ALL-UNNAMED \
+--add-opens java.base/jdk.internal.math=ALL-UNNAMED \
+--add-opens java.base/jdk.internal.module=ALL-UNNAMED \
+--add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED \
+--add-opens java.base/java.io=ALL-UNNAMED \
+--add-opens java.base/java.nio=ALL-UNNAMED \
+--add-opens java.base/sun.nio.ch=ALL-UNNAMED \
+--add-opens java.base/java.lang.reflect=ALL-UNNAMED \
+--add-opens java.base/java.lang=ALL-UNNAMED \
+--add-opens java.base/java.util=ALL-UNNAMED \
+--add-opens java.base/java.util.concurrent=ALL-UNNAMED \
+--add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED"
+sed -i "s~exec java~exec java ${CASSANDRA_JVM_OPTS}~" start-frontend start-backend
