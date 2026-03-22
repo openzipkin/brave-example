@@ -8,38 +8,43 @@ else
   exit 1
 fi
 
-JAVA_VERSION=${JAVA_VERSION:-21.0.6_p7}
+JAVA_VERSION=${JAVA_VERSION:-21.0.10_p7}
 # DOCKER_ARCHS to eventually push to the registry
 DOCKER_ARCHS="amd64 arm64"
 
 case "${JRE_VERSION}" in
   6 )
-    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.26_p4
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.30_p7
     DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:1.6.0-119
     # single arch image
     DOCKER_ARCHS=amd64
     ;;
   7 )
-    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.26_p4
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.30_p7
     DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:1.7.0_352
     # single arch image
     DOCKER_ARCHS=amd64
     ;;
   8 )
-    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.26_p4
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:8.442.06-jre
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.30_p7
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:8.472.08-jre
     ;;
   11 )
-    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.26_p4
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:11.0.26_p4-jre
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:11.0.30_p7
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:11.0.30_p7-jre
     ;;
   17 )
-    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:21.0.6_p7
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:17.0.9_p8-jre
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:21.0.10_p7
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:17.0.18_p8-jre
     ;;
   21 )
-    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:21.0.6_p7
-    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:21.0.6_p7-jre
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:21.0.10_p7
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:21.0.10_p7-jre
+    ;;
+  21-jdk )
+    # jersey2-cassandra3 needs jdk.httpserver not in the JRE
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:21.0.10_p7
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:21.0.10_p7
     ;;
   * )
     echo "Invalid JRE_VERSION: ${JRE_VERSION}"

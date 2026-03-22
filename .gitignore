@@ -9,4 +9,5 @@ zipkin.jar
 
 # We cannot share paths outside the current directory with the Docker context
 # (ex via symlinks). So, build-bin/configure_* overrides maven.repo.local
-m2repository/
+/m2repository/*
+!/m2repository/.gitkeep

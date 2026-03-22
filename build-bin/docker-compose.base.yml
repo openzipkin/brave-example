@@ -1,6 +1,3 @@
-# permit depends_on/condition: service_healthy
-version: "2.4"
-
 # This is a base configuration *without depends-on* because docker-compose
 # officially doesn't support extending with depends-on even if some tools
 # allow it. See https://github.com/docker/compose/issues/7916
