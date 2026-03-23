@@ -14,14 +14,14 @@
   <packaging>jar</packaging>
 
   <name>brave-example-armeria-kafka</name>
-  <description>Tracing Example: Armeria/Kafka Clients and Streams/Java 21</description>
+  <description>Tracing Example: Armeria/Kafka Clients and Streams/Java 25</description>
 
   <properties>
-    <jre.version>21</jre.version>
+    <jre.version>25</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
-    <armeria.version>1.28.4</armeria.version>
-    <kafka.version>3.7.0</kafka.version>
+    <armeria.version>1.37.0</armeria.version>
+    <kafka.version>3.7.2</kafka.version>
   </properties>
 
   <dependencies>

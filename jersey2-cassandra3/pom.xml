@@ -21,8 +21,8 @@
     <maven.compiler.release>8</maven.compiler.release>
 
     <!-- Use a container that doesn't use Netty. -->
-    <jersey.version>2.43</jersey.version>
-    <spring.version>5.3.34</spring.version>
+    <jersey.version>2.48</jersey.version>
+    <spring.version>5.3.39</spring.version>
 
     <cassandra.version>4.1.10</cassandra.version>
     <cassandra-driver-core.version>3.11.5</cassandra-driver-core.version>
