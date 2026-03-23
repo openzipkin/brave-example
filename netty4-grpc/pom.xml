@@ -14,14 +14,14 @@
   <packaging>jar</packaging>
 
   <name>brave-example-netty4-grpc</name>
-  <description>Tracing Example: Netty 4.1/Google gRPC 1.63/JRE 21</description>
+  <description>Tracing Example: Netty 4.1/Google gRPC 1.63/JRE 25</description>
 
   <properties>
-    <jre.version>21</jre.version>
+    <jre.version>25</jre.version>
     <maven.compiler.release>8</maven.compiler.release>
 
-    <grpc.version>1.63.0</grpc.version>
-    <protobuf.version>3.25.1</protobuf.version>
+    <grpc.version>1.63.2</grpc.version>
+    <protobuf.version>3.25.8</protobuf.version>
 
     <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
     <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>

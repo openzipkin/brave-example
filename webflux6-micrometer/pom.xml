@@ -13,14 +13,14 @@
   <packaging>jar</packaging>
 
   <name>brave-example-webflux6-micrometer</name>
-  <description>Tracing Example: Spring 6, Reactor Netty, Spring Boot 3, Micrometer, Log4J 2, JRE 21</description>
+  <description>Tracing Example: Spring 6, Reactor Netty, Spring Boot 3, Micrometer, Log4J 2, JRE 25</description>
 
   <properties>
-    <jre.version>21</jre.version>
+    <jre.version>25</jre.version>
     <maven.compiler.release>21</maven.compiler.release>
 
-    <spring-boot.version>3.3.2</spring-boot.version>
-    <micrometer.version>1.3.2</micrometer.version>
+    <spring-boot.version>3.3.13</spring-boot.version>
+    <micrometer.version>1.3.13</micrometer.version>
   </properties>
 
   <dependencyManagement>

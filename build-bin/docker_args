@@ -46,6 +46,10 @@ case "${JRE_VERSION}" in
     DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:21.0.10_p7
     DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:21.0.10_p7
     ;;
+  25 )
+    DOCKER_BUILD_IMAGE=ghcr.io/openzipkin/java:25.0.2_p10
+    DOCKER_PARENT_IMAGE=ghcr.io/openzipkin/java:25.0.2_p10-jre
+    ;;
   * )
     echo "Invalid JRE_VERSION: ${JRE_VERSION}"
     exit 1
